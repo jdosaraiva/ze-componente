@@ -2,8 +2,8 @@ package com.example.service;
 
 import java.util.List;
 
-import com.example.components.model.entity.Dominio;
 import com.example.config.Transactional;
+import com.example.model.entity.Dominio;
 import com.example.repositoy.DominioRepository;
 
 import jakarta.inject.Inject;

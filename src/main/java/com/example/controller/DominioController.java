@@ -2,7 +2,7 @@ package com.example.controller;
 
 import java.util.List;
 
-import com.example.components.model.entity.Dominio;
+import com.example.model.entity.Dominio;
 import com.example.service.DominioService;
 
 import jakarta.enterprise.context.RequestScoped;
