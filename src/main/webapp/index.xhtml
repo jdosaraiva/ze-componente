@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Componente</title>
+    <!-- Incluindo CSS do Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css" />
+    <!-- Incluindo CSS customizado -->
+    <style>
+        body {
+            background-color: #f0f8ff; /* Azul claro */
+        }
+        .header, .footer {
+            background-color: #90ee90; /* Verde claro */
+            color: #2f4f4f; /* Cinza escuro */
+            padding: 10px 0;
+            text-align: center;
+        }
+        .header h1, .header p, .footer p {
+            color: #2f4f4f; /* Cinza escuro */
+        }
+        .content {
+            margin: 20px;
+        }
+    </style>
+</h:head>
+<body>
+    <h:form>
+        <div class="container">
+            <div class="header">
+                <h1>Componente</h1>
+                <p>Aplicação para testar as tecnologias mencionadas</p>
+            </div>
+            <div class="content">
+                <p:panel header="Tecnologias Utilizadas">
+                    <ul>
+                        <li>Java 17</li>
+                        <li>Jakarta EE Web Profile 10</li>
+                        <li>PrimeFaces 14</li>
+                        <li>Tomcat 10</li>
+                        <li>PostgreSQL 15</li>
+                        <li>Bootstrap 5</li>
+                    </ul>
+                </p:panel>
+            </div>
+            <div class="footer">
+                <p>&#169; 2025 Componente. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </h:form>
+    <!-- Incluindo JS do Bootstrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
