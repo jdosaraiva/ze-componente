@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:custom="http://example.com/custom">
+    
+<h:head>
+    <title>Demo - Componente CPF/CNPJ</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    
+    <!-- jQuery (necessário para a máscara) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-green: #2ecc71;
+            --light-blue: #ecf0f1;
+            --dark-green: #27ae60;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-blue) 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .navbar {
+            background-color: var(--primary-green);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .card-header {
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1rem;
+        }
+
+        .form-label {
+            color: var(--dark-green);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-green);
+            border-color: var(--dark-green);
+        }
+
+        .messages {
+            margin-top: 1rem;
+        }
+
+        .message-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .result-panel {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-green);
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">MCL - Demo Componente</a>
+        </div>
+    </nav>
+
+    <div class="demo-container">
+        <h:form id="demoForm" class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Demonstração - Componente CPF/CNPJ</h4>
+            </div>
+            
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">CPF/CNPJ</label>
+                        <custom:my-docto id="documentoId" 
+                                       value="#{documentoBean.documento}" 
+                                       required="true" />
+                        <h:message for="documentoId" 
+                                 styleClass="message-error"
+                                 id="documentoMessage"/>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col">
+                        <h:commandButton value="Enviar" 
+                                       action="#{documentoBean.processar}"
+                                       styleClass="btn btn-primary">
+                            <f:ajax execute="@form" render="@form resultado"/>
+                        </h:commandButton>
+                    </div>
+                </div>
+
+                <!-- Painel de Mensagens -->
+                <h:panelGroup id="resultado" layout="block" 
+                            styleClass="result-panel"
+                            rendered="#{not empty documentoBean.documento}">
+                    <h5 class="text-success">Documento Processado:</h5>
+                    <p class="mb-0">#{documentoBean.documento}</p>
+                </h:panelGroup>
+            </div>
+        </h:form>
+
+        <!-- Card de Instruções -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Instruções de Uso</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Digite um CPF (XXX.XXX.XXX-XX) ou CNPJ (XX.XXX.XXX/XXXX-XX)</li>
+                    <li>A formatação será aplicada automaticamente</li>
+                    <li>O componente validará o formato do documento</li>
+                    <li>Clique em Enviar para processar o documento</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</h:body>
+</html>
+

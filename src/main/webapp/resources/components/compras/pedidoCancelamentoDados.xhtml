@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pedidoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">	
+				<section class="col col-3">
+					<p:outputLabel value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.pedido.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:number id="processoAno" label="Processo Ano" value="#{cc.attrs.managedBean.pedido.processo.ano}" readonly="true" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Tipo de Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.pedido.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel value="Condição Pagamento" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.pedido.condicaoPagamento.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Data do Pedido" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.pedido.data}" readonly="true">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel value="Fornecedor" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.pedido.fornecedorRazaoSocial}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="observacao" value="Observação" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.pedido.observacao}" readonly="true" />
+				</label>
+			</section>
+			<section>
+				<p:dataTable id="dtItemPedido" var="item" value="#{cc.attrs.managedBean.pedido.itemPedidoList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+				    <f:facet name="header">Itens de Pedido</f:facet>
+				    <p:column headerText="Item" style="width: 60px">
+				    	<mcl:number value="#{item.item}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Objeto">
+				        <h:outputText value="#{item.objeto.descricao}" title="#{item.objeto.descricao}" />
+				    </p:column>
+				    <p:column headerText="Quantidade Solicitada" style="width: 90px">
+				    	<mcl:money value="#{item.quantidadeSolicitada}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Quantidade Receber" style="width: 90px">
+				    	<mcl:money value="#{item.quantidadeReceber}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor Unitário" style="width: 80px">
+				    	<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor Total Solicitado" style="width: 90px">
+				    	<mcl:money value="#{item.valorTotalSolicitado}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Saldo a Receber" style="width: 80px">
+				    	<mcl:money value="#{item.saldoReceber}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Quantidade Cancelada" style="width: 90px">
+				    	<mcl:money value="#{item.quantidadeCancelada}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor Total Cancelado" style="width: 90px">
+				    	<mcl:money value="#{item.valorTotalCancelado}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Cancelar" style="vertical-align:middle;text-align:center;width: 55px;">
+			        	<h:commandLink title="Cancelar" action="#{cc.attrs.managedBean.navegaParcial(item)}" styleClass="btn btn-info btn-sm">
+			        		<i class="fa fa-pencil-square-o"></i>
+			            </h:commandLink>
+			        </p:column>
+				</p:dataTable>	
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="inabilitacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número / Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero} / #{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.processo.modalidade.descricao} - #{cc.attrs.managedBean.processo.numeroLicitacao} / #{cc.attrs.managedBean.processo.anoLicitacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="exclusivoMe" value="Exclusivo M.E. ?" styleClass="label" />
+					<label class="input">
+						<p:inputText id="exclusivoMe" value="#{cc.attrs.managedBean.processo.exclusivoMe ? 'Sim' : 'Não'}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<p:outputPanel id="divLicitante">
+				<div class="row">
+					<section class="col col-6">
+						<p:outputLabel for="licitante" value="Participante" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="licitante" value="#{cc.attrs.managedBean.licitanteSelecionado}" required="true" 
+					        	 styleClass="select" filter="true" filterMatchMode="contains">
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{cc.attrs.managedBean.processo.licitanteList}" var="item" itemLabel="#{item.fornecedorRazaoSocial} |*| #{item.status}" itemValue="#{item}"/>
+					        	<p:ajax listener="#{cc.attrs.managedBean.selecionaLicitante()}" update="dtObjetos,divLicitante" event="valueChange" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+					<section class="col col-3" >
+						<p:outputLabel for="inabilitarTotal" value="Inabilitação TOTAL" styleClass="label" rendered="#{cc.attrs.managedBean.habilitaExcluirProposta and cc.attrs.managedBean.licitanteSelecionado.status != 'INABILITADO' and !cc.attrs.readonly}"/>
+						
+				        <p:commandLink  id="inabilitarTotal" action="#{cc.attrs.managedBean.inabilitarTotal()}" styleClass="btn btn-danger btn-lg" title="Inabilita o Participante Selecionado e TODAS suas Propostas !"
+							rendered="#{cc.attrs.managedBean.habilitaExcluirProposta and cc.attrs.managedBean.licitanteSelecionado.status != 'INABILITADO' and !cc.attrs.readonly}">
+							<p:confirm header="Aviso" message="Confirma a Inabilitação do Participante selecionado e TODAS suas Propostas ?" />
+			            	<i class="fa fa-remove"></i>
+			            	<h:outputText value="  Inabilitar Participante e TODAS suas Propostas" />
+			            </p:commandLink>
+			             <p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+							<p:commandLink value="Sim" title="Sim"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+				            </p:commandLink>
+				            &#160;&#160;&#160;
+				            <p:commandLink value="Não" title="Não"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+				            </p:commandLink>
+					    </p:confirmDialog>
+					
+						<p:outputLabel for="excluirInabilitacaoTotal" value="Excluir Inabilitação TOTAL" styleClass="label" rendered="#{cc.attrs.managedBean.habilitaExcluirProposta and cc.attrs.managedBean.licitanteSelecionado.status == 'INABILITADO' and !cc.attrs.readonly}"/>
+						
+				        <p:commandLink  id="excluirInabilitacaoTotal" action="#{cc.attrs.managedBean.excluirInabilitacaoTotal()}" styleClass="btn btn-success btn-lg" title="Exclui Inabilitação do Participante Selecionado e suas Propostas válidas !"
+							rendered="#{cc.attrs.managedBean.habilitaExcluirProposta and cc.attrs.managedBean.licitanteSelecionado.status == 'INABILITADO' and !cc.attrs.readonly}">
+							<p:confirm header="Aviso" message="Confirma a Exclusão da Inabilitação do Participante selecionado e suas Propostas válidas ?" />
+			            	<i class="fa fa-remove"></i>
+			            	<h:outputText value="  Excluir Inabilitação Participante e Propostas com Valor" />
+			            </p:commandLink>
+			             <p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+							<p:commandLink value="Sim" title="Sim"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+				            </p:commandLink>
+				            &#160;&#160;&#160;
+				            <p:commandLink value="Não" title="Não"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+				            </p:commandLink>
+					    </p:confirmDialog>
+					
+					</section>
+				</div>
+				<section>
+					<p:outputLabel for="justificativa" value="Justificativa" styleClass="label"/>
+					<label class="input">
+						<p:inputTextarea id="justificativa" required="true" value="#{cc.attrs.managedBean.licitanteSelecionado.justificativa}" 
+						disabled="#{cc.attrs.readonly}" rows="5" counter="display" maxlength="1000" counterTemplate="{0} restantes." autoResize="false"/><br />
+						<h:outputText id="display" />
+					</label>
+				</section>
+			</p:outputPanel>
+			
+			<p:outputPanel id="divPropostas">
+				<section>
+					<p:dataTable id="dtObjetos" var="item" value="#{cc.attrs.managedBean.propostaList}" 
+						selection="#{cc.attrs.managedBean.propostasSelecionadasList}" 
+						rowKey="#{item}" emptyMessage="Não constam registros. Selecione um Participante."  >
+						<f:facet name="header">
+					        Propostas do Participante
+	       				</f:facet>
+	       				<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+					    <p:column headerText="Item" style="width: 40px;text-align: center">
+					        <h:outputText value="#{item.objeto.item}" />
+					    </p:column>
+					   	<p:column headerText="Descrição" >
+					        <h:outputText value="#{item.objeto.descricao}" />
+					    </p:column>
+					    <p:column headerText="Quantidade" style="width: 80px">
+					    	<mcl:money value="#{item.objeto.quantidade}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Excl. ME" style="width: 70px">
+					    	<mcl:money value="#{item.objeto.exclusivoMeDescricao}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Valor Referência" style="width: 100px">
+					    	<mcl:money value="#{item.objeto.valorReferencia}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Valor Unitário" style="width: 100px">
+					    	<mcl:money value="#{item.valorUnitario}" modoConsulta="true"  />
+					    </p:column>
+					    <p:column headerText="Valor Total" style="width: 100px">
+					    	<mcl:money value="#{item.valorTotal}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Percentual" style="width: 80px">
+					    	<mcl:money value="#{item.percentualDesconto}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Resultado do Item" style="width: 180px">
+					        <h:outputText value="#{item.resultadoHabilitacao.descricao}" />
+					    </p:column>
+					</p:dataTable>
+				</section>
+			</p:outputPanel>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar Inabilitação das Propostas Selecionadas" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

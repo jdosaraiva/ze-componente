@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="nfDevolucaoLoteForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+
+			<section >
+				<p:dataTable id="listaLote" var="item" value="#{cc.attrs.managedBean.movimentoEstoqueOrgaoPaiList}" reflow="true" expandedRow="#{cc.attrs.managedBean.isExpanded(item)}"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					
+					<p:column style="width:3rem;">
+						<p:rowToggler rendered="#{item.loteList.size()>0}"/>
+					</p:column>
+
+				    <p:column headerText="Almoxarifado" style="text-align:left">
+				        <h:outputText value="#{item.estoque.almoxarifado.nome}" title="#{item.estoque.almoxarifado.nome}" />
+				    </p:column>
+
+				    <p:column headerText="Orgão" style="text-align:left">
+				        <h:outputText value="#{item.estoque.orgaoDescricao}" title="#{item.estoque.orgaoDescricao}" />
+				    </p:column>
+				    
+				    <p:column headerText="Material" style="text-align:left">
+				        <h:outputText value="#{item.movimentoEstoque.material.descricao}" title="#{item.movimentoEstoque.material.descricao}" />
+				    </p:column>
+				    
+				    <p:column headerText="Quantidade"  style="width: 150px; text-align: center">
+				    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />	
+				    </p:column>
+
+				    <p:column headerText="Unidade"  style="width: 150px; text-align: center">
+				        <h:outputText value="#{item.movimentoEstoque.material.unidade.nome}" title="#{item.movimentoEstoque.material.unidade.nome}" />
+				    </p:column>
+
+
+					<p:column headerText="Ação" style="vertical-align:middle;text-align:center;width: 100px;" >
+						<h:commandLink value="" title="Adicionar Lote" onclick="javascript: $('#popupEditLote').modal('show');" styleClass="btn btn-primary btn-sm">
+				           	<p:ajax listener="#{cc.attrs.managedBean.novoLote(item)}" update=":editLote:formPopupEditLote" />
+				           	<i class="fa fa-plus"></i>
+				        </h:commandLink>
+      				 </p:column>
+      				 
+      				<p:rowExpansion>
+			       		<p:dataTable id="listaLote" value="#{item.loteList}" var="subitem" 
+							reflow="true" paginator="false" emptyMessage="Não constam registros."
+							tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+							
+							<p:column headerText="Número do Lote" style="width: 150px; text-align: center">
+						        <h:outputText value="#{subitem.numero}" />
+						    </p:column>
+							<p:column headerText="Quantidade" style="width: 150px;">
+								<mcl:money value="#{subitem.quantidade}" modoConsulta="true" />				        
+						    </p:column>
+						    <p:column headerText="Data de Validade" style="width: 150px; text-align: center">
+						        <h:outputText value="#{subitem.dataValidade}">
+						        	<f:convertDateTime pattern="dd/MM/yyyy" />
+						        </h:outputText>
+						    </p:column>
+						    <p:column headerText="Data Início" style="width: 150px; text-align: center">
+						        <h:outputText value="#{subitem.dataInicio}">
+						        	<f:convertDateTime pattern="dd/MM/yyyy" />
+						        </h:outputText>
+						    </p:column>
+						    <p:column headerText="Marca">
+						        <h:outputText value="#{subitem.marca.nome}" />
+						    </p:column>
+					        
+					        <p:column headerText="Ação" styleClass="column1" rendered="#{!cc.attrs.readonly}" style="text-align: center;width: 100px;">
+    							<h:commandLink value="" title="Editar Lote" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditLote').modal({backdrop: 'static', keyboard: false});"
+    								actionListener="#{cc.attrs.managedBean.editarLote(subitem)}">
+					        		<f:setPropertyActionListener target="#{cc.attrs.managedBean.lote}" value="#{subitem}" />
+					        		<p:ajax update=":editLote:formPopupEditLote" />
+					            	<i class="fa fa-edit"></i>
+					             </h:commandLink>
+					             &#160;
+							    <h:commandLink value="" title="Excluir Lote" actionListener="#{cc.attrs.managedBean.removerLote(subitem)}" immediate="true" styleClass="btn btn-primary btn-sm">
+					            	<p:ajax update=":nfDevolucaoLoteDados:nfDevolucaoLoteForm:listaLote" />
+					            	<i class="fa fa-trash-o"></i>
+					            </h:commandLink>
+					        </p:column>					        
+					        
+				        </p:dataTable>
+       	 			</p:rowExpansion>     
+				    
+				</p:dataTable>	
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvarLotes()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>            
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="itemRegistroPrecosOrgaoRemanejamentoDadosForm" class="smart-form" acceptcharset="ISO-8859-1">  
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa 
+							id="registroPreco" 
+							label="Registro de Preços" 
+							controller="#{registroPrecoColumnsView}"
+							descricao="#{cc.attrs.managedBean.rpSelecionado.numero.toString().concat(' / ').concat(cc.attrs.managedBean.rpSelecionado.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.rpSelecionado.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.rpSelecionado.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.rpSelecionado.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.rpSelecionado.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.rpSelecionado.processo.status.descricao)}" 
+							value="#{cc.attrs.managedBean.rpSelecionado}" 
+							required="true"
+							parametroConsulta="#{cc.attrs.managedBean.registroPrecoFiltro}"
+							listener="#{cc.attrs.managedBean.carregarDadosRegistroPrecos()}" 
+							update="
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:objetoPanel
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:dtObjeto
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:data 
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:Fornecedor 
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:itemRegistroPrecos 
+									" 
+							cabecalho= "Consulta de Registro de Preços"/> 
+				</section>
+				
+				<section class="col col-6">
+					<p:outputLabel for="Fornecedor" value="Fornecedor" styleClass="label" />
+					<label class="input">
+						<p:inputText id="Fornecedor" value="#{cc.attrs.managedBean.rpSelecionado.fornecedorRazaoSocial}" readonly="true" />
+					</label>
+				</section>
+				
+			</div>
+		
+			<div class="row">
+			
+				<section class="col col-6">
+					<mcl:inputLupa 
+							id="itemRegistroPrecos" 
+							label="Item Registro de Preços" 
+							controller="#{itemRegistroPrecosColumnsView}"
+							descricao="#{cc.attrs.managedBean.irpSelecionado.descricao}" 
+							value="#{cc.attrs.managedBean.irpSelecionado}" 
+							required="true"
+							listener="#{cc.attrs.managedBean.carregarDadosItemRegistroPrecos()}" 
+							parametroConsulta="#{cc.attrs.managedBean.itemRegistroPrecosFiltro}"
+							update="
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:objetoPanel
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:dtObjeto
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:unidade
+									:itemRegistroPrecosOrgaoRemanejamentoDados:itemRegistroPrecosOrgaoRemanejamentoDadosForm:quantidadeDisponivel
+									" 
+							cabecalho= "Consulta de Item de Registro de Preços"/> 
+				</section>
+			
+				<section  class="col col-3">
+					<p:outputLabel for="unidade" value="Unidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="unidade" value="#{cc.attrs.managedBean.irpSelecionado.objeto.unidade}" readonly="true"  />
+					</label>
+				</section>
+			
+				<section  class="col col-3">
+					<p:outputLabel for="quantidadeDisponivel" value="Quantidade Disponível" styleClass="label" />
+					<label class="input">
+						<p:inputText id="quantidadeDisponivel" value="#{cc.attrs.managedBean.irpSelecionado.quantidadeDisponivel}" readonly="true"  />
+					</label>
+				</section>
+			
+			</div>
+			
+			<div class="row">
+				
+				<section class="col col-6">
+						<mcl:inputLupa 
+							id="orgao" 
+							label="Órgão que vai receber a Quantidade Remanejada" 
+							controller="#{orgaoColumnsView}"
+							descricao="#{cc.attrs.managedBean.orgaoDTO.codigoCompleto.concat(' - ').concat(cc.attrs.managedBean.orgaoDTO.descricao)}" 
+							value="#{cc.attrs.managedBean.orgaoDTO}" 
+							required="true" 
+							lazy="true"
+							cabecalho= "Consulta de Órgãos da Administração" />
+				</section>
+				
+				
+
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data do Remanejamento" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" style="float:left"
+									value="#{cc.attrs.managedBean.itemRPORemanejamento.data}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				
+				<section  class="col col-3">
+					<p:outputLabel for="operador" value="Registrado por" styleClass="label" />
+					<label class="input">
+						<p:inputText id="operador" value="#{cc.attrs.managedBean.itemRPORemanejamento.operador}" readonly="true"  />
+					</label>
+				</section>
+				
+			</div>
+			
+			<h:panelGroup id="objetoPanel">
+				<section >
+					<p:dataTable id="dtObjeto" var="item" value="#{cc.attrs.managedBean.irpSelecionado.itemRegistroPrecosOrgaoList}"
+						reflow="true" emptyMessage="Não constam registros." rowKey="#{item.orgaoSigla}" tableStyleClass="table table-striped"
+						styleClass="table-reflow-desktop">
+						<f:facet name="header">Saldo Disponível por Órgãos do Item Registro de Preços selecionado</f:facet>
+				        <p:column headerText="Órgão">
+				           	<h:outputText value="#{item.orgaoSigla} - #{item.orgaoDescricao}" />
+				        </p:column>
+				        <p:column headerText="Qtde Disp." style="width: 100px">
+				        	<mcl:money value="#{item.quantidadeDisponivel}" modoConsulta="true" decimalPlaces="4"/>
+				        </p:column>
+				        <p:column headerText="Vlr Unitário" style="width: 120px">
+			           		<mcl:money value="#{item.valorUnitario}" modoConsulta="true" decimalPlaces="4"/>
+				        </p:column>
+				        <p:column headerText="Vlr Total Disp." style="width: 120px">
+			           		<mcl:money value="#{item.valorTotalDisponivel}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Qtde a Remanejar" style="width: 120px">
+				        	<mcl:money value="#{item.quantidadeAditar}" decimalPlaces="4"/>
+				        </p:column>
+					</p:dataTable>
+				</section>
+				
+
+				
+				
+			</h:panelGroup>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Transferir " />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

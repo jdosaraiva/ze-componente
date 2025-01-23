@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="relatorioForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-9">
+					<p:outputLabel for="relatorio" value="Relatório" styleClass="label" />
+					<p:selectOneMenu id="relatorio" value="#{cc.attrs.managedBean.relatorioParam}" styleClass="select" required="true"
+						filter="true" filterMatchMode="contains">
+						<f:selectItem itemLabel=".: Selecione :." />
+						<f:selectItems value="#{cc.attrs.managedBean.relatorioList}" var="item" itemLabel="#{item.nome}" itemValue="#{item}" />
+						<p:ajax event="change" process="@this" listener="#{cc.attrs.managedBean.relatorioChange()}" update="filtro" />
+					</p:selectOneMenu>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+					<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+						<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</section>
+			</div>
+			<h:panelGrid id="filtro" style="width: 100%">
+			<h:panelGroup id="filtroPanel" rendered="#{not cc.attrs.managedBean.utilizaFuncao}">
+				<p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldStringList}" columns="2" layout="grid" emptyMessage="">
+			        <f:facet name="header">
+			            Filtros
+			        </f:facet>
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{item.stringFilter}" />
+						</label>
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldDateList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldDateList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+				        <table>
+				        	<tr>
+				        		<td>
+				        			<label class="input">
+										<p:calendar value="#{item.dateDeFilter}" pattern="dd/MM/yyyy" mask="true" locale="pt" />
+									</label>
+				        		</td>
+				        		<td><h:outputLabel value="à" style="padding-left: 10px; padding-right: 10px" /></td>
+				        		<td>
+				        			<label class="input">
+										<p:calendar value="#{item.dateAteFilter}" pattern="dd/MM/yyyy" mask="true" locale="pt" />
+									</label>
+				        		</td>
+				        	</tr>
+				        </table>
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldIntegerList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldIntegerList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+				        <table>
+				        	<tr>
+				        		<td>
+				        			<mcl:number value="#{item.integerDeFilter}" />
+				        		</td>
+				        		<td><h:outputLabel value="à" style="padding-left: 10px; padding-right: 10px" /></td>
+				        		<td>
+				        			<mcl:number value="#{item.integerAteFilter}" />
+				        		</td>
+				        	</tr>
+				        </table>
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldLongList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldLongList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+				        <table>
+				        	<tr>
+				        		<td>
+				        			<mcl:number value="#{item.longDeFilter}" />
+				        		</td>
+				        		<td><h:outputLabel value="à" style="padding-left: 10px; padding-right: 10px" /></td>
+				        		<td>
+				        			<mcl:number value="#{item.longAteFilter}" />
+				        		</td>
+				        	</tr>
+				        </table>
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldBigDecimalList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldBigDecimalList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+				        <table>
+				        	<tr>
+				        		<td>
+				        			<mcl:money value="#{item.bigDecimalDeFilter}" />
+				        		</td>
+				        		<td><h:outputLabel value="à" style="padding-left: 10px; padding-right: 10px" /></td>
+				        		<td>
+				        			<mcl:money value="#{item.bigDecimalAteFilter}" />
+				        		</td>
+				        	</tr>
+				        </table>
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldBooleanList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldBooleanList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+						<p:selectOneMenu value="#{item.booleanFilter}" styleClass="select">
+							<f:selectItem itemValue="#{null}" itemLabel=".: Selecione :." />
+							<f:selectItem itemValue="#{true}" itemLabel="Não" />
+							<f:selectItem itemValue="#{false}" itemLabel="Sim" />
+						</p:selectOneMenu>
+					</div>
+			    </p:dataGrid>
+			    <mcl:selectEnum value="#{cc.attrs.managedBean.reportFieldEnumList}" rendered="#{not empty cc.attrs.managedBean.reportFieldEnumList}"/>
+		    </h:panelGroup>
+		    <h:panelGroup id="filtroPanel2" rendered="#{cc.attrs.managedBean.utilizaFuncao}">
+				<p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldStringList}" columns="2" layout="grid" emptyMessage="">
+			        <f:facet name="header">
+			            Filtros
+			        </f:facet>
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{item.stringFilter}" />
+						</label>
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldDateList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldDateList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+				        <label class="input">
+							<p:calendar value="#{item.dateFilter}" pattern="dd/MM/yyyy" mask="true" locale="pt" />
+						</label>
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldIntegerList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldIntegerList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+				        <mcl:number value="#{item.integerFilter}" />
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldLongList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldLongList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+				       <mcl:number value="#{item.longFilter}" />
+					</div>
+			    </p:dataGrid>
+			    <p:dataGrid var="item" value="#{cc.attrs.managedBean.reportFieldBooleanList}" columns="2" layout="grid" emptyMessage="" rendered="#{not empty cc.attrs.managedBean.reportFieldBooleanList}">
+			        <div style="padding: 10px">
+				        <p:outputLabel value="#{item.descricao}" styleClass="label" />
+						<p:selectOneMenu value="#{item.booleanFilter}" styleClass="select">
+							<f:selectItem itemValue="#{null}" itemLabel=".: Selecione :." />
+							<f:selectItem itemValue="#{true}" itemLabel="Não" />
+							<f:selectItem itemValue="#{false}" itemLabel="Sim" />
+						</p:selectOneMenu>
+					</div>
+			    </p:dataGrid>
+		    </h:panelGroup>
+		    </h:panelGrid>
+		</fieldset>
+	
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.emitir()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Emitir" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

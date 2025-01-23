@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="cotacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="data" value="#{cc.attrs.managedBean.processo.data}" format="dd/MM/yyyy" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel value="Finalidade do Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.processo.finalidadeObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Divisão do Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.processo.divisaoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel value="Registrada por" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{sessaoMCL.operador.nome}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<p:outputPanel id="divFornecedor" rendered="#{not cc.attrs.readonly}">
+				<div class="row">
+					<section class="col col-6">
+						<mcl:inputLupa 
+							id="fornecedorSelecionado" 
+							label="Fornecedor" 
+							controller="#{fornecedorColumnsView}"
+							descricao="#{cc.attrs.managedBean.fornecedorSelecionado.codigo.toString().concat(' - ').concat(cc.attrs.managedBean.fornecedorSelecionado.razaoSocial)
+							.concat(' - Doc. ').concat(cc.attrs.managedBean.fornecedorSelecionado.numeroDocumento)
+							.concat(' - Autorizado = ').concat(cc.attrs.managedBean.fornecedorSelecionado.movimentoAutorizado ? 'Sim' : 'Não') }" 
+							value="#{cc.attrs.managedBean.fornecedorSelecionado}" 
+							listener ="#{cc.attrs.managedBean.selecionaFornecedor}"
+							update="@form"
+							required="true" 
+							lazy="true"
+							cabecalho= "Consulta de Fornecedor" />
+					</section>
+					<section class="col col-3">
+						<p:outputLabel for="excluirCotacao" value=" " styleClass="label" />
+						<p:commandLink  id="excluirCotacao" action="#{cc.attrs.managedBean.excluirCotacao()}" update="@form" styleClass="btn btn-success btn-lg" title="Exclui a cotacao do Solicitante Selecionado"
+							rendered="#{cc.attrs.managedBean.habilitaExcluirCotacao and !cc.attrs.readonly}">
+							<p:confirm header="Aviso" message="Confirma a exclusão da cotacao do Fornecedor selecionado?" />
+							<i class="fa fa-remove"></i>
+							<h:outputText value="  Excluir Cotação" />
+						</p:commandLink>
+						 <p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+							<p:commandLink value="Sim" title="Sim"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px" />
+							&#160;&#160;&#160;
+							<p:commandLink value="Não" title="Não"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px" />
+						</p:confirmDialog>
+					</section>
+				</div>
+				<section>
+					<p:panel id="cotacaoBasePanel" header="Dados comuns nas Cotações" rendered="#{!cc.attrs.readonly}">
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="dataCotacao" value="Data da Cotação" styleClass="label" />
+								<label class="input">
+									<p:calendar id="dataCotacao" required="true" style="float:left"
+										value="#{cc.attrs.managedBean.cotacaoBase.data}" 
+										pattern="dd/MM/yyyy" disabled="#{cc.attrs.readonly}"
+										mask="true" locale="pt" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<mcl:inputLupa 
+									id="condicaoPagamento" 
+									label="Condição de Pagamento"  
+									controller="#{condicaoPagamentoColumnsView}"
+									descricao="#{cc.attrs.managedBean.cotacaoBase.condicaoPagamento.descricao}"
+									value="#{cc.attrs.managedBean.cotacaoBase.condicaoPagamento}"
+									cabecalho= "Consulta de Condição Pagamento" 
+									leitura="#{cc.attrs.readonly}"
+									required="true"/>
+							</section>
+							<section class="col col-3">
+								<label class="input">
+									<mcl:number id="prazoEntrega" label="Prazo Entrega" maxValue="9999" value="#{cc.attrs.managedBean.cotacaoBase.prazoEntrega}" required="true" disabled="#{cc.attrs.readonly}" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="dataValidadeProposta" value="Validade Cotação" styleClass="label" />
+								<label class="input">
+									<p:calendar id="dataValidadeProposta" required="false" style="float:left"
+										value="#{cc.attrs.managedBean.cotacaoBase.dataValidadeProposta}" 
+										pattern="dd/MM/yyyy" disabled="#{cc.attrs.readonly}"
+										mask="true" locale="pt" />
+								</label>
+							</section>
+						</div>
+						<section>
+							<p:outputLabel for="observacao" value="Observações" styleClass="label" />
+							<label class="input">
+								<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.cotacaoBase.observacao}" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+					</p:panel>
+				</section>
+			</p:outputPanel>
+			<section>
+				<div class="row">
+					<section class="col col-3">
+						<p:outputLabel for="modo" value="Preencher por"  styleClass="label" rendered="#{!cc.attrs.readonly}" />
+						<label class="input">
+							<p:selectOneMenu  rendered="#{!cc.attrs.readonly}" id="modo" value="#{cc.attrs.managedBean.modo}" styleClass="select">
+								<f:selectItem itemLabel="Por Valor Unitário" itemValue="unitario" />
+								<p:ajax event="change" update="dtObjetos" />
+							</p:selectOneMenu>
+						</label>
+					</section>
+				</div>
+			</section>
+			<section jsf:rendered="#{!cc.attrs.readonly}" >
+				<p:dataTable id="dtObjetos" var="item" value="#{cc.attrs.managedBean.cotacaoList}" emptyMessage="Não constam registros." 
+					expandedRow="#{cc.attrs.managedBean.processo.divisaoObjeto.getDescricao() == 'LOTE'}" rowIndexVar="index">
+					<f:facet name="header">
+						Objetos de Licitação do Processo
+					</f:facet>
+					<p:column style="width: 16px">
+						<p:rowToggler rendered="#{not empty item.itemObjetoList}" />
+					</p:column>
+					<p:column headerText="Item" style="width: 50px;text-align: center">
+						<h:outputText value="#{item.objeto.item}" />
+					</p:column>
+				   	<p:column headerText="Descrição" filterBy="#{item.objeto.descricao}" filterMatchMode="contains">
+						<h:outputText value="#{item.objeto.descricao}" />
+					</p:column>
+					<p:column headerText="Exclusivo ME" style="width: 100px;text-align: center">
+						<mcl:money value="#{item.objeto.exclusivoMeDescricao}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Tipo" style="width: 80px;text-align: center">
+						<h:outputText value="#{item.objeto.tipo.descricao}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Quantidade" style="width: 100px">
+						<mcl:money value="#{item.objeto.quantidade}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Valor Unitário" style="width: 100px">
+						<h:panelGroup id="valorUnitario">
+						<h:outputText value="#{item.valorUnitario}" rendered="#{cc.attrs.managedBean.modo != 'unitario' or cc.attrs.readonly}">
+							<f:convertNumber pattern="#,##0.0000" />
+						</h:outputText>
+						<mcl:money
+								id="valorUnitarioCampo"
+								value="#{item.valorUnitario}" 
+								rendered="#{cc.attrs.managedBean.modo eq 'unitario' and !cc.attrs.readonly}" 
+								ajax="true" 
+								global="false"
+								tabindex="${index+50}"
+								decimalPlaces="4"
+								listener="#{cc.attrs.managedBean.atualizaValorTotalCotacao(item)}" 
+								update=":cotacaoDados:cotacaoForm:dtObjetos:@row(#{index})" />
+						</h:panelGroup>
+					</p:column>
+					<p:column headerText="Valor Total" style="width: 100px">
+						<h:outputText value="#{item.valorTotal}" id="valorTotal" rendered="#{cc.attrs.managedBean.modo != 'total' or cc.attrs.readonly}">
+							<f:convertNumber pattern="#,##0.0000" />
+						</h:outputText>
+						<mcl:money value="#{item.valorTotal}" rendered="#{cc.attrs.managedBean.modo eq 'total' and !cc.attrs.readonly}"
+								ajax="true" 
+								global="false"
+								tabindex="${index+50}"
+								decimalPlaces="4"
+								listener="#{cc.attrs.managedBean.atualizaValorUnitarioCotacao(item)}" 
+								update=":cotacaoDados:cotacaoForm:dtObjetos:${index}:valorUnitario" />
+					</p:column>
+					<p:column headerText="Editar" style="width: 50px;text-align: center" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditCotacao').modal('show');">
+							<f:setPropertyActionListener target="#{cc.attrs.managedBean.cotacaoSelecionada}" value="#{item}" />
+							<p:ajax update=":editCotacao:formPopupEditCotacao" />
+							<i class="fa fa-edit"></i>
+						</h:commandLink>
+					</p:column>
+					<p:rowExpansion>
+						<p:dataTable id="dtObjetosItem" var="subitem" value="#{item.itemObjetoList}"
+							reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped" 
+							styleClass="table-reflow-desktop" expandedRow="false">
+							<f:facet name="header">
+								Itens do Lote do Processo
+							</f:facet>
+							<p:column headerText="Item" style="width: 50px;text-align: center">
+								<h:outputText value="#{subitem.objeto.item}" />
+							</p:column>
+						   	<p:column headerText="Descrição" filterBy="#{subitem.objeto.descricao}" filterMatchMode="contains">
+								<h:outputText value="#{subitem.objeto.descricao}" />
+							</p:column>
+							<p:column headerText="Exclusivo ME" style="width: 100px;text-align: center">
+								<mcl:money value="#{subitem.objeto.exclusivoMeDescricao}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Tipo" style="width: 80px;text-align: center">
+								<h:outputText value="#{subitem.objeto.tipo.descricao}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Quantidade" style="width: 100px">
+								<mcl:money value="#{subitem.objeto.quantidade}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Valor Unitário" style="width: 100px">
+								<mcl:money value="#{subitem.valorUnitario}" modoConsulta="true" rendered="#{cc.attrs.managedBean.modo != 'unitario' or cc.attrs.readonly}" />
+								<mcl:money 
+										value="#{subitem.valorUnitario}" 
+										rendered="#{cc.attrs.managedBean.modo eq 'unitario' and !cc.attrs.readonly}" 
+										ajax="true" 
+										listener="#{cc.attrs.managedBean.atualizaValorTotalCotacao(subitem)}" 
+										update="cotacaoDados:cotacaoForm:dtObjetos" />
+							</p:column>
+							<p:column headerText="Valor Total" style="width: 100px">
+								<mcl:money value="#{subitem.valorTotal}" modoConsulta="true" rendered="#{cc.attrs.managedBean.modo != 'total' or cc.attrs.readonly}" />
+								<mcl:money value="#{subitem.valorTotal}" rendered="#{cc.attrs.managedBean.modo eq 'total' and !cc.attrs.readonly}"
+										ajax="true" 
+										listener="#{cc.attrs.managedBean.atualizaValorUnitarioCotacao(subitem)}" 
+										update="cotacaoDados:cotacaoForm:dtObjetos" /> 
+							</p:column>
+							<p:column headerText="Editar" style="width: 50px;text-align: center" rendered="#{!cc.attrs.readonly}">
+								<h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditCotacao').modal('show');">
+									<f:setPropertyActionListener target="#{cc.attrs.managedBean.cotacaoSelecionada}" value="#{subitem}" />
+									<p:ajax update=":editCotacao:formPopupEditCotacao" />
+									<i class="fa fa-edit"></i>
+								</h:commandLink>
+							</p:column>
+						</p:dataTable>
+					</p:rowExpansion>
+				</p:dataTable>
+			</section>
+			<section  jsf:rendered="#{cc.attrs.readonly}">
+				<p:dataTable var="item" value="#{cc.attrs.managedBean.map.entrySet().toArray()}" emptyMessage="Não constam registros.">
+					<f:facet name="header">
+						Objetos de Licitação do Processo
+					</f:facet>
+					<p:column style="width: 16px">
+						<p:rowToggler />
+					</p:column>
+					<p:column headerText="Código" style="width: 50px;text-align: center">
+						<h:outputText value="#{item.key}" />
+					</p:column>
+					<p:column headerText="Razão Social">
+						<h:outputText value="#{item.value.get(0).fornecedorRazaoSocial}" />
+					</p:column>
+					<p:column headerText="Documento">
+						<h:outputText value="#{item.value.get(0).fornecedorNumeroDocumento}" />
+					</p:column>
+					<p:column headerText="Excluir" style="vertical-align:middle;text-align:center;width:80px;">
+						<p:commandLink title="Exclui a Pesquisa de Preços COMPLETA deste Fornecedor" action="#{cc.attrs.managedBean.excluirDoFornecedor(item.key)}" styleClass="btn btn-info btn-sm">
+							<p:confirm header="Aviso" message="Confirma a exclusão da Pesquisa de Preços deste Fornecedor ?" />
+							<i class="fa fa-remove"></i>
+						</p:commandLink>
+					</p:column>
+					
+					<p:rowExpansion>
+						<p:dataTable var="subitem" value="#{item.value}"
+							reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped" 
+							styleClass="table-reflow-desktop" expandedRow="false">
+						   	<p:column headerText="Objeto">
+								<h:outputText value="#{subitem.objeto.descricao}" />
+							</p:column>
+						   	<p:column headerText="Número" style="width: 80px;text-align: right">
+								<h:outputText value="#{subitem.numero}" />
+							</p:column>
+						   	<p:column headerText="Marca" style="width: 140px">
+								<h:outputText value="#{subitem.nomeMarca}" />
+							</p:column>
+						   	<p:column headerText="Cond.Pgto." style="width: 120px">
+								<h:outputText value="#{subitem.condicaoPagamento.descricao}" />
+							</p:column>
+						   	<p:column headerText="Prazo Ent." style="width: 80px">
+								<h:outputText value="#{subitem.prazoEntrega}" />
+							</p:column>
+						   	<p:column headerText="Quantidade" style="width: 100px;text-align: right">
+								<h:outputText value="#{subitem.quantidade}" />
+							</p:column>
+						   	<p:column headerText="Valor Unitário" style="width: 100px;text-align: right">
+								<h:outputText value="#{subitem.valorUnitario}" />
+							</p:column>
+						   	<p:column headerText="Valor Total" style="width: 100px;text-align: right">
+								<h:outputText value="#{subitem.valorTotal}" />
+							</p:column>
+						   	<p:column headerText="Observação">
+								<h:outputText value="#{subitem.observacao}" />
+							</p:column>
+							
+							<p:column headerText="Excluir" style="vertical-align:middle;text-align:center;width:80px;">
+								<p:commandLink title="Exclui a Pesquisa de Preços deste Item" action="#{cc.attrs.managedBean.excluirDoItem(subitem)}" styleClass="btn btn-info btn-sm">
+									<p:confirm header="Aviso" message="Confirma a exclusão da Pesquisa de Preços deste Item deste Fornecedor ?" />
+									<i class="fa fa-remove"></i>
+								</p:commandLink>
+							</p:column>
+						</p:dataTable>
+					</p:rowExpansion>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+			<h:commandLink id="btnVoltar" value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left" immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<h:commandLink id="btnSalvar" value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly and cc.attrs.managedBean.cotacaoList.size() > 0}" onclick="$('.btn-success').attr('disabled', true);">
+				<i class="fa fa-save"></i>
+				<h:outputText value="  Salvar" />
+			</h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<p:fieldset legend="Comprovação da emergência ou inexistência de concorrência" class="fieldset-borda" style="margin-top: 100px;">
+		<section>
+			<p:outputLabel for="comprovacao" value="Trata-se de contratação com fundamento no art. 83, IX, X, XI ou XII da Instrução 02/2016?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="comprovacao" value="#{cc.attrs.managedBean.tce.trataContratacaoFundArt3Resolucao072014}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+	</p:fieldset>
+	<br/>
+</composite:implementation>
+
+</html>

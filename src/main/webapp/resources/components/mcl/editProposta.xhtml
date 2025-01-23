@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditProposta" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditProposta" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Manutenção de Proposta</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:inputSelectCondicaoPagamento id="condicaoPagamento2" label="Condição Pagamento" value="#{cc.attrs.managedBean.propostaSelecionada.condicaoPagamento}" 
+										managedBean="#{condicaoPagamentoAutocomplete}" itemLabel="#{item.descricao}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="validadeProposta2" value="Validade Proposta" />
+									<p:inputText id="validadeProposta2" value="#{cc.attrs.managedBean.propostaSelecionada.validadeProposta}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="prazoEntrega2" value="Prazo Entrega" />
+									<p:inputText id="prazoEntrega2" value="#{cc.attrs.managedBean.propostaSelecionada.prazoEntrega}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="garantia2" value="Garantia" />
+									<p:inputText id="garantia2" value="#{cc.attrs.managedBean.propostaSelecionada.garantia}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:inputSelectIndiceReajuste id="indiceReajuste" label="Índice de Reajuste" value="#{cc.attrs.managedBean.propostaSelecionada.indiceReajuste}" 
+										managedBean="#{indiceReajusteAutocomplete}" itemLabel="#{item.nome}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="status2" value="Status" />
+							        <p:selectOneMenu id="status2" value="#{cc.attrs.managedBean.propostaSelecionada.status}" styleClass="select-popup">
+							            <f:selectItems value="#{typesController.statusProposta}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							        </p:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="compativel2" value="Compatível Mercado Valor?" />
+							        <p:selectOneMenu id="compativel2" value="#{cc.attrs.managedBean.propostaSelecionada.compativel}" styleClass="select-popup">
+							            <f:selectItems value="#{typesController.compativel}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<p:outputLabel for="fonte" value="Compatível Mercado Fonte ?" styleClass="label" />
+									<label class="input">
+										<p:inputText id="fonte" value="#{cc.attrs.managedBean.propostaSelecionada.fonte}" disabled="#{cc.attrs.readonly}" />
+									</label>
+									
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<p:outputLabel for="marca" value="Marca" />
+									<p:inputText id="marca" value="#{cc.attrs.managedBean.propostaSelecionada.marca}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<p:outputLabel for="observacao" value="Observações" />
+									<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.propostaSelecionada.observacao}" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarProposta}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditProposta').modal('hide')" />
+			            	<h:outputText value="  Salvar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

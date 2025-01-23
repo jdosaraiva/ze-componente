@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:fornecedorAba="http://java.sun.com/jsf/composite/components/fornecedorAba">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="fornecedorForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<p:tabView id="tabFornecedor">
+		        <p:tab title="Formulário de Cadastro">
+					<fornecedorAba:fornecedorAbaCadastro id="fornecedorAbaCadastro" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+		        </p:tab>
+	           	<p:tab title="Dados Oficiais">
+					<fornecedorAba:fornecedorAbaDadosOficiais id="fornecedorAbaDadosOficiais" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+		        </p:tab>
+	           	<p:tab title="Contato">
+					<fornecedorAba:fornecedorAbaDadosContato id="fornecedorAbaDadosContato" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+		        </p:tab>
+	           	<p:tab title="Conta Corrente">
+					<fornecedorAba:fornecedorAbaDadosContaCorrente id="fornecedorAbaDadosContaCorrente" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+		        </p:tab>
+	           	<p:tab title="Ocorrências">
+					<fornecedorAba:fornecedorAbaDadosOcorrencia id="fornecedorAbaDadosOcorrencia" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+		        </p:tab>
+		    </p:tabView>
+	    </fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+</h:form>
+</composite:implementation>
+
+</html>	

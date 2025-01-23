@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:cadastro="http://java.sun.com/jsf/composite/components/cadastro">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="distribuicaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<p:accordionPanel id="objetoPanel" tabindex="0" activeIndex="null">
+					<p:tab title="Clique aqui para visualizar todos os dados do lote">
+						<div class="row">	
+							<section class="col col-3">
+								<p:outputLabel for="tipo" value="Tipo do Objeto" styleClass="label" />
+								<label class="input">
+									<p:inputText id="tipo" value="#{cc.attrs.managedBean.objeto.tipo.descricao}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="numero" value="Número" styleClass="label" />
+								<label class="input">
+									<p:inputText id="numero" value="#{cc.attrs.managedBean.objeto.numero}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="item" value="Item" styleClass="label" />
+								<label class="input">
+									<p:inputText id="item" value="#{cc.attrs.managedBean.objeto.item}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<mcl:money id="valor" label="Valor" value="#{cc.attrs.managedBean.objeto.valor}" disabled="true" />
+							</section>
+						</div>
+						<div class="row">	
+							<section class="col col-3">
+								<p:outputLabel for="quantidadePropostas" value="Quantidade Propostas" styleClass="label" />
+								<label class="input">
+									<p:inputText id="quantidadePropostas" value="#{cc.attrs.managedBean.objeto.quantidadePropostas}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="exclusivoMe" value="Exclusivo para M.E.?" styleClass="label" />
+								<label class="input">
+									<p:inputText id="exclusivoMe" value="#{cc.attrs.managedBean.objeto.exclusivoMe ? 'Sim' : 'Não'}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-6">
+								<p:outputLabel for="descricao" value="Descrição do Lote" styleClass="label" />
+								<label class="input">
+									<p:inputText id="descricao" value="#{cc.attrs.managedBean.objeto.descricao}" disabled="true" />
+								</label>
+							</section>
+						</div>
+						<section>
+							<p:outputLabel for="observacoes" value="Observações" styleClass="label" />
+							<label class="input">
+								<p:inputText id="observacoes" value="#{cc.attrs.managedBean.objeto.observacoes}" disabled="true" />
+							</label>
+						</section>
+						<section>
+							<p:outputLabel for="vencedor" value="Vencedor" styleClass="label" />
+							<label class="input">
+								<p:inputText id="vencedor" value="#{cc.attrs.managedBean.objeto.fornecedorRazaoSocial}" disabled="true" />
+							</label>
+						</section>
+					</p:tab>
+				</p:accordionPanel>
+			</section>
+		</fieldset>
+		<header>
+			Objetos deste Lote
+		</header>
+		<fieldset>
+			<section>
+				<h:panelGroup id="panelValorSomado" styleClass="float-left">
+				<table style="width:100%">
+					<tr>
+						<td style="text-align: right"><h:outputLabel value="Total:" /></td>
+						<td width="50px">
+							<div style="text-align:right;color:red"  jsf:rendered="#{cc.attrs.managedBean.valorSomado.compareTo(cc.attrs.managedBean.objeto.valor) lt 0}">
+								<h:outputLabel value="#{cc.attrs.managedBean.valorSomado}">
+									<f:convertNumber pattern="#,##0.00" />
+								</h:outputLabel>
+							</div>
+							<div style="text-align:right;color:blue" jsf:rendered="#{cc.attrs.managedBean.valorSomado.compareTo(cc.attrs.managedBean.objeto.valor) ge 0}">
+								<h:outputLabel value="#{cc.attrs.managedBean.valorSomado}">
+									<f:convertNumber pattern="#,##0.00" />
+								</h:outputLabel>
+							</div>
+						</td>
+					</tr>
+				</table>
+				</h:panelGroup>
+			</section>
+			<section>
+				<p:dataTable id="dtItem" var="item" value="#{cc.attrs.managedBean.itensList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop" rowIndexVar="index">
+				    <p:column headerText="Item" style="text-align: center; width: 70px">
+				        <h:outputText value="#{item.item}" />
+				    </p:column>
+				    <p:column headerText="Número" style="text-align: right; width: 70px">
+				        <h:outputText value="#{item.numero}" />
+				    </p:column>
+				    <p:column headerText="Descrição">
+				        <h:outputText value="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Quantidade" style="text-align: right; width: 70px">
+				        <mcl:money value="#{item.quantidade}" modoConsulta="true" rendered="#{item.tipoRequisicao ne 'CATALOGO'}" />
+				    </p:column>
+				    <p:column headerText="Unidade" style="width: 70px">
+				        <h:outputText value="#{item.unidade}" rendered="#{item.tipoRequisicao ne 'CATALOGO'}" />
+				    </p:column>
+				    <p:column headerText="Valor Unitário" style="text-align: center; width: 120px" rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+				        <mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor Total" style="text-align: center; width: 120px" rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+				    	<mcl:money 
+				    		value="#{item.valor}"
+				    		ajax="true"
+				    		global="false"
+				    		tabindex="${index+50}"
+				    		listener="#{cc.attrs.managedBean.calcularValoresTotal}"
+				    		update="distribuicaoValorLoteDistDados:distribuicaoForm:panelValorSomado, distribuicaoValorLoteDistDados:distribuicaoForm:btoSalvar" />
+				    </p:column>
+				    <p:column headerText="Desc. %" style="text-align: center; width: 120px" rendered="#{cc.attrs.managedBean.processo.maiorDesconto}">
+				    	<mcl:money 
+				    		value="#{item.percentualDesconto}"
+				    		ajax="true"
+				    		global="false"
+				    		maxValue="99.99" 
+				    		tabindex="${index+50}"
+				    		listener="#{cc.attrs.managedBean.acumularPercentual}"
+				    		update="distribuicaoValorLoteDistDados:distribuicaoForm:panelValorSomado, distribuicaoValorLoteDistDados:distribuicaoForm:btoSalvar" />
+				    </p:column>
+				    <p:column headerText="Status" style="text-align: center; width: 70px">
+				        <h:outputText value="#{item.status.descricao}" />
+				    </p:column>
+				    <p:column headerText="Excluir" style="vertical-align:middle;text-align:center;width:100px;">
+			            <p:commandLink title="Excluir" action="#{cc.attrs.managedBean.excluirIndividual(item)}"
+			            	update="dtItem" styleClass="btn btn-info btn-sm" rendered="#{item.status eq 'DISTRIBUIDO'}">
+			            	<p:confirm header="Aviso" message="Confirma a exclusão?" />
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			        </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltarDist()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            <p:commandLink id="btoSalvar" title="Salvar somente após TODOS itens deste Lote possuirem valores corretos!" action="#{cc.attrs.managedBean.salvar()}" 
+				styleClass="btn btn-success btn-sm" rendered="#{not cc.attrs.readonly}">
+            	<p:confirm header="Aviso" message="#{cc.attrs.managedBean.textoConfirm}" disabled="#{not cc.attrs.managedBean.exibeConfirm}" />
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </p:commandLink>
+		</footer>
+		
+		<p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+            <p:commandLink value="Sim" title="Sim"
+                styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+            </p:commandLink>
+            &#160;&#160;&#160;
+            <p:commandLink value="Não" title="Não"
+                styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+            </p:commandLink>
+        </p:confirmDialog>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

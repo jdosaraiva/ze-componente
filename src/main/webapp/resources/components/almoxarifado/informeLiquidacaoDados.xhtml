@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="informeLiquidacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<p:inputText value="#{cc.attrs.managedBean.documentoFiscal.fornecedorRazaoSocial}" readonly="true" />
+			</section>
+			
+			<div class="row">	
+				<section class="col col-3">
+					<mcl:number id="numeroDocumento" label="Número Documento Fiscal"  value="#{cc.attrs.managedBean.documentoFiscal.numeroDocumento}" readonly="true" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ufDocumento" value="U.F. Documento Fiscal" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ufDocumento" value="#{cc.attrs.managedBean.documentoFiscal.ufDocumento}" readonly="true" />
+					</label>
+					 
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorTotalDocumento" label="Valor Total Documento" value="#{cc.attrs.managedBean.documentoFiscal.valorTotalDocumento}" decimalPlaces="4"  readonly="true" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="dataEmissaoDocumento" value="Data Emissão Documento" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataEmissaoDocumento" style="float:left"
+									value="#{cc.attrs.managedBean.documentoFiscal.dataEmissaoDocumento}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataEntrada" value="Data Entrada" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataEntrada" style="float:left"
+									value="#{cc.attrs.managedBean.documentoFiscal.dataEntrada}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+				<p:outputLabel value="Registrada por" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{sessaoMCL.operador.nome}" readonly="true" />
+					</label>
+				</section>
+			
+				
+			</div>
+			<section >
+				<p:dataTable id="dtItem" var="item" value="#{cc.attrs.managedBean.empenhoList}" 
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+				    <f:facet name="header">Empenhos utilizados neste Recebimento</f:facet>
+				    <p:column headerText="Número" style="width: 100px; text-align: center">
+				    	<mcl:number value="#{item.numero}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Ano" style="width: 100px; text-align: center">
+				    	<mcl:number value="#{item.ano}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor" style="width: 90px">
+				    	<mcl:money value="#{item.valor}" modoConsulta="true" />
+				    </p:column>
+				    
+				        
+				</p:dataTable>	
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="value" required="true" />
+	<composite:attribute name="nomeCampo" type="java.lang.Boolean" default="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<p:dataGrid var="item" value="#{cc.attrs.value}" columns="2" layout="grid" emptyMessage="" style="border: 0 !important">
+        <div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.Compativel'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.compativelFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.compativel}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.AcaoMaterial'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.acaoMaterialFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.acaoMaterial}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoServicoEngenharia2'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoServicoEngenharia2Filter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoServicoEngenharia2}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoServicoEngenharia1'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoServicoEngenharia1Filter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoServicoEngenharia1}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoReservaOperacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoReservaOperacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoReservaOperacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoReserva'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoReservaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoReserva}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoParticipacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoParticipacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoParticipacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoObraServico'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoObraServicoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoObraServico}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoObjeto'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoObjetoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoObjeto}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoMovimentoEstoque'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoMovimentoEstoqueFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoMovimentoEstoque}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoLicitacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoLicitacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoLicitacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoItemRequisicaoCompra'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoItemRequisicaoCompraFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoItemRequisicaoCompra}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoGarantia'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoGarantiaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoGarantia}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoEmpresa'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoEmpresaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoEmpresa}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoEmpenho'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoEmpenhoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoEmpenho}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoDocumento'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoDocumentoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoDocumento}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoAtualizacaoRequisicao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoAtualizacaoRequisicaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoAtualizacaoRequisicao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoAnexoProcesso'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoAnexoProcessoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoAnexoProcesso}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusRequisicaoCompra'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusRequisicaoCompraFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusRequisicaoCompra}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusRegistroPrecos'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusRegistroPrecosFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusRegistroPrecos}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusProposta'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusPropostaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusProposta}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusProcesso'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusProcessoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusProcesso}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusPedido'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusPedidoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusPedido}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusObjeto'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusObjetoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusObjeto}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusMaterial'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusMaterialFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusMaterial}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusLicitante'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusLicitanteFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusLicitante}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusItemRequisicaoCompra'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusItemRequisicaoCompraFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusItemRequisicaoCompra}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusItemRequisicao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusItemRequisicaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusItemRequisicao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusItemPedido'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusItemPedidoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusItemPedido}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusItemAf'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusItemAfFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusItemAf}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusFornecedor'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusFornecedorFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusFornecedor}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusContato'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusContatoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusContato}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusAf'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusAfFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusAf}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.Status'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.status}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.Situacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.situacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.situacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.PontuacaoOcorrencia'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.pontuacaoOcorrenciaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.pontuacaoOcorrencia}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.OpcaoJulgamento'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.opcaoJulgamentoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.opcaoJulgamento}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.ObjetoTipo'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.objetoTipoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.objetoTipo}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.ObjetoLicitacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.objetoLicitacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.objetoLicitacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.NaturezaObjeto'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.naturezaObjetoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.naturezaObjeto}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.NaturezaLicitacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.naturezaLicitacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.naturezaLicitacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.ModalidadePregao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.modalidadePregaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.modalidadePregao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.ModalidadeLicitacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.modalidadeLicitacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.modalidadeLicitacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.Genero'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.generoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.genero}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.DivisaoObjeto'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.divisaoObjetoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.divisaoObjeto}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.DiferencaLancesTipo'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.diferencaLancesTipoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.diferencaLancesTipo}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.CriterioJulgamento'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.criterioJulgamentoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.criterioJulgamento}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.CriterioClassificacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.criterioClassificacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.criterioClassificacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.CondicaoParticipacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.condicaoParticipacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.condicaoParticipacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.BeneficioLei1232006'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.beneficioLei1232006Filter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.beneficioLei1232006}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.AtribuicaoIntegrante'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.atribuicaoIntegranteFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.atribuicaoIntegrante}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.AditamentoTipo'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.aditamentoTipoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.aditamentoTipo}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.AditamentoMovimentoTipo'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.aditamentoMovimentoTipoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.aditamentoMovimentoTipo}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoResponsavel'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoResponsavelFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoResponsavel}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoPublicacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoPublicacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoPublicacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoXML'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoXMLFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoXML}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoParametro'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoParametroFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoParametro}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoLicencaAmbiental'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoLicencaAmbientalFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoLicencaAmbiental}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoExecucao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoExecucaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoExecucao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoEntidade'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoEntidadeFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoEntidade}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoContratacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoContratacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoContratacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoComissao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoComissaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoComissao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoAditivo'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoAditivoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoAditivo}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusMedicao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusMedicaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusMedicao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusMaterialManutencao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusMaterialManutencaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusMaterialManutencao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusItemRegistroPrecos'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusItemRegistroPrecosFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusItemRegistroPrecos}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.PublicacaoVeiculo'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.publicacaoVeiculoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.publicacaoVeiculo}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.PropostaAcao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.propostaAcaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.propostaAcao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.ProcessoSelecao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.processoSelecaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.processoSelecao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusDestino'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusDestinoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusDestino}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.StatusAlmoxarifado'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.statusAlmoxarifadoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.statusAlmoxarifado}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.SituacaoAjuste'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.situacaoAjusteFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.situacaoAjuste}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.ResultadoRecurso'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.resultadoRecursoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.resultadoRecurso}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.RegimeExecucao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.regimeExecucaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.regimeExecucao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.OrigemAcao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.origemAcaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.origemAcao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.ObraParalisada'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.obraParalisadaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.obraParalisada}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.RegimeContratacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.regimeContratacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.regimeContratacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.LicitacaoSituacao'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.licitacaoSituacaoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.licitacaoSituacao}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.Instrumento'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.instrumentoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.instrumento}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.InexecucaoContrato'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.inexecucaoContratoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.inexecucaoContrato}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.IndiceFrequencia'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.indiceFrequenciaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.indiceFrequencia}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.IndiceEconomico'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.indiceEconomicoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.indiceEconomico}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.NaturezaCargo'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.naturezaCargoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.naturezaCargo}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.FundamentoLegal'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.fundamentoLegalFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.fundamentoLegal}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.Funcionalidade'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.funcionalidadeFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.funcionalidade}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.FormaRecebimento'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.formaRecebimentoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.formaRecebimento}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.FonteRecurso'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.fonteRecursoFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.fonteRecurso}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.EmpenhoTipoTce'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.empenhoTipoTceFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.empenhoTipoTce}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.EspecieDespesa'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.especieDespesaFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.especieDespesa}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+		<div style="padding: 10px" jsf:rendered="#{item.tipo eq 'br.com.conam.mcl.enumeration.TipoDocumentoMovimentoEstoque'}">
+	        <p:outputLabel value="#{cc.attrs.nomeCampo ? item.descricao : 'Valor Inicial'}" styleClass="label" />
+			<p:selectOneMenu value="#{item.tipoDocumentoMovimentoEstoqueFilter}" styleClass="select">
+				<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+				<f:selectItems value="#{typesController.tipoDocumentoMovimentoEstoque}" var="selectItem" itemLabel="#{selectItem.descricao}" itemValue="#{selectItem}" />
+				<p:ajax event="change" process="@this" global="false" />
+			</p:selectOneMenu>
+		</div>
+    </p:dataGrid>
+</composite:implementation>
+
+</html>

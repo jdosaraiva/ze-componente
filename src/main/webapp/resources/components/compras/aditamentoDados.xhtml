@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="aditamentoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6" >
+						<mcl:inputLupa 
+							id="processo" 
+							label="Processo" 
+							controller="#{processoColumnsView}"
+							descricao="#{cc.attrs.managedBean.processoSelecionado.numero.toString().concat(' / ').concat(cc.attrs.managedBean.processoSelecionado.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.processoSelecionado.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.processoSelecionado.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.processoSelecionado.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.processoSelecionado.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.processoSelecionado.status.descricao)}" 
+							value="#{cc.attrs.managedBean.processoSelecionado}" 
+							required="true" 
+							listener="#{cc.attrs.managedBean.carregarDadosEditar()}" 
+							update=":aditamentoDados:aditamentoForm:fornecedorPanel :aditamentoDados:aditamentoForm:objeto :aditamentoDados:aditamentoForm:descricaoObjeto" 
+							cabecalho= "Consulta de Processo" />
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="descricaoObjeto" value="Descrição do Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricaoObjeto" value="#{cc.attrs.managedBean.aditivo.processo.descricaoObjeto}" readonly="true" />
+					</label>
+				</section>
+			</div>
+		
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="tipo" value="Tipo" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="tipo" value="#{cc.attrs.managedBean.aditivo.tipo}" required="true" styleClass="select" >
+				            <f:selectItems value="#{typesController.getAditamentoAlteracaoProcessoTipoVisivel()}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				            <p:ajax event="change" update="objetoPanel" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<h:panelGroup id="fornecedorPanel">
+					<section class="col col-6">
+						<p:outputLabel for="fornecedor" value="Fornecedor" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="fornecedor" value="#{cc.attrs.managedBean.fornecedorSelecionadoDTO}" required="true" 
+					        	 styleClass="select" filter="true" filterMatchMode="contains">
+					            <f:selectItem itemLabel=".: Selecione um Fornecedor Vencedor:." itemValue="" />
+					            <f:selectItems value="#{cc.attrs.managedBean.vencedorList}" var="item" itemLabel="#{item.razaoSocial}" itemValue="#{item}"/>
+					        	<p:ajax listener="#{cc.attrs.managedBean.selecionarFornecedor()}" update="aditamentoDados:aditamentoForm:objetoPanel, fornecedorPanel" event="change" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</h:panelGroup>
+			</div>
+			<div class="row">
+			
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.aditivo.data}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt"
+									disabled="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+				</section>
+			
+				<section  class="col col-6">
+					<p:outputLabel for="operador" value="Registrado por" styleClass="label" />
+					<label class="input">
+						<p:inputText id="operador" value="#{cc.attrs.managedBean.aditivo.operador}" readonly="true"  />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="objeto" value="Objeto" styleClass="label" />
+				<label class="input">
+					<p:inputText id="objeto" value="#{cc.attrs.managedBean.aditivo.objeto}" readonly="true"  />
+				</label>
+			</section>
+			
+			<h:panelGroup id="objetoPanel">
+				<section jsf:rendered="#{cc.attrs.managedBean.aditivo.tipo eq 'APOSTILAMENTO'}">
+					<p:dataTable id="dtObjetos" var="item" value="#{cc.attrs.managedBean.objetosFornecedorList}"
+						reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						styleClass="table-reflow-desktop">
+						<f:facet name="header">Objetos</f:facet>
+						<p:column headerText="Item" style="width: 60px">
+				           	<h:outputText value="#{item.item}" />
+				        </p:column>
+				        <p:column headerText="Número" style="width: 80px">
+				           	<h:outputText value="#{item.numero}" />
+				        </p:column>
+				        <p:column headerText="Contrato" style="width: 80px">
+				           	<h:outputText value="#{item.contrato.numero}/#{item.contrato.ano}" rendered="#{item.contrato.numero > 0}"/>
+				        </p:column>
+				        <p:column headerText="Descrição">
+				           	<h:outputText value="#{item.descricao}" />
+				        </p:column>
+				        <p:column headerText="Quantidade" style="width: 80px">
+				        	<mcl:money value="#{cc.attrs.managedBean.obterQuantidadeReceber(item)}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Valor Unitário" style="width: 100px">
+			           		<mcl:money value="#{cc.attrs.managedBean.obterValorItemServicoApostilamento(item)}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Valor Total" style="width: 100px">
+			           		<mcl:money value="#{cc.attrs.managedBean.obterValorApostilamentoReceber(item)}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Vlr Unit Apostilar" style="width: 100px">
+			           		<mcl:money value="#{item.valorAditar}" decimalPlaces="4"/>
+				        </p:column>
+					</p:dataTable>
+				</section>
+				<section jsf:rendered="#{cc.attrs.managedBean.aditivo.tipo eq 'ADITAMENTO'}">
+					<p:dataTable id="dtObjeto" var="item" value="#{cc.attrs.managedBean.objetosFornecedorList}"
+						reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						styleClass="table-reflow-desktop">
+						<f:facet name="header">Objetos</f:facet>
+						<p:column headerText="Item" style="width: 80px">
+				           	<h:outputText value="#{item.item}" />
+				        </p:column>
+						<p:column headerText="Contrato" style="width: 80px; text-align: center">
+				           	<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}" rendered="#{item.contrato.numero > 0}"/>
+				        </p:column>
+				        <p:column headerText="Número" style="width: 80px">
+				           	<h:outputText value="#{item.numero}" />
+				        </p:column>
+				        <p:column headerText="Descrição">
+				           	<h:outputText value="#{item.descricao}" />
+				        </p:column>
+				        <p:column headerText="Quantidade" style="width: 100px">
+				        	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Valor Unitário" style="width: 100px">
+			           		<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Valor Total" style="width: 100px">
+			           		<mcl:money value="#{item.valor}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Movimento" style="width: 120px">
+				        	<label class="input">
+				           		<p:selectOneMenu value="#{item.tipoMovimentoAditamento}" styleClass="select" >
+						            <f:selectItems value="#{typesController.aditamentoMovimentoTipo}" var="var" itemLabel="#{var.descricao}" itemValue="#{var}"/>
+			        				<p:ajax global="false" process="@this" />
+						        </p:selectOneMenu>
+					    	</label>
+				        </p:column>
+				        <p:column headerText="Aditar" style="width: 80px; text-align: center">
+			           		<h:commandLink value="" onclick="javascript: $('#popupEditAditamento').modal('show');" styleClass="btn btn-primary btn-sm">
+					           	<f:setPropertyActionListener target="#{cc.attrs.managedBean.objetoSelecionado}" value="#{item}" />
+			        			<p:ajax update=":editAditamento:formPopupAditamento" />
+					           	<i class="fa fa-plus"></i>
+					        </h:commandLink>
+				        </p:column>
+					</p:dataTable>
+				</section>
+			</h:panelGroup>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltarAditamento()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.salvarAditamento()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

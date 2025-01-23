@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="requisicaoCompraForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<h:panelGroup id="panelRegistroPrecos" >
+				
+					<section class="col col-6">
+						<mcl:inputLupa 
+								id="registroPrecos" 
+								label="Registro de Preços" 
+								controller="#{registroPrecoColumnsView}"
+								descricao="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos.numero.toString().concat(' / ').concat(cc.attrs.managedBean.requisicaoCompra.registroPrecos.ano)
+								.concat(' - ').concat(cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.modalidade.descricao)
+								.concat(' ').concat(cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.numeroLicitacao)
+								.concat(' / ').concat(cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.anoLicitacao)
+								.concat(' - ').concat(cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.status.descricao)}" 
+								value="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos}" 
+								leitura="#{cc.attrs.managedBean.requisicaoCompra.id != null or cc.attrs.managedBean.isPossuiItem == true}"
+								listener="#{cc.attrs.managedBean.filtraMaterialServicoPorRegistroPreco(false)}"
+								update="requisicaoCompraDados:requisicaoCompraForm, requisicaoCompraDados:requisicaoCompraForm:dtItemRequisicao" 
+								cabecalho= "Consulta de Registro de Preços" /> 
+					</section>
+				</h:panelGroup>
+				<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos == null}">
+						<mcl:inputLupa 
+							id="orgao" 
+							label="Órgão - Geral" 
+							controller="#{orgaoColumnsView}"
+							descricao="#{cc.attrs.managedBean.orgaoDTO.codigoCompleto.concat(' - ').concat(cc.attrs.managedBean.orgaoDTO.descricao)}" 
+							value="#{cc.attrs.managedBean.orgaoDTO}" 
+							leitura="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and cc.attrs.managedBean.requisicaoCompra.id != null}"
+							listener="#{cc.attrs.managedBean.filtraMaterialServicoPorRegistroPreco(true)}"
+							update="requisicaoCompraDados:requisicaoCompraForm:dtItemRequisicao" 
+							required="true" 
+							lazy="true"
+							cabecalho= "Consulta de Órgãos" />
+				</section>
+				<h:panelGroup id="panelOrgao2" >
+					<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.maiorDesconto == false}">
+						<div jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null}">
+							<p:outputLabel for="orgao2" value="Órgão (participante do Registro de Preço)"/>
+					        <p:selectOneMenu id="orgao2" value="#{cc.attrs.managedBean.orgaoDTO}" required="true" styleClass="select-popup" 
+					        	disabled="#{cc.attrs.managedBean.requisicaoCompra.id != null or cc.attrs.managedBean.isPossuiItem == true}">
+					        	<f:selectItem itemLabel=".: Selecione :." />
+					            <f:selectItems value="#{cc.attrs.managedBean.orgaoList}" var="item" itemLabel="#{item.codigoCompleto.concat(' - ').concat(item.descricao)}" itemValue="#{item}"/>
+					            <p:ajax event="change" listener="#{cc.attrs.managedBean.filtraMaterialServicoPorRegistroPreco(false)}" 
+					            	update="requisicaoCompraDados:requisicaoCompraForm:dtItemRequisicao" process="orgao2" />
+					        </p:selectOneMenu>
+				        </div>
+					</section>
+					
+					<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.maiorDesconto == true}">
+							<mcl:inputLupa 
+								id="orgaoMaiorDesconto" 
+								label="Órgão - Maior Desconto" 
+								controller="#{orgaoColumnsView}"
+								descricao="#{cc.attrs.managedBean.orgaoDTO.codigoCompleto.concat(' - ').concat(cc.attrs.managedBean.orgaoDTO.descricao)}" 
+								value="#{cc.attrs.managedBean.orgaoDTO}" 
+								leitura="#{cc.attrs.managedBean.requisicaoCompra.id != null}"
+								listener="#{cc.attrs.managedBean.filtraMaterialServicoPorRegistroPreco(true)}"
+								update="requisicaoCompraDados:requisicaoCompraForm:dtItemRequisicao" 
+								required="true" 
+								lazy="true"
+								cabecalho= "Consulta de Órgãos - Maior Desconto" />
+					</section>
+					
+					
+					
+					
+				</h:panelGroup>
+			</div>
+			<div class="row">
+				<section class="col col-3" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.id != null}">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.requisicaoCompra.numero}" disabled="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" style="float:left"
+							value="#{cc.attrs.managedBean.requisicaoCompra.data}" 
+							required="true" 
+							pattern="dd/MM/yyyy"
+							mask="true"
+							disabled="true"
+							locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+			        <p:outputLabel for="tipoObjeto" value="Tipo Objeto" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="tipoObjeto" value="#{cc.attrs.managedBean.requisicaoCompra.tipoObjeto}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.tipoObjeto}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				            <p:ajax process="@this" global="false" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+			        <p:outputLabel for="tipoExecucao" value="Tipo Execução" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="tipoExecucao" value="#{cc.attrs.managedBean.requisicaoCompra.tipoExecucao}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.tipoExecucao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="almoxarifado" 
+						label="Almoxarifado" 
+						controller="#{almoxarifadoColumnsView}"
+						descricao="#{cc.attrs.managedBean.requisicaoCompra.almoxarifado.nome}"
+						value="#{cc.attrs.managedBean.requisicaoCompra.almoxarifado}"
+						cabecalho="Consulta de Almoxarifado" 
+						required="true" 
+						leitura="#{cc.attrs.readonly}" />
+				</section>
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="destino" 
+						label="Destino" 
+						controller="#{destinoColumnsView}"
+						descricao="#{cc.attrs.managedBean.requisicaoCompra.destino.nome}"
+						value="#{cc.attrs.managedBean.requisicaoCompra.destino}"
+						cabecalho="Consulta de Destino" 
+						required="true" 
+						parametroConsulta="#{cc.attrs.managedBean.destinoFiltro}"
+						leitura="#{cc.attrs.readonly}" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="requisitante" value="Requisitante" styleClass="label" />
+					<label class="input">
+						<p:inputText id="requisitante" value="#{cc.attrs.managedBean.requisicaoCompra.requisitante}" required="true" readonly="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				
+				<section class="col col-3">
+					<mcl:number id="numeroReqOrigem" label="No. Requisição Origem" value="#{cc.attrs.managedBean.requisicaoCompra.numeroReqOrigem}" disabled="#{cc.attrs.readonly}" />
+				</section>
+				<section class="col col-3">
+					<mcl:number id="anoReqOrigem" label="Ano" value="#{cc.attrs.managedBean.requisicaoCompra.anoReqOrigem}" disabled="#{cc.attrs.readonly}" />
+				</section>
+			</div>
+			<section>
+				<mcl:inputLupa 
+					id="localEntrega" 
+					label="Local Entrega" 
+					controller="#{localEntregaColumnsView}"
+					descricao="#{cc.attrs.managedBean.requisicaoCompra.localEntrega.descricao}"
+					value="#{cc.attrs.managedBean.requisicaoCompra.localEntrega}"
+					cabecalho="Consulta de Local de Entrega" 
+					required="false" 
+					leitura="#{cc.attrs.readonly}" />
+			</section>
+			<section>
+				<p:outputLabel for="observacao" value="Observações" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.requisicaoCompra.observacao}" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</fieldset>
+		<header>
+			Itens de Requisição de Compra
+		</header>
+		<fieldset>
+			<!-- <section jsf:rendered="#{!cc.attrs.readonly and cc.attrs.managedBean.orgaoDTO != null}">   --> 
+			<section jsf:rendered="#{!cc.attrs.readonly}">
+				<h:commandLink id="btnAddItem" value="" onclick="javascript: $('#popupEditItemRequisicao').modal('show');" styleClass="btn btn-primary btn-sm">
+		           	<p:ajax listener="#{cc.attrs.managedBean.novoItemRequisicao}" update=":editItemRequisicaoCompra:formPopupEditItemRequisicao" />
+		           	<i class="fa fa-plus"></i>
+		           	<h:outputText value="  Adicionar Item" />
+		        </h:commandLink>
+			</section>
+			<section>
+				<p:dataTable id="dtItemRequisicao" var="item" value="#{cc.attrs.managedBean.requisicaoCompra.itemRequisicaoCompraList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+				    <p:column headerText="Item" style="width: 60px">
+				    	<h:outputText value="#{item.item}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Qt. Inicial" style="width: 100px">
+				    	<mcl:money value="#{item.quantidadeInicial}" modoConsulta="true" decimalPlaces="4"/>
+				    </p:column>
+				    <p:column headerText="Qt. Aprovada" style="width: 100px">
+				    	<mcl:money value="#{item.quantidadeAprovada}" modoConsulta="true" decimalPlaces="4" />
+				    </p:column>
+				    <p:column headerText="Unidade" style="width: 100px">
+				        <h:outputText value="#{item.material != null ? item.material.unidade.nome : item.servico.unidade.nome}" />
+				    </p:column>
+				    <p:column headerText="Valor Unitário" style="width: 120px">
+				    	<mcl:money value="#{item.valorUnitario}" modoConsulta="true" decimalPlaces="4" />
+				    </p:column>
+				    <p:column headerText="Objeto">
+				        <h:outputText value="#{item.catalogoMateriais.descricao}" title="#{item.catalogoMateriais.descricao}" rendered="#{item.catalogoMateriais != null and item.material == null}" />
+				        <h:outputText value="#{item.material.descricao}" title="#{item.material.descricao}" rendered="#{item.tipo == 'CATALOGO' and item.material != null or item.tipo == 'MATERIAL'}" />
+				        <h:outputText value="#{item.servico.descricao}" title="#{item.servico.descricao}" rendered="#{item.tipo != 'MATERIAL'}" />
+				    </p:column>
+				    <p:column headerText="Concluído" style="text-align:center; width: 100px">
+				        <h:outputText value="#{item.concluido ? 'Sim' : 'Não'}" />
+				    </p:column>
+				    <p:column headerText="Status" style="text-align:center; width: 100px">
+				        <h:outputText value="#{item.status.descricao}" />
+				    </p:column>
+				    <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+			            <h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditItemRequisicao').modal('show');" 
+			            	rendered="#{null == item.itemRegistroPrecos}" >
+			        		<p:ajax listener="#{cc.attrs.managedBean.editarItemRequisicao(item)}" update=":editItemRequisicaoCompra:formPopupEditItemRequisicao" />
+			            	<i class="fa fa-edit"></i>
+			            </h:commandLink>
+			            &#160;
+			            <h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerItemRequisicao(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax update=":requisicaoCompraDados:requisicaoCompraForm:dtItemRequisicao 
+			            					:requisicaoCompraDados:requisicaoCompraForm:panelRegistroPrecos 
+			            					:requisicaoCompraDados:requisicaoCompraForm:panelOrgao2" />
+			            	<i class="fa fa-trash-o"></i>
+			            </h:commandLink>
+			        </p:column>
+				</p:dataTable>	
+			</section>
+		</fieldset>
+		<ui:fragment rendered="#{cc.attrs.readonly}">
+			<fieldset>
+				<div class="row">
+					<section class="col col-3">
+						<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+						<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+							<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</section>
+				</div>
+				<p:commandLink value="Gerar Relatorio Itens" actionListener="#{cc.attrs.managedBean.gerar}" styleClass="btn btn-success btn-lg" ajax="false" />
+			</fieldset>
+		</ui:fragment>
+
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+
+</composite:implementation>
+
+</html>	

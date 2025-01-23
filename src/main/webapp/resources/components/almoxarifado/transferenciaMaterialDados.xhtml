@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="transferenciaMaterialForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="materialSaida" 
+						label="Material de Saída (será inativado)"  
+						controller="#{materialColumnsView}"
+						descricao="#{cc.attrs.managedBean.materialSaida.codigo.toString().concat(' - ').concat(cc.attrs.managedBean.materialSaida.descricao)}"
+						value="#{cc.attrs.managedBean.materialSaida}"
+						cabecalho= "Consulta de Material" 
+						laitura="#{cc.attrs.readonly}" 
+			      		required="true"
+			      		update="transferenciaMaterialDados:transferenciaMaterialForm:materialPanel"/>
+				</section>
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="materialEntrada" 
+						label="Material de Destino"  
+						controller="#{materialEntradaColumnsView}"
+						descricao="#{cc.attrs.managedBean.materialEntrada.codigo.toString().concat(' - ').concat(cc.attrs.managedBean.materialSaida.descricao)}"
+						value="#{cc.attrs.managedBean.materialEntrada}"
+						cabecalho= "Consulta de Material" 
+						laitura="#{cc.attrs.readonly}" 
+			      		required="true"/>
+				</section>
+			</div>
+			
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel value="Transferido por" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.operador.nome}" readonly="true" />
+						</label>
+				</section>
+				<section class="col col-3">
+					<mcl:number id="numeroDocumento" label="Número Documento (Guia de Transferência)" value="#{cc.attrs.managedBean.numeroDocumento}" required="false" readonly="true" />
+				</section>
+			</div>
+			
+			<p:panel id="materialPanel" header="Dados do Material de Origem (saída)">
+				<div class="row">
+					<section class="col col-4">
+						<mcl:money id="saldoAtual" label="Saldo Atual" value="#{cc.attrs.managedBean.materialSaida.saldoAtual}" readonly="true" />
+					</section>
+					<section class="col col-4">
+						<mcl:money id="valorUnitario" label="Valor Unitário" value="#{cc.attrs.managedBean.materialSaida.valorUnitario}" readonly="true" />
+					</section>
+					<section class="col col-4">
+						<mcl:money id="valorTotal" label="Valor Total" value="#{cc.attrs.managedBean.materialSaida.valorTotal}" readonly="true" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-4">
+						<mcl:money id="saldoAnterior" label="Saldo Anterior" value="#{cc.attrs.managedBean.materialSaida.saldoAnterior}" readonly="true" />
+					</section>
+					<section class="col col-4">
+						<mcl:money id="valorUnitarioAnterior" label="Valor Unitário Anterior" value="#{cc.attrs.managedBean.materialSaida.valorUnitarioAnterior}" readonly="true" />
+					</section>
+					<section class="col col-4">
+						<mcl:money id="valorTotalAnterior" label="Valor Total Anterior" value="#{cc.attrs.managedBean.materialSaida.valorTotalAnterior}" readonly="true" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-4">
+						<p:outputLabel value="Família" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.materialSaida.familia.nome}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-4">
+						<p:outputLabel value="Unidade" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.materialSaida.unidade.nome}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-4">
+						<p:outputLabel value="Plano Conta Contábil" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.materialSaida.planoContaContabil.codigo.toString().concat(' - ').concat(cc.attrs.managedBean.materialSaida.planoContaContabil.nome)}" readonly="true" />
+						</label>
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-4">
+						<p:outputLabel value="Validade ?" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.materialSaida.validade == null ? '' : cc.attrs.managedBean.materialSaida.validade ? 'Sim' : 'Não'}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-4">
+						<p:outputLabel value="Incorporável ?" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.materialSaida.incorporavel == null ? '' : cc.attrs.managedBean.materialSaida.incorporavel ? 'Sim' : 'Não'}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-4">
+						<p:outputLabel value="Código de Barras" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.materialSaida.gtin}" readonly="true" />
+						</label>
+					</section>
+				</div>
+			</p:panel>
+			<br/>
+			
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

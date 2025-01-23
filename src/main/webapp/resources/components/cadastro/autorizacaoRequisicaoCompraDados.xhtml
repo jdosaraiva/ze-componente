@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="autorizacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+	
+			<fieldset>
+				<div class="row">	
+					<section class="col col-3">
+						<p:outputLabel for="numero" value="Número" styleClass="label" />
+						<label class="input">
+							<h:outputText id="numero" value="#{cc.attrs.managedBean.requisicaoCompra.numero}" />
+						</label>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel for="ano" value="Data da Requisição" styleClass="label" />
+						<label class="input">
+							<h:outputText id="ano" value="#{cc.attrs.managedBean.requisicaoCompra.data}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+	           				</h:outputText>
+						</label>
+					</section>
+					<section class="col col-6">
+						<p:outputLabel for="orgao" value="Órgão" styleClass="label" />
+						<label class="input">
+							<h:outputText id="orgao" value="#{cc.attrs.managedBean.requisicaoCompra.orgaoSigla} - #{cc.attrs.managedBean.requisicaoCompra.orgaoDescricao}" />
+						</label>
+						
+					</section>
+				</div>
+				<section>
+					<p:dataTable id="listaItens" var="item" value="#{cc.attrs.managedBean.itensRequisicaoCompra}"
+						reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						styleClass="table-reflow-desktop">
+						 <p:column headerText="Item" sortBy="#{item.item}" style="width: 70px">
+				           	<mcl:number value="#{item.item}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Material/Serviço/Catálogo" sortBy="#{item.descricaoServOuMaterial}">
+				           	<h:outputText value="#{item.descricaoServOuMaterial}" />
+				        </p:column>
+				        <p:column headerText="Quantidade Inicial" sortBy="#{item.quantidadeInicial}" style="width: 100px">
+				           	<mcl:money value="#{item.quantidadeInicial}" modoConsulta="true" decimalPlaces="4"/>
+				        </p:column>
+				        <p:column headerText="Solicitado" sortBy="#{item.quantidadeSolicitada}" style="width: 100px">
+				           	<mcl:money value="#{item.quantidadeSolicitada}" modoConsulta="true" decimalPlaces="4" />
+				        </p:column>
+				        <p:column headerText="Aprovado" sortBy="#{item.quantidadeAprovada}" style="width: 100px">
+				           	<mcl:money value="#{item.quantidadeAprovada}" modoConsulta="true" decimalPlaces="4" />
+				        </p:column>
+				        <p:column headerText="Unidade de medida" sortBy="#{item.material.unidade.nome}" style="width: 100px">
+				           	<h:outputText value="#{item.tipo == 'MATERIAL' ? item.material.unidade.nome : item.servico.unidade.nome}" />
+				        </p:column>
+				        <p:column headerText="Status" sortBy="#{item.status}" style="width: 100px; text-align: center">
+				           	<h:outputText value="#{item.status.descricao}" />
+				        </p:column>
+				        <p:column headerText="Aprovar" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+				            <h:commandLink title="Aprovar" styleClass="btn btn-info btn-sm" immediate="true"
+				            	onclick="javascript: $('#popupEditAutorizacaoRequisicaoCompra').modal('show');">
+				        		<f:setPropertyActionListener target="#{cc.attrs.managedBean.itemRequisicaoCompra}" value="#{item}" />
+				        		<p:ajax update=":editAutorizacaoRequisicaoCompra:formPopupAutorizacaoRequisicaoCompra" />
+								<i class="fa fa-pencil-square-o"></i>
+				            </h:commandLink>
+				            &#160;
+				            <p:commandLink title="Excluir" update="listaItens" action="#{cc.attrs.managedBean.excluirAprovacaoItemRequisicao()}"  styleClass="btn btn-info btn-sm">
+				            	<f:setPropertyActionListener target="#{cc.attrs.managedBean.itemRequisicaoCompra}" value="#{item}" />
+				            	<p:confirm header="Aviso" message="Confirma a exclusão da Aprovação do item ?" />
+				            	<i class="fa fa-trash-o"></i>
+				            </p:commandLink>
+				        </p:column>
+					</p:dataTable>	
+				</section>
+		</fieldset>
+		<p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+			<p:commandLink value="Sim" title="Sim"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+            </p:commandLink>
+            &#160;&#160;&#160;
+            <p:commandLink value="Não" title="Não"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+            </p:commandLink>
+	    </p:confirmDialog>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value=" Autorizar Requisição Completa" />
+            </h:commandLink>
+		</footer>
+</h:form>
+</composite:implementation>
+
+</html>	

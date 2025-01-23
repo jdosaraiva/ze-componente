@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="atualizacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">	
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero} / #{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="divisaoObjeto" value="Divisão do Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="divisaoObjeto" value="#{cc.attrs.managedBean.processo.divisaoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorEstimado" label="Valor Estimado" value="#{cc.attrs.managedBean.processo.valorEstimado}" readonly="true" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data"  style="float:left"
+									value="#{cc.attrs.managedBean.processo.data}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="naturezaLicitacao" value="Natureza da Licitação" styleClass="label" />
+					<label class="input">
+						<p:inputText id="naturezaLicitacao" value="#{cc.attrs.managedBean.processo.naturezaLicitacao.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="objetoLicitacao" value="Objeto da Licitação" styleClass="label" />
+					<label class="input">
+						<p:inputText id="objetoLicitacao" value="#{cc.attrs.managedBean.processo.objetoLicitacao.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="finalidadeObjeto" value="Finalidade do Objeto" styleClass="label" />
+				<label class="input">
+					<p:inputText id="finalidadeObjeto" value="#{cc.attrs.managedBean.processo.finalidadeObjeto.codigo} - #{cc.attrs.managedBean.processo.finalidadeObjeto.descricao}" readonly="true" />
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="descricaoObjeto" value="Descrição do Objeto" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea rows="3" cols="50" id="descricaoObjeto"  value="#{cc.attrs.managedBean.processo.descricaoObjeto}" readonly="true" />
+				</label>
+			</section>
+			
+			<section>
+				<alert dismissible="true" type="info">
+					<div role="alert" class="alert alert-info alert-dismissible ng-star-inserted">  
+	          			<i class="fa-fw fa fa-info-circle"></i>
+	          			<strong>Atenção</strong> :<br/>
+	          			Selecione abaixo o <b>método de cálculo</b> para a Atualização de Valores de Objetos e Itens de Requisição de Compras, de acordo com valores apurados nas Pesquisas de Preços.<BR />
+	          			<strong>Importante</strong> : Mesmo que a "divisão do Objeto" do Processo seja por <STRONG>LOTE</STRONG>, é necessário ter a Pesquisa de Preços para cada Objeto Item do Processo !<BR />
+	          			Os métodos de cálculo são :
+	          			<ul style="margin-left: 40px;margin-top: 10px;">
+						  <li>Menor valor cotado.</li>
+						  <li>Média do valor cotado. A média dos valores cotados pelos Fornecedores para cada Item.</li>
+						  <li>Maior valor cotado.</li>
+						</ul>
+         			</div>
+        		</alert>
+			</section>
+
+			<div class="row">
+				<section class="col col-3">
+					<label class="input">
+						<p:outputLabel for="atualizarValor" value="Atualização de Valores pelas Pesquisas de Preços" styleClass="label" />
+				      	<p:selectOneMenu id="atualizarValor" value="#{cc.attrs.managedBean.tipoAtualizacaoRequisicao}"  styleClass="select" >
+		            		<f:selectItems value="#{typesController.tipoAtualizacaoRequisicao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+		        		</p:selectOneMenu>
+			      	</label>
+				</section>
+			</div>
+
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}"  onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

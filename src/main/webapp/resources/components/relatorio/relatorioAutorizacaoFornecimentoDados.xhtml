@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:relatorio="http://java.sun.com/jsf/composite/components/relatorio"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:facet name="customButtons" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<fieldset>
+		<div class="row">
+			<section class="col col-3">
+				<mcl:number id="numeroInicialAF" label="Número Inicial A.F." value="#{cc.attrs.managedBean.numeroInicialAF}" />
+			</section>
+			<section class="col col-3">
+				<mcl:number id="numeroFinalAF" label="Número Final A.F." value="#{cc.attrs.managedBean.numeroFinalAF}" />
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataInicialAF" value="Data Inicial A.F." styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataInicialAF" style="float:left"
+						value="#{cc.attrs.managedBean.dataInicialAF}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						required="true"
+						locale="pt" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataFinalAF" value="Data Final A.F." styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataFinalAF" style="float:left"
+						value="#{cc.attrs.managedBean.dataFinalAF}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						required="true"
+						locale="pt" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-3">
+				<mcl:number id="numeroInicialPedido" label="Número Inicial Pedido" value="#{cc.attrs.managedBean.numeroInicialPedido}" />
+			</section>
+			<section class="col col-3">
+				<mcl:number id="numeroFinalPedido" label="Número Final Pedido" value="#{cc.attrs.managedBean.numeroFinalPedido}" />
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataInicialPedido" value="Data Inicial Pedido" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataInicialPedido" style="float:left"
+						value="#{cc.attrs.managedBean.dataInicialPedido}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						locale="pt" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="" value="Data Final Pedido" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataFinalPedido" style="float:left"
+						value="#{cc.attrs.managedBean.dataFinalPedido}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						locale="pt" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<div class="col col-6">
+				<div class="form-group">
+					<mcl:inputLupaFornecedor 
+						id="fornecedorSelecionado" 
+						label="Fornecedor" 
+						controller="#{fornecedorColumnsView}"
+						descricao="#{cc.attrs.managedBean.fornecedor.codigo.toString().concat(' - ').concat(cc.attrs.managedBean.fornecedor.razaoSocial)
+						.concat(' - Doc. ').concat(cc.attrs.managedBean.fornecedor.numeroDocumento)
+						.concat(' - Autorizado = ').concat(cc.attrs.managedBean.fornecedor.movimentoAutorizado ? 'Sim' : 'Não') }" 
+						value="#{cc.attrs.managedBean.fornecedor}"
+						required="false" 
+						lazy="true"
+						cabecalho= "Consulta de Fornecedor" />
+				</div>
+			</div>
+			<div class="col col-3">
+				<div class="form-group">
+					<p:outputLabel for="emissaoPorOrgao" value="Emissão por Órgão?" />
+					<p:selectOneMenu id="emissaoPorOrgao" value="#{cc.attrs.managedBean.emissaoPorOrgao}" style="width:100%;">
+						<f:selectItem itemLabel="SIM" itemValue="SIM" />
+						<f:selectItem itemLabel="NÃO" itemValue="NAO" />
+					</p:selectOneMenu>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+	<fieldset>
+		<div class="row">
+			<section class="col col-3">
+				<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+				<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+					<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+				</p:selectOneMenu>
+			</section>
+		</div>
+	</fieldset>
+
+	<footer>
+		<h:commandLink value="" action="#{cc.attrs.managedBean.gerar()}" styleClass="btn btn-success btn-lg"
+			rendered="#{not cc.attrs.readonly}">
+           	<i class="fa fa-save"></i>
+           	<h:outputText value="  Emitir" />
+        </h:commandLink>
+	</footer>
+
+</composite:implementation>
+
+</html>	

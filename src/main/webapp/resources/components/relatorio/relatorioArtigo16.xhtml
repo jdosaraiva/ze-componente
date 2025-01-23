@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="relatorioForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="mes" value="Mês" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="mes" value="#{cc.attrs.managedBean.mes}" styleClass="select">
+				            <f:selectItem itemLabel="Janeiro" itemValue="1" />
+				            <f:selectItem itemLabel="Fevereiro" itemValue="2" />
+				            <f:selectItem itemLabel="Março" itemValue="3" />
+				            <f:selectItem itemLabel="Abril" itemValue="4" />
+				            <f:selectItem itemLabel="Maio" itemValue="5" />
+				            <f:selectItem itemLabel="Junho" itemValue="6" />
+				            <f:selectItem itemLabel="Julho" itemValue="7" />
+				            <f:selectItem itemLabel="Agosto" itemValue="8" />
+				            <f:selectItem itemLabel="Setembro" itemValue="9" />
+				            <f:selectItem itemLabel="Outubro" itemValue="10" />
+				            <f:selectItem itemLabel="Novembro" itemValue="11" />
+				            <f:selectItem itemLabel="Dezembro" itemValue="12" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Ano" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="ano" value="#{cc.attrs.managedBean.ano}" styleClass="select">
+				            <f:selectItems value="#{cc.attrs.managedBean.anoList}" var="item" itemLabel="#{item}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="modalidade" value="#{cc.attrs.managedBean.modalidade}" styleClass="select">
+				            <f:selectItem itemLabel="Todas" itemValue="" />
+				            <f:selectItems value="#{typesController.modalidadeLicitacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+					<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+						<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</section>
+			</div>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.gerar()}" styleClass="btn btn-success btn-lg">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Emitir" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

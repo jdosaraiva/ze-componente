@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="homologacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.processo.modalidade.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<div class="row" jsf:rendered="#{cc.attrs.managedBean.useDataHomologacaoAdjudicacao}">
+					<section class="col col-3">
+						<p:outputLabel for="dataHomolocao" value="Data de Homologação *" styleClass="label" />
+						<label class="input">
+							<p:calendar id="dataHomolocao" style="float:left"
+										value="#{cc.attrs.managedBean.objetoBase.dataHomologacao}" 
+										pattern="dd/MM/yyyy"
+										disabled="#{cc.attrs.readonly}"
+										required="false"
+										mask="true"
+										locale="pt" />
+						</label>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel for="dataAdjudicacao" value="Data de Adjudicação *" styleClass="label" />
+						<label class="input">
+							<p:calendar id="dataAdjudicacao" style="float:left"
+										value="#{cc.attrs.managedBean.objetoBase.dataAdjudicacao}" 
+										pattern="dd/MM/yyyy"
+										disabled="#{cc.attrs.readonly}"
+										required="false"
+										mask="true"
+										locale="pt" />
+						</label>
+					</section>
+				</div>
+				<div class="row" jsf:rendered="#{!cc.attrs.managedBean.useDataHomologacaoAdjudicacao and !cc.attrs.managedBean.isFinalizacao}" >
+					<section class="col col-3">
+						<p:outputLabel for="dataRatificacao" value="Data de Ratificação *" styleClass="label" />
+						<label class="input">
+							<p:calendar id="dataRatificacao" style="float:left"
+										value="#{cc.attrs.managedBean.objetoBase.dataRatificacao}" 
+										pattern="dd/MM/yyyy"
+										disabled="#{cc.attrs.readonly}"
+										required="false"
+										mask="true"
+										locale="pt" />
+						</label>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel for="dataPublicacao" value="Data de Publicação *" styleClass="label" />
+						<label class="input">
+							<p:calendar id="dataPublicacao" style="float:left"
+										value="#{cc.attrs.managedBean.objetoBase.dataPublicacao}" 
+										pattern="dd/MM/yyyy"
+										disabled="#{cc.attrs.readonly}"
+										required="false"
+										mask="true"
+										locale="pt" />
+						</label>
+					</section>
+				</div>
+				<div class="row" jsf:rendered="#{cc.attrs.managedBean.isFinalizacao}" >
+					<section class="col col-3">
+						<p:outputLabel for="dataFinalizacao" value="Data de Finalização *" styleClass="label" />
+						<label class="input">
+							<p:calendar id="dataFinalizacao" style="float:left"
+										value="#{cc.attrs.managedBean.processo.dataFinalizacao}" 
+										pattern="dd/MM/yyyy"
+										disabled="#{cc.attrs.readonly}"
+										required="false"
+										mask="true"
+										locale="pt" />
+						</label>
+					</section>
+				</div>
+				
+				
+				
+			</section>
+			<section>
+				<p:dataTable id="dtObjetos" var="item" reflow="true" value="#{cc.attrs.managedBean.objetoList}">
+					<f:facet name="header">
+						Objetos do Processo
+					</f:facet>
+					<p:column headerText="Item" style="width: 50px;text-align: center">
+						<h:outputText value="#{item.item}" />
+					</p:column>
+				   	<p:column headerText="Descrição">
+						<h:outputText value="#{item.descricao}" />
+					</p:column>
+					<p:column headerText="Quantidade" style="width: 70px">
+						<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Valor"  style="width: 100px" rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+						<mcl:money value="#{item.valor}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="% Desconto"  style="width: 100px" rendered="#{cc.attrs.managedBean.processo.maiorDesconto}">
+						<mcl:money value="#{item.percentualDesconto}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Status" style="width: 100px">
+						<mcl:money value="#{item.status.descricao}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Data Homologação" style="width: 100px; text-align: center">
+						<h:outputText value="#{item.dataHomologacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Data Adjudicação" style="width: 100px; text-align: center">
+						<h:outputText value="#{item.dataAdjudicacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Data Ratificação" style="width: 100px; text-align: center">
+						<h:outputText value="#{item.dataRatificacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Data Publicação" style="width: 100px; text-align: center">
+						<h:outputText value="#{item.dataPublicacao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />							
+						</h:outputText>
+					</p:column>
+					<p:column rendered="#{!cc.attrs.readonly and !cc.attrs.managedBean.isFinalizacao}" headerText="Editar" style="width: 70px;text-align: center">
+						<h:commandLink value="" styleClass="btn btn-primary btn-sm" rendered="#{item.status == 'JULGADO' || item.status == 'HOMOLOGADO' }">
+							<f:setPropertyActionListener target="#{cc.attrs.managedBean.objetoSelecionado}" value="#{item}" />
+							<p:ajax listener="#{cc.attrs.managedBean.populaDatas()}" global="false"  />
+							<p:ajax update=":editHomologacao:formPopupEditHomologacao" global="false"  />
+							<i class="fa fa-edit"></i>
+						</h:commandLink>
+					</p:column>
+					 <p:column rendered="#{!cc.attrs.readonly}" headerText="Excluir" style="text-align:center;width:80px" >
+						<p:commandLink title="Excluir" rendered="#{item.status == 'HOMOLOGADO'}" styleClass="btn btn-primary btn-sm" action="#{cc.attrs.managedBean.excluirIndividual(item)}" update="dtObjetos">
+							<p:confirm header="Aviso" message="Confirma a exclusão da Homologação do Objeto ?" />
+							<i class="fa fa-trash-o"></i>
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left" immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}"
+				onclick="$('.btn-success').attr('disabled', true);">
+				<i class="fa fa-save"></i>
+				<h:outputText value="  Homologar Todos Objetos" />
+			</h:commandLink>
+		</footer>
+		<p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+		 	<p:commandLink value="Sim" title="Sim"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+			</p:commandLink>
+			&#160;&#160;&#160;
+			<p:commandLink value="Não" title="Não"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+			</p:commandLink>
+		</p:confirmDialog>
+	</h:form>
+</composite:implementation>
+
+</html>	

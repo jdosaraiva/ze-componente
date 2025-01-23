@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pedidoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-9">
+					<mcl:inputSelectProcesso id="processo" label="Processo" value="#{cc.attrs.managedBean.pedido.processo}" 
+						managedBean="#{processoAutocomplete}" itemLabel="#{item.numero}" required="true" disabled="#{cc.attrs.readonly}" 
+						ajax="true" listener="#{cc.attrs.managedBean.carregarTodosObjetos()}" update="pedidoExcluirDados:pedidoForm:fornecedorPanel" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="especifico" value="Fornecedor Específico?" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="especifico" value="#{cc.attrs.managedBean.especifico}" disabled="#{cc.attrs.readonly}" styleClass="select">
+				            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+				            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+				            <p:ajax event="change" update=":pedidoExcluirDados:pedidoForm:fornecedorPanel" process="@this" global="false" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<h:panelGroup id="fornecedorPanel">
+				<section jsf:rendered="#{cc.attrs.managedBean.especifico}">
+					<p:outputLabel for="fornecedor" value="Fornecedor" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="fornecedor" value="#{cc.attrs.managedBean.pedido.fornecedor}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{cc.attrs.managedBean.fornecedorList}" var="item" itemLabel="#{item.nomeFantasia}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</h:panelGroup>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.excluir()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Excluir" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

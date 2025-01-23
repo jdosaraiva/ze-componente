@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 45px" class="row"></div>
+	<section jsf:rendered="#{!cc.attrs.readonly}">
+		<h:commandLink value="" onclick="javascript: $('#popupEditFornecedorOcorrencia').modal('show');" styleClass="btn btn-primary btn-sm">
+           	<p:ajax listener="#{cc.attrs.managedBean.novaOcorrencia}" update=":editFornecedorOcorrencia:formPopupEditFornecedorOcorrencia" />
+           	<i class="fa fa-plus"></i>
+           	<h:outputText value="  Adicionar Ocorrência" />
+           </h:commandLink>
+	</section>
+	<section>
+		<p:dataTable id="listaOcorrencia" var="item" value="#{cc.attrs.managedBean.fornecedor.fornecedorOcorrenciaList}"
+			reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+			styleClass="table-reflow-desktop">
+			<p:column headerText="Numero">
+		        <h:outputText value="#{item.numero}" />
+		    </p:column>
+		    <p:column headerText="Data">
+		        <h:outputText value="#{item.data}">
+		        	<f:convertDateTime pattern="dd/MM/yyyy" />
+		        </h:outputText>
+		    </p:column>
+		    <p:column headerText="Processo Administrativo">
+		        <h:outputText value="#{item.numeroProcessoAdministrativo}" />
+		    </p:column>
+		    <p:column headerText="Descricao">
+		        <h:outputText value="#{item.descricao}" />
+		    </p:column>
+		    <p:column headerText="Pontuação">
+		        <h:outputText value="#{item.pontuacao.descricao}" />
+		    </p:column>
+		    <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+	            <h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditFornecedorOcorrencia').modal('show');">
+	        		<f:setPropertyActionListener target="#{cc.attrs.managedBean.fornecedorOcorrencia}" value="#{item}" />
+	        		<p:ajax update=":editFornecedorOcorrencia:formPopupEditFornecedorOcorrencia" />
+	            	<i class="fa fa-edit"></i>
+	            </h:commandLink>
+	            &#160;
+	            <h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerOcorrencia(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+	            	<p:ajax update=":fornecedorDados:fornecedorForm:tabFornecedor:fornecedorAbaDadosOcorrencia:listaOcorrencia" />
+	            	<i class="fa fa-trash-o"></i>
+	            </h:commandLink>
+	        </p:column>
+		</p:dataTable>	
+	</section>
+</composite:implementation>
+
+</html>	

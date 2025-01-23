@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+		
+		<!-- MENU -->
+		<aside id="left-panel" style="z-index:100">
+			<!-- User info -->
+			<div class="login-info">
+				<span> <!-- User image size is adjusted inside CSS, it should stay as it --> 
+					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
+						<i class="fa fa-lg fa-user"></i>
+						<h:outputText value="&#160;" />
+						<h:outputText value="&#160;" />
+						<span>
+							<h:outputText value="#{sessaoMCL.operador.nome}" />
+						</span>
+						<i class="fa fa-angle-down"></i>
+					</a>
+				</span>
+			</div>
+			<!-- end user info -->
+			
+			<!-- MENU : This navigation is also responsive-->
+			<nav jsf:rendered="#{sessaoMCL.dataUso != null}">
+				<ul>
+					<ui:repeat var="itemPai" value="#{menuController.menuList}">
+						<h:panelGroup rendered="#{itemPai.submenus == null}">
+							<li id="#{itemPai.identificador}" jsf:rendered="#{itemPai.visivel}">
+								<a href="#{request.contextPath}#{itemPai.pagina}" title="#{itemPai.descricao}"><i class="fa fa-lg fa-fw #{itemPai.icone}"></i><span class="menu-item-parent"> #{itemPai.descricao}</span></a>
+							</li>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{itemPai.submenus != null}">
+							<li jsf:rendered="#{itemPai.visivel}">
+								<a href="#"><i class="fa fa-lg fa-fw #{itemPai.icone}"></i><span class="menu-item-parent"> #{itemPai.descricao}</span></a>
+								<ul>
+									<ui:repeat var="subitem1" value="#{itemPai.submenus}">
+										<h:panelGroup rendered="#{subitem1.submenus == null}">
+											<li id="#{subitem1.identificador}" jsf:rendered="#{subitem1.visivel}">
+												<a href="#{request.contextPath}#{subitem1.pagina}" title="#{subitem1.descricao}">#{subitem1.descricao}</a>
+											</li>
+										</h:panelGroup>
+										<h:panelGroup rendered="#{subitem1.submenus != null}">
+											<li jsf:rendered="#{subitem1.visivel}">
+												<a href="#"><span class="menu-item-parent">#{subitem1.descricao}</span></a>
+												<ul>
+													<ui:repeat var="subitem2" value="#{subitem1.submenus}">
+														<h:panelGroup rendered="#{subitem2.submenus == null}">
+															<li id="#{subitem2.identificador}" jsf:rendered="#{subitem2.visivel}">
+																<a href="#{request.contextPath}#{subitem2.pagina}" title="#{subitem2.descricao}">#{subitem2.descricao}</a>
+															</li>
+														</h:panelGroup>
+														<h:panelGroup rendered="#{subitem2.submenus != null}">
+															<li jsf:rendered="#{subitem2.visivel}">
+																<a href="#"><span class="menu-item-parent">#{subitem2.descricao}</span></a>
+																<ul>
+																	<ui:repeat var="subitem3" value="#{subitem2.submenus}">
+																		<h:panelGroup rendered="#{subitem3.submenus == null}">
+																			<li id="#{subitem3.identificador}" jsf:rendered="#{subitem3.visivel}">
+																				<a href="#{request.contextPath}#{subitem3.pagina}" title="#{subitem3.descricao}">#{subitem3.descricao}</a>
+																			</li>
+																		</h:panelGroup>
+																		<h:panelGroup rendered="#{subitem3.submenus != null}">
+																			<li jsf:rendered="#{subitem3.visivel}">
+																				<a href="#"><span class="menu-item-parent">#{subitem3.descricao}</span></a>
+																				<ul>
+																					<ui:repeat var="subitem4" value="#{subitem3.submenus}">
+																						<li id="#{subitem4.identificador}" jsf:rendered="#{subitem4.visivel}">
+																							<a href="#{request.contextPath}#{subitem4.pagina}" title="#{subitem4.descricao}">#{subitem4.descricao}</a>
+																						</li>
+																					</ui:repeat>
+																				</ul>
+																			</li>
+																		</h:panelGroup>
+																	</ui:repeat>
+																</ul>
+															</li>
+														</h:panelGroup>
+													</ui:repeat>
+												</ul>
+											</li>
+										</h:panelGroup>
+									</ui:repeat>
+								</ul>
+							</li>
+						</h:panelGroup>
+					</ui:repeat>
+				</ul>
+			</nav>
+			<span class="minifyme" data-action="minifyMenu"> 
+				<i class="fa fa-arrow-circle-left hit"></i> 
+			</span>
+		</aside>
+		<!-- END MENU -->
+</html>

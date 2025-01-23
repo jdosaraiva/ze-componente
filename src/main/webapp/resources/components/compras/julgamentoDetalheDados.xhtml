@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="julgamentoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo do Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.objetoSelecionado.tipo.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numeroObjeto" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numeroObjeto" value="#{cc.attrs.managedBean.objetoSelecionado.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="itemObjeto" value="Item" styleClass="label" />
+					<label class="input">
+						<p:inputText id="itemObjeto" value="#{cc.attrs.managedBean.objetoSelecionado.item}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorEstimado" label="Valor Estimado" value="#{cc.attrs.managedBean.objetoSelecionado.valorEstimado}" readonly="true" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:money id="quantidadePropostas" label="Quantidade Propostas" value="#{cc.attrs.managedBean.objetoSelecionado.quantidadePropostas}" readonly="true" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Exclusivo para M.E.?" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.objetoSelecionado.exclusivoMeDescricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="quantidade" label="Quantidade" value="#{cc.attrs.managedBean.objetoSelecionado.quantidade}" readonly="true" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Unidade" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.objetoSelecionado.unidade}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel value="Descrição" styleClass="label" />
+				<label class="input">
+					<p:inputText value="#{cc.attrs.managedBean.objetoSelecionado.descricao}" readonly="true" />
+				</label>
+			</section>
+			<section>
+				<p:outputLabel value="Observações" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea value="#{cc.attrs.managedBean.objetoSelecionado.observacoes}" readonly="true" />
+				</label>
+			</section>
+			<section>
+				<alert dismissible="true" type="info">
+					<div role="alert" class="alert alert-info alert-dismissible ng-star-inserted">  
+	          			<i class="fa-fw fa fa-info-circle"></i>
+	          			<strong>Atenção</strong> :<br/>
+	          			<b>Lei 123 / 2006 - Art. 44 : </b> Nas solicitações será assegurada, como critério de desempate, preferência de contratação
+	          			para as microempresas e empresas de pequano porte.
+	          			<br/>
+	          			§ 1º Entende-se por empate aquelas situações em que as propostas apresentadas pelas microempresas e empresas de pequeno
+	          			porte sem <b>iguais ou até 10% (dez por cento) superiores à proposta mais bem classificada.</b>
+         			</div>
+        		</alert>
+			</section>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel value="Critério de Julgamento" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.processo.criterioJulgamento.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section  class="col col-3" jsf:rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+					<p:outputLabel value="Tabela" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.objetoSelecionado.tabela}" readonly="true" />
+					</label>
+				</section>
+				<section  class="col col-3" jsf:rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+					<p:outputLabel for="dataReferenciaTabela" value="Data referência da tabela" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataReferenciaTabela" style="float:left"
+									value="#{cc.attrs.managedBean.objetoSelecionado.dataReferencia}" 
+									pattern="dd/MM/yyyy"
+									disabled="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section  class="col col-3" jsf:rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+					<p:outputLabel for="valorReferencia" value="Valor referência da tabela" styleClass="label" />
+					<label class="input">
+						<p:inputText id="valorReferencia" value="#{cc.attrs.managedBean.objetoSelecionado.valorReferencia}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:dataTable id="dtObjeto1" var="item" value="#{cc.attrs.managedBean.objetoDetalhesList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop" rendered="#{item.objeto.tipo eq 'LOTE'}">
+					<f:facet name="header">
+				    	Objetos deste lote
+				    </f:facet>
+				    <p:column headerText="Item" style="width: 80px">
+				    	<mcl:number value="#{item.item}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Número" style="width: 80px">
+				        <mcl:number value="#{item.numero}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Descrição">
+				        <h:outputText value="#{item.descricao}" title="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Valor" style="width: 80px">
+				    	<mcl:money value="#{item.valor}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Quantidade" style="width: 80px">
+				    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Unidade" style="width: 80px; text-align:center">
+				    	<h:outputText value="#{item.unidade}" />
+				    </p:column>
+				     <p:column headerText="Licitantes" style="width: 80px">
+				     	<mcl:number value="#{item.quantidadeLicitantes}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Propostas" style="width: 80px">
+				        <mcl:money value="#{item.loteObjeto.quantidadePropostas}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Lote" style="width: 80px">
+				        <mcl:number value="#{item.loteObjeto.numero}" modoConsulta="true" />
+				    </p:column>
+				</p:dataTable>	
+			</section>
+			<section>
+				<alert jsf:rendered="#{cc.attrs.managedBean.exibirAvisoModalidadeConvite}" dismissible="true" type="info">
+					<div role="alert" class="alert alert-info alert-dismissible ng-star-inserted">  
+	          			<i class="fa-fw fa fa-info-circle"></i>
+	          			<strong>Atenção</strong> :<br/>
+	          			Modalidade Convite requer um mínimo de 3 Propostas válidas.
+         			</div>
+        		</alert>
+			</section>
+			<section>
+				<p:dataTable id="dtObjeto2" var="item" value="#{cc.attrs.managedBean.propostaList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop"
+					rowKey="#{item.id}"
+					selection="#{cc.attrs.managedBean.propostaVencedora}">
+					<f:facet name="header">
+				    	Propostas desse objeto
+				    </f:facet>
+				    <p:column selectionMode="single" style="width:16px;text-align:center"/>
+				    <p:column headerText="Licitante">
+				    	<h:outputText value="#{item.licitante.fornecedorRazaoSocial}" title="#{item.licitante.fornecedorRazaoSocial}" />
+				    </p:column>
+				    <p:column headerText="M.E." style="width: 80px">
+				        <h:outputText value="#{item.licitante.fornecedorMicroEmpresa ? 'Sim' : 'Não'}" />
+				    </p:column>
+				    <p:column headerText="Marca" style="width: 80px">
+				        <h:outputText value="#{item.marca}" />
+				    </p:column>
+				    <p:column headerText="Desc %" style="width: 80px">
+				    	<mcl:money value="#{item.percentualDesconto}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor" style="width: 80px">
+				    	<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor Total" style="width: 80px">
+				    	<mcl:money value="#{item.valorTotal}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Dif. %" style="width: 80px">
+				   		<mcl:money value="#{item.diffPercentualMenorProposta}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Status" style="width: 100px">
+				    	<h:outputText value="#{item.status.descricao}" />
+				    </p:column>
+				</p:dataTable>	
+			</section>
+			<section>
+				<p:outputLabel for="motivo" value="Motivo" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="motivo" required="true" value="#{cc.attrs.managedBean.motivo}" />
+				</label>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltarDetalhar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvarIndividual()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

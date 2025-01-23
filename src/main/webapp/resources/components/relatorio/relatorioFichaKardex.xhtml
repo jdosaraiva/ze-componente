@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="relatorioForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:inputLupa 
+						id="material"
+						label="Material"
+						controller="#{materialColumnsView}"
+						descricao="#{cc.attrs.managedBean.materialSelecionado.descricao}"
+						value="#{cc.attrs.managedBean.materialSelecionado}"
+						cabecalho= "Consulta de Material" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataInicial" value="Data Inicial" styleClass="label" />
+					<label class="input">
+						<p:calendar pattern="dd/MM/yyyy" mask="true" locale="pt" id="dataInicial"
+							style="float:left" value="#{cc.attrs.managedBean.dataInicial}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataFinal" value="Data Final" styleClass="label" />
+					<label class="input">
+						<p:calendar pattern="dd/MM/yyyy" mask="true" locale="pt" id="dataFinal"
+							style="float:left" value="#{cc.attrs.managedBean.dataFinal}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+					<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+						<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</section>
+			</div>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.gerar()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}"
+				onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Emitir" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

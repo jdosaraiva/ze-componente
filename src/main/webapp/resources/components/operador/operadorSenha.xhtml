@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="operadorForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="senha" value="Senha" styleClass="label" />
+					<label class="input">
+						<p:password id="senha" value="#{cc.attrs.managedBean.senha}" required="true" match="confirmarSenha" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="confirmarSenha" value="Confirmar Senha" styleClass="label" />
+					<label class="input">
+						<p:password id="confirmarSenha" value="#{cc.attrs.managedBean.senha}" required="true" />
+					</label>
+				</section>
+			</div>
+		</fieldset>
+	
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.alterarSenha()}" styleClass="btn btn-success btn-lg"
+				onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

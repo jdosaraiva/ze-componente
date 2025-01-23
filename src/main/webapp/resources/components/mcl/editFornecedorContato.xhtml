@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditFornecedorContato" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditFornecedorContato" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Manutenção de Contato</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<p:outputLabel for="nome" value="Nome" />
+									<p:inputText id="nome" value="#{cc.attrs.managedBean.fornecedorContato.nome}" required="true" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="genero" value="Gênero" />
+							        <p:selectOneMenu id="genero" value="#{cc.attrs.managedBean.fornecedorContato.genero}" disabled="#{cc.attrs.readonly}" styleClass="select-popup">
+							            <f:selectItem itemLabel="Selecione" itemValue="" />
+							            <f:selectItems value="#{typesController.genero}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+							        <p:outputLabel for="tipoDocumento" value="Tipo de Documento" />
+							        <p:selectOneMenu id="tipoDocumento" value="#{cc.attrs.managedBean.fornecedorContato.tipoDocumento}" disabled="#{cc.attrs.readonly}" style=""  styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.tipoDocumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+											<p:ajax event="change" update="cpfCnpj, cpfCnpjLabel"/>
+							        </p:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel id="cpfCnpjLabel" for="cpfCnpj" value="#{cc.attrs.managedBean.fornecedorContato.tipoDocumento == 'CNPJ'? 'CNPJ' : 'CPF'}" />
+									<p:inputMask id="cpfCnpj" value="#{cc.attrs.managedBean.fornecedorContato.numeroDocumento}" required="true" disabled="#{cc.attrs.readonly}" RequiredMessage="Informe o CPF/CNPJ." size="24" immediate="true" mask="#{cc.attrs.managedBean.fornecedorContato.tipoDocumento == 'CNPJ'? '99.999.999/9999-99' : '999.999.999-99'}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="cep" value="CEP" />
+									<p:inputMask id="cep" value="#{cc.attrs.managedBean.fornecedorContato.cep}" required="false" disabled="#{cc.attrs.readonly}" mask="99999-999">
+										<p:ajax event="blur" listener="#{cc.attrs.managedBean.buscaCep()}" update="endereco,bairro,cidade,uf" />
+									</p:inputMask>
+								</div>
+							</div>
+							<div class="col-sm-9">
+								<div class="form-group">
+									<p:outputLabel for="endereco" value="Endereço" />
+									<p:inputText id="endereco" value="#{cc.attrs.managedBean.fornecedorContato.endereco}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="bairro" value="Bairro" />
+									<p:inputText id="bairro" value="#{cc.attrs.managedBean.fornecedorContato.bairro}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="cidade" value="Cidade" />
+									<p:inputText id="cidade" value="#{cc.attrs.managedBean.fornecedorContato.cidade}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="numero" value="Número" />
+									<p:inputText id="numero" value="#{cc.attrs.managedBean.fornecedorContato.numero}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="complemento" value="Complemento"/>
+									<p:inputText id="complemento" value="#{cc.attrs.managedBean.fornecedorContato.complemento}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="uf" value="U.F." />
+									<p:inputText id="uf" value="#{cc.attrs.managedBean.fornecedorContato.uf}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="pais" value="País" />
+									<p:inputText id="pais" value="#{cc.attrs.managedBean.fornecedorContato.pais}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="localidadeLatitude" value="Latitude" />
+									<p:inputText id="localidadeLatitude" value="#{cc.attrs.managedBean.fornecedorContato.localidadeLatitude}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="localidadeLongitude" value="Longitude" />
+									<p:inputText id="localidadeLongitude" value="#{cc.attrs.managedBean.fornecedorContato.localidadeLongitude}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="telefoneNumero" value="Telefone" />
+					            	<p:inputMask id="telefoneNumero" value="#{cc.attrs.managedBean.fornecedorContato.telefone}" required="false" disabled="#{cc.attrs.readonly}" mask="(99) 9999-9999"/>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="celularNumero" value="Celular" />
+					            	<p:inputMask id="celularNumero" value="#{cc.attrs.managedBean.fornecedorContato.celular}" required="false" disabled="#{cc.attrs.readonly}" mask="(99) 99999-9999"/>
+								</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group">
+									<p:outputLabel for="email" value="Email" />
+									<p:inputText id="email" value="#{cc.attrs.managedBean.fornecedorContato.email}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="cargo" value="Cargo" />
+									<p:inputText id="cargo" value="#{cc.attrs.managedBean.fornecedorContato.cargo}" required="false" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="socio" value="Sócio" />
+									<p:selectOneMenu id="socio" value="#{cc.attrs.managedBean.fornecedorContato.socio}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select-popup">
+										<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+										<f:selectItems value="#{typesController.condicao}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="administrador" value="Administrador" />
+									
+									
+									<p:selectOneMenu id="administrador" value="#{cc.attrs.managedBean.fornecedorContato.administrador}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select-popup">
+										<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+										<f:selectItems value="#{typesController.condicao}" />
+									</p:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="tipoParticipacao" value="Tipo de Participação" />
+							        <p:selectOneMenu id="tipoParticipacao" value="#{cc.attrs.managedBean.fornecedorContato.tipoParticipacao}" disabled="#{cc.attrs.readonly}" required="true" styleClass="select-popup">
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.tipoParticipacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="dataCadastro" value="Data de Cadastro" />
+									<p:calendar id="dataCadastro" value="#{cc.attrs.managedBean.fornecedorContato.dataCadastro}" required="true" disabled="#{cc.attrs.readonly}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />					
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="dataDesligamento" value="Data de Desligamento" />
+									<p:calendar id="dataDesligamento" value="#{cc.attrs.managedBean.fornecedorContato.dataDesligamento}" required="false" disabled="#{cc.attrs.readonly}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />					
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="status" value="Status" />
+							        <p:selectOneMenu id="status" value="#{cc.attrs.managedBean.fornecedorContato.status}" disabled="#{cc.attrs.readonly}" required="true" styleClass="select-popup">
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.statusContato}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<p:outputLabel for="justificativa" value="Justificativa" />
+									<p:inputTextarea id="justificativa" value="#{cc.attrs.managedBean.fornecedorContato.justificativa}" required="false" rows="10" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarContato}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditFornecedorContato').modal('hide')" />
+			            	<h:outputText value="  Salvar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

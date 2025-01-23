@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="objetoRemanescenteForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número / Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero} / #{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.processo.modalidade.descricao} - #{cc.attrs.managedBean.processo.numeroLicitacao} / #{cc.attrs.managedBean.processo.anoLicitacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="exclusivoMe" value="Exclusivo M.E. ?" styleClass="label" />
+					<label class="input">
+						<p:inputText id="exclusivoMe" value="#{cc.attrs.managedBean.processo.exclusivoMe ? 'Sim' : 'Não'}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<p:outputPanel id="divLicitante">
+				<div class="row">
+					<section class="col col-6">
+						<p:outputLabel for="licitante" value="Fornecedor Atual" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="licitante" value="#{cc.attrs.managedBean.licitanteSelecionado}" required="true" 
+					        	 styleClass="select" filter="true" filterMatchMode="contains">
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{cc.attrs.managedBean.processo.licitanteList}" var="item" itemLabel="#{item.fornecedorRazaoSocial} |*| #{item.status}" itemValue="#{item}"/>
+					        	<p:ajax listener="#{cc.attrs.managedBean.selecionarFornecedorAtual()}" update="dtObjetos,divLicitante" event="valueChange" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+					<section class="col col-6">
+						<p:outputLabel for="fornecedorDestino" value="Fornecedor que vai receber os Objetos Remanescentes" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="fornecedorDestino" value="#{cc.attrs.managedBean.fornecedorDestinoSelecionado}" required="true" 
+					        	 styleClass="select" filter="true" filterMatchMode="contains">
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{cc.attrs.managedBean.processo.licitanteList}" var="item" itemLabel="#{item.fornecedorRazaoSocial} |*| #{item.status}" itemValue="#{item}"/>
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</div>
+			</p:outputPanel>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="incluirPedido" value="Deseja incluir o(s) Pedido(s) remanescente(s) automaticamente ?" styleClass="label" />
+					<p:inputSwitch id="incluirPedido" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.incluirPedido}" disabled="#{cc.attrs.readonly}" />
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="justificativa" value="Justificativa" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="justificativa" required="true" value="#{cc.attrs.managedBean.justificativa}" 
+					disabled="#{cc.attrs.readonly}" rows="3" counter="display" maxlength="8000" counterTemplate="{0} restantes." autoResize="false"/><br />
+					<h:outputText id="display" />
+				</label>
+			</section>
+			
+			<section>
+				<p:dataTable id="dtObjetos" var="item" value="#{cc.attrs.managedBean.objetoList}" 
+					selection="#{cc.attrs.managedBean.objetosSelecionados}"
+					rowKey="#{item.id}"  emptyMessage="Não constam registros." tableStyleClass="table table-striped">
+				    <f:facet name="header">
+				        Objetos do Fornecedor Atual no Processo
+				    </f:facet>
+        			<p:column selectionMode="multiple" style="width:16px;text-align:center" rendered="#{!cc.attrs.readonly}" />
+				    <p:column headerText="Item" style="width: 40px;text-align: center">
+				        <h:outputText value="#{item.item}" />
+				    </p:column>
+				   	<p:column headerText="Descrição" filterBy="#{item.objeto.descricao}" filterMatchMode="contains">
+				        <h:outputText value="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Quantidade" style="width: 80px">
+				    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+				    </p:column>
+				   	<p:column headerText="Un."  style="width: 80px">
+				        <h:outputText value="#{item.unidade}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Unitário" style="width: 80px">
+	           			<mcl:money value="#{item.valorUnitario}" decimalPlaces="4" modoConsulta="true"  />
+				    </p:column>
+				    <p:column headerText="Valor" style="width: 80px">
+				    	<mcl:money value="#{item.valor}" modoConsulta="true" />
+				    </p:column>
+				   	<p:column headerText="Contrato Nr." filterBy="#{item.contrato.numero}"  filterMatchMode="contains" style="width: 90px;text-align: right">
+				        <h:outputText value="#{item.contrato.numero}" modoConsulta="true" />
+				    </p:column>
+				   	<p:column headerText="Contrato ano" filterBy="#{item.contrato.ano}"  filterMatchMode="contains" style="width: 90px;text-align: right">
+				        <h:outputText value="#{item.contrato.ano}" modoConsulta="true" />
+				    </p:column>
+				   	<p:column headerText="Status"  style="width: 80px">
+				        <h:outputText value="#{item.status.descricao}" modoConsulta="true" />
+				    </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Transferir" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

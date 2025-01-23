@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mitc="http://java.sun.com/jsf/composite/components/mitc">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="funcaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel value="Funcionalidade" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu value="#{cc.attrs.managedBean.funcionalidade}" label="Funcionalidade" styleClass="select">
+							<f:selectItems value="#{typesController.funcionalidadeFase4}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							<p:ajax event="change" update="panelConsulta" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<h:panelGroup id="panelConsulta">
+				<section jsf:rendered="#{geracaoXMLController.funcionalidade == 'LICITACAO_MENOS_INTERNACIONAL' || geracaoXMLController.funcionalidade == 'LICITACAO_CONTRATACAO_DIRETA' || geracaoXMLController.funcionalidade == 'LICITACAO_INTERNACIONAL'}">
+					<p:dataTable id="dtTce" rows="20" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listar()}"
+						styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.tceSelecionados}"
+						paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+						reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+						<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+						<p:column headerText="Número / Ano" sortBy="#{item.processo.numero}/{item.processo.ano}" style="text-align: center; width: 150px">
+				           	<h:outputText value="#{item.processo.numero} / #{item.processo.ano}"  />
+				        </p:column>
+				        <p:column headerText="Modalidade" sortBy="#{item.processo.modalidade.descricao}" style="width: 150px">
+				           	<h:outputText value="#{item.processo.modalidade.descricao}" /> 
+				        </p:column>
+				        <p:column headerText="Número/Ano Licitação" sortBy="#{item.processo.numeroAnoLicitacao}" style="width: 150px">
+				           	<h:outputText value="#{item.processo.numeroAnoLicitacao}" />
+				        </p:column>
+				        <p:column headerText="Data" sortBy="#{item.processo.data}" style="text-align: center; width: 100px">
+				           	<h:outputText value="#{item.processo.data}" >
+				           		<f:convertDateTime pattern="dd/MM/yyyy" />
+				           	</h:outputText>
+				        </p:column>
+				        <p:column headerText="Status" sortBy="#{item.processo.status}" style="width: 150px">
+				           	<h:outputText value="#{item.processo.status.descricao}" />
+				        </p:column>
+				        <p:column headerText="Objeto" sortBy="#{item.processo.descricaoObjeto}">
+				           	<h:outputText value="#{item.processo.descricaoObjeto}" />
+				        </p:column>
+					</p:dataTable>
+				</section>
+				<section jsf:rendered="#{geracaoXMLController.funcionalidade == 'AJUSTE' || geracaoXMLController.funcionalidade == 'DOCUMENTO_FISCAL'}">
+					<p:dataTable id="dtTceAjuste" rows="20" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listarAjuste()}"
+						styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.tceAjusteSelecionados}"
+						paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+						reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+						<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+				        <p:column headerText="Ajuste" sortBy="#{item.codigoAjuste}" style="width: 100px">
+				           	<h:outputText value="#{item.codigoAjuste}" /> 
+				        </p:column>
+				        <p:column headerText="Data" sortBy="#{item.data}" style="text-align: center; width: 80px">
+				           	<h:outputText value="#{item.data}" >
+				           		<f:convertDateTime pattern="dd/MM/yyyy" />
+				           	</h:outputText>
+				        </p:column>
+						<p:column headerText="Contrato" sortBy="#{item.contrato.numero}/{item.contrato.ano}" style="text-align: center; width: 100px">
+				           	<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}"  />
+				        </p:column>
+						<p:column headerText="Empenho" sortBy="#{item.empenho.numero}/{item.empenho.ano}" style="text-align: center; width: 100px">
+				           	<h:outputText value="#{item.empenho.numero} / #{item.empenho.ano}"  />
+				        </p:column>
+
+
+						
+						<p:column headerText="Processo" sortBy="#{item.tce.processo.numero}/{item.tce.processo.ano}" style="text-align: center; width: 100px">
+				           	<h:outputText value="#{item.tce.processo.numero} / #{item.tce.processo.ano}"  />
+				        </p:column>
+				        <p:column headerText="Modalidade" sortBy="#{item.tce.processo.modalidade}" style="width: 150px">
+				           	<h:outputText value="#{item.tce.processo.modalidade.descricao}" /> 
+				        </p:column>
+				        <p:column headerText="Licitação" sortBy="#{item.tce.processo.numeroAnoLicitacao}" style="width: 100px">
+				           	<h:outputText value="#{item.tce.processo.numeroAnoLicitacao}" />
+				        </p:column>
+				        <p:column headerText="Data" sortBy="#{item.tce.processo.data}" style="text-align: center; width: 80px">
+				           	<h:outputText value="#{item.tce.processo.data}" >
+				           		<f:convertDateTime pattern="dd/MM/yyyy" />
+				           	</h:outputText>
+				        </p:column>
+				        <p:column headerText="Objeto" sortBy="#{item.tce.processo.descricaoObjeto}">
+				           	<h:outputText value="#{item.tce.processo.descricaoObjeto}" />
+				        </p:column>
+					</p:dataTable>
+				</section>
+				<section jsf:rendered="#{geracaoXMLController.funcionalidade == 'TERMO_ADITIVO'}">
+					<p:dataTable id="dtTceTermoAditivo" rows="20" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listarTermoAditivo()}"
+						styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.tceTermoAditivoSelecionados}"
+						paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+						reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+						<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+						<p:column headerText="Número / Ano" sortBy="#{item.numero}/{item.ano}" style="text-align: center; width: 150px">
+				           	<h:outputText value="#{item.numero} / #{item.ano}"  />
+				        </p:column>
+				        <p:column headerText="Modalidade" sortBy="#{item.aditivo.processo.modalidade.descricao}" style="width: 150px">
+				           	<h:outputText value="#{item.aditivo.processo.modalidade.descricao}" /> 
+				        </p:column>
+				        <p:column headerText="Licitação" sortBy="#{item.aditivo.processo.numeroAnoLicitacao}" style="width: 150px">
+				           	<h:outputText value="#{item.aditivo.processo.numeroAnoLicitacao}" />
+				        </p:column>
+				        <p:column headerText="Data" sortBy="#{item.aditivo.processo.data}" style="text-align: center; width: 100px">
+				           	<h:outputText value="#{item.aditivo.processo.data}" >
+				           		<f:convertDateTime pattern="dd/MM/yyyy" />
+				           	</h:outputText>
+				        </p:column>
+				        <p:column headerText="Objeto" sortBy="#{item.objeto}">
+				           	<h:outputText value="#{item.objeto}" />
+				        </p:column>
+					</p:dataTable>
+				</section>
+				
+				<section jsf:rendered="#{geracaoXMLController.funcionalidade == 'EMPENHO'}">
+					<p:dataTable id="dtTceEmpenho" rows="20" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listarEmpenho()}"
+						styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.empenhosSelecionados}"
+						paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros de Empenhos." tableStyleClass="table table-striped"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+						reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+						<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+						
+						<p:column headerText="Empenho" sortBy="#{item.numero}/{item.ano}" style="text-align: center; width: 80px">
+				           	<h:outputText value="#{item.numero} / #{item.ano}"  />
+				        </p:column>
+				        <p:column headerText="Data" sortBy="#{item.data}" style="text-align: center; width: 100px">
+				           	<h:outputText value="#{item.data}" >
+				           		<f:convertDateTime pattern="dd/MM/yyyy" />
+				           	</h:outputText>
+				        </p:column>
+						<p:column headerText="Contrato" sortBy="#{item.contrato.numero}/{item.contrato.ano}" style="text-align: center; width: 120px">
+				           	<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}"  />
+				        </p:column>
+						<p:column headerText="Processo" sortBy="#{item.processo.numero}/{item.processo.ano}" style="text-align: center; width: 120px">
+				           	<h:outputText value="#{item.processo.numero} / #{item.processo.ano}"  />
+				        </p:column>
+				        
+				        <p:column headerText="Modalidade" sortBy="#{item.processo.modalidade}" style="width: 150px">
+				           	<h:outputText value="#{item.processo.modalidade.descricao}" /> 
+				        </p:column>
+				        <p:column headerText="Nro. Licitação" sortBy="#{item.processo.numeroAnoLicitacao}" style="width: 120px">
+				           	<h:outputText value="#{item.processo.numeroAnoLicitacao}" />
+				        </p:column>
+				        <p:column headerText="Objeto" sortBy="#{item.processo.descricaoObjeto}">
+				           	<h:outputText value="#{item.processo.descricaoObjeto}" />
+				        </p:column>
+				        <p:column headerText="Fornecedor" sortBy="#{item.fornecedorRazaoSocial}">
+				           	<h:outputText value="#{item.fornecedorRazaoSocial}" />
+				        </p:column>
+				        
+					</p:dataTable>
+				</section>
+				
+			</h:panelGroup>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" actionListener="#{cc.attrs.managedBean.baixarXml()}" styleClass="btn btn-success btn-lg">
+				<i class="fa fa-save"></i>
+				<h:outputText value="  Baixar XML" />
+				<p:fileDownload value="#{cc.attrs.managedBean.file}" />
+			</h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

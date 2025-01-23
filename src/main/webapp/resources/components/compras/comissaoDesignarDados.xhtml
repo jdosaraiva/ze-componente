@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="comissaoDesignarForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.processo.modalidade.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+						<mcl:inputLupa 
+							id="comissao" 
+							label="Comissão" 
+							controller="#{comissaoColumnsView}"
+							descricao="#{cc.attrs.managedBean.comissao.nome.concat(' Ato Nro. ').concat(cc.attrs.managedBean.comissao.numAtoDesignacao.toString()).concat(' / ').concat(cc.attrs.managedBean.comissao.anoAtoDesignacao)
+							.concat(' - ').concat(cc.attrs.managedBean.comissao.tipoComissaoLicitacao.descricao)
+							}" 
+							value="#{cc.attrs.managedBean.comissao}" 
+							listener="#{cc.attrs.managedBean.buscaComissaoMembros()}"
+							ajax="true"
+							update="comissaoDesignarDados:comissaoDesignarForm:comissaoMembro"
+							required="true" 
+							cabecalho= "Consulta de Comissao" 
+							leitura="#{cc.attrs.readonly}"/>
+				</section>
+			</div>
+				
+			<header>
+				Lista de Membros
+			</header>
+			<fieldset>
+				<section>
+					<p:pickList id="comissaoMembro" value="#{cc.attrs.managedBean.comissaoMembroList}" var="item" itemLabel="#{item.nomeIntegrante} - #{item.atribuicaoIntegrante.descricao}" itemValue="#{item}" 
+								showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="pickListComissaoMembroConverter"
+								disabled="#{cc.attrs.readonly}">
+						<f:facet name="sourceCaption">Disponíveis</f:facet>
+				 		<f:facet name="targetCaption">Adicionados</f:facet>
+					</p:pickList>
+				</section>
+			</fieldset>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left" immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}"
+				onclick="$('.btn-success').attr('disabled', true);">
+				<i class="fa fa-save"></i>
+				<h:outputText value="  Salvar" />
+			</h:commandLink>
+		</footer>
+		<p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+		 	<p:commandLink value="Sim" title="Sim"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+			</p:commandLink>
+			&#160;&#160;&#160;
+			<p:commandLink value="Não" title="Não"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+			</p:commandLink>
+		</p:confirmDialog>
+	</h:form>
+</composite:implementation>
+
+</html>	

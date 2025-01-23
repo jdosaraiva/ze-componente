@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<h:panelGroup id="pnlPublicacao">
+		<p:fieldset legend="Veículos de comunicação" class="fieldset-borda">
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="veiculo" value="Veículo *" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="veiculo" value="#{cc.attrs.managedBean.publicacao.veiculoPublicacao}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.publicacaoVeiculo}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							<p:ajax process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-5">
+					<p:outputLabel for="dataPublicacao" value="Data da publicação *" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataPublicacao" value="#{cc.attrs.managedBean.publicacao.publicacaoData}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt">
+							<p:ajax event="dateSelect" process="@this" global="false" />
+							<p:ajax event="change" process="@this" global="false" />
+						</p:calendar>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="descricao" value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricao" value="#{cc.attrs.managedBean.publicacao.descricao}" maxlength="100">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-5">
+					<p:outputLabel for="veiculoDivulgacaoAtosOficiais" value="Veículo de divulgação dos atos oficiais?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="veiculoDivulgacaoAtosOficiais" value="#{cc.attrs.managedBean.publicacao.oficial}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-1">
+					<p:spacer width="0px" height="80px"/>
+					<h:commandLink id="btnAddVeiculo" actionListener="#{cc.attrs.managedBean.adicionarPublicacao()}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i>
+					</h:commandLink>
+				</section>
+			</div>
+			<section>
+				<p:dataTable reflow="true" id="dtVeiculos" var="item" value="#{cc.attrs.managedBean.tceTermoAditivo.publicacaoList}"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Veículo" colspan="2">
+						<h:outputText value="#{item.veiculoPublicacao.descricao}" />
+					</p:column>
+					<p:column headerText="Data da publicação">
+						<h:outputText value="#{item.publicacaoData}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Descrição" colspan="2">
+						<h:outputText value="#{item.descricao}" />
+					</p:column>
+					<p:column headerText="Atos oficiais">
+						<h:outputText value="#{item.oficial == null ? '' : item.oficial ? 'Sim' : 'Não'}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.removerPublicacao(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</p:fieldset>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

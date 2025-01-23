@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mitc="http://java.sun.com/jsf/composite/components/mitc">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<p:fieldset legend="Participantes qualificados" class="fieldset-borda" style="margin-top: 100px;">
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="participanteQualificado" value="Existem participantes qualificados?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="participanteQualificado" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-5">
+				<p:outputLabel for="tipoDocumento" value="Tipo de documento *" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="tipoDocumento" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.tipoDocumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="documento" value="Nº do documento do participante qualificado *" styleClass="label" />
+				<label class="input">
+					<p:inputMask id="documento" value="#{cc.attrs.managedBean.excluir}" mask="#{'99.999.999/9999-99'}" />
+				</label>
+			</section>
+			<section class="col col-5">
+				<p:outputLabel for="nome" value="Nome do participante qualificado *" styleClass="label"/>
+				<label class="input">
+					<p:inputText id="nome" value="#{cc.attrs.managedBean.excluir}" maxlength="100" />
+				</label>
+			</section>
+			<section class="col col-1">
+				<p:spacer width="0px" height="80px"/>
+				<h:commandLink id="btnAddParticipante" actionListener="#{cc.attrs.managedBean.preQualificacaoController.adicionarParticipante()}" immediate="true" styleClass="btn btn-primary btn-sm">
+					<i class="fa fa-plus"></i>
+				</h:commandLink>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-12">
+				<p:dataTable reflow="true" value="#{cc.attrs.managedBean.excluir}"
+					id="dtParticipante" var="item" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Tipo de documento">
+						<h:outputText value="#{item.tipoDocumento.descricao}" />
+					</p:column>
+					<p:column headerText="Nº do documento">
+						<h:outputText value="#{item.documento}" />
+					</p:column>
+					<p:column headerText="Nome">
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.preQualificacaoController.removerParticipante(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</div>
+	</p:fieldset>
+	<br/>
+	<p:fieldset legend="Participantes NÃO qualificados" class="fieldset-borda">
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="participanteNaoQualificado" value="Existem participantes NÃO qualificados?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="participanteNaoQualificado" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-5">
+				<p:outputLabel for="tipoDocumentoNaoQualificado" value="Tipo de documento *" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="tipoDocumentoNaoQualificado" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.tipoDocumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="documentoNaoQualificado" value="Nº do documento do participante NÃO qualificado *" styleClass="label" />
+				<label class="input">
+					<p:inputMask id="documentoNaoQualificado" value="#{cc.attrs.managedBean.excluir}" mask="#{'99.999.999/9999-99'}" />
+				</label>
+			</section>
+			<section class="col col-5">
+				<p:outputLabel for="nomeNaoQualificado" value="Nome do participante NÃO qualificado *" styleClass="label"/>
+				<label class="input">
+					<p:inputText id="nomeNaoQualificado" value="#{cc.attrs.managedBean.excluir}" maxlength="100" />
+				</label>
+			</section>
+			<section class="col col-1">
+				<p:spacer width="0px" height="80px"/>
+				<h:commandLink id="btnAddParticipanteDesq" actionListener="#{cc.attrs.managedBean.preQualificacaoController.adicionarParticipanteDesq()}" immediate="true" styleClass="btn btn-primary btn-sm">
+					<i class="fa fa-plus"></i>
+				</h:commandLink>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-12">
+				<p:dataTable reflow="true" value="#{cc.attrs.managedBean.excluir}"
+					id="dtParticipanteDesq" var="item" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Tipo de documento">
+						<h:outputText value="#{item.tipoDocumento.descricao}" />
+					</p:column>
+					<p:column headerText="Nº do documento NÃO qualificado">
+						<h:outputText value="#{item.documento}" />
+					</p:column>
+					<p:column headerText="Nome NÃO qualificado">
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.preQualificacaoController.removerParticipanteDesq(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</div>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="classificacaoModalidadeForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="regimeContratacao" value="Regime de Contratação" styleClass="label" />
+					<label class="input">
+						<p:inputText id="regimeContratacao" value="#{cc.attrs.managedBean.processo.regimeContratacao.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section jsf:rendered="#{cc.attrs.managedBean.processo.regimeContratacao eq 'LEI_14133'}">
+			
+			    <p:panel id="limite14133Panel" header="
+			            	Tabela de Limites de Licitação Vigente - Decreto nº #{cc.attrs.managedBean.limite14133.atoNumero} de #{cc.attrs.managedBean.limite14133.dataFormatada}" style="margin-bottom:20px">
+			            	
+						<div class="row">
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <h3><B>Dispositivo</B></h3>
+							        <p>Art. 75, caput, inciso I.</p>
+							    </p:outputPanel>
+							</section>
+						
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <h3><B>Descrição</B></h3>
+							        <p>Art. 75. É dispensável a licitação :<BR />
+I - para contratação que envolva valores inferiores a R$ 100.000,00 (cem mil reais), no caso de obras e serviços de engenharia ou de serviços de manutenção de veículos automotores;</p>
+							    </p:outputPanel>
+							</section>
+						
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <h3><B>Valor Atualizado (R$)</B></h3>
+							        <p><mcl:money id="valorInciso1"  value="#{cc.attrs.managedBean.limite14133.valorInciso1}" readonly="true" /></p>
+							    </p:outputPanel>
+							</section>
+						
+						</div>
+			            	
+						<div class="row">
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <p>Art. 75, caput, inciso II.</p>
+							    </p:outputPanel>
+							</section>
+						
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <p>Art. 75. É dispensável a licitação :<BR />
+II - para contratação que envolva valores inferiores a R$ 50.000,00 (cinquenta mil reais), no caso de outros serviços e compras;</p>
+							    </p:outputPanel>
+							</section>
+						
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <p><mcl:money id="valorInciso2"  value="#{cc.attrs.managedBean.limite14133.valorInciso2}" readonly="true" /></p>
+							    </p:outputPanel>
+							</section>
+						
+						</div>
+			            	
+						<div class="row">
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <p>Art. 75, caput, inciso IV, alínea "c".</p>
+							    </p:outputPanel>
+							</section>
+						
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <p>Art. 75. É dispensável a licitação :<BR />
+IV - para contratação que tenha por objeto:<BR />
+c) produtos para pesquisa e desenvolvimento, limitada a contratação, no caso de obras e serviços de engenharia, ao valor de R$ 300.000,00 (trezentos mil reais);</p>
+							    </p:outputPanel>
+							</section>
+						
+							<section class="col col-4">
+							    <p:outputPanel deferred="true">
+							        <p><mcl:money id="valorInciso4"  value="#{cc.attrs.managedBean.limite14133.valorInciso4}" readonly="true" /></p>
+							    </p:outputPanel>
+							</section>
+						
+						</div>
+			            	
+			    </p:panel>
+			
+			</section>
+			<section jsf:rendered="#{cc.attrs.managedBean.processo.regimeContratacao ne 'LEI_14133'}">
+				<p:dataTable var="item" value="#{cc.attrs.managedBean.limites}">
+				    <f:facet name="header">
+				        Tabela de Limites de Licitação Vigente - Decreto nº #{cc.attrs.managedBean.decretoNumero} de #{cc.attrs.managedBean.decretoData}
+				    </f:facet>
+				    <p:column headerText="Modalidades">
+				        <h:outputText value="#{item.modalidade.descricao}" />
+				    </p:column>
+				    <p:column headerText="Aquisição de materiais, contratações serviços (R$)">
+				    	<h:outputLabel value="até" rendered="#{item.modalidade != 'CONCORRENCIA'}" style="position: absolute;font-weight: 100;" />
+				    	<h:outputLabel value="acima" rendered="#{item.modalidade eq 'CONCORRENCIA'}" style="position: absolute;font-weight: 100;" />
+				        <mcl:money value="#{item.valorMaterial}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Obras e serviços de engenharia (R$)">
+				    	<h:outputLabel value="até" rendered="#{item.modalidade != 'CONCORRENCIA'}" style="position: absolute;font-weight: 100;" />
+				    	<h:outputLabel value="acima" rendered="#{item.modalidade eq 'CONCORRENCIA'}" style="position: absolute;font-weight: 100;" />
+				        <mcl:money value="#{item.valorObra}" modoConsulta="true" />
+				    </p:column>
+				</p:dataTable>
+			</section>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:money id="valorAcumulado" label="Valor Total Acumulado do Processo" value="#{cc.attrs.managedBean.processo.valorEstimado}" readonly="true" />
+				</section>
+				<section class="col col-6"  jsf:rendered="#{cc.attrs.managedBean.processo.regimeContratacao ne 'LEI_14133'}">
+					<p:outputLabel for="classificacaoApurada" value="Classificação de Modalidade Apurada" styleClass="label">
+						<h:panelGroup id="ajudaClassificacao"><i class="fa fa-lg fa-fw fa-question-circle"></i></h:panelGroup> 
+					</p:outputLabel>
+					<p:tooltip id="toolTipContent" for="ajudaClassificacao" position="bottom">
+				        <h:outputText value="#{cc.attrs.managedBean.textoAjuda}" escape="false" />
+				    </p:tooltip>
+					<label class="input">
+						<p:inputText id="classificacaoApurada" value="#{cc.attrs.managedBean.classificacaoApurada}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">				
+				<section class="col col-3">
+					<p:outputLabel for="modalidadeLicitacao" value="Modalidade" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="modalidadeLicitacao" value="#{cc.attrs.managedBean.processo.modalidade}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.getModalidadeLicitacao(cc.attrs.managedBean.processo)}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				            <p:ajax process="@this, classificacaoModalidadeDados:classificacaoModalidadeForm:anoLicitacao:anoLicitacao" 
+				            	update="msgLei classificacaoModalidadeDados:classificacaoModalidadeForm:numeroLicitacao:numeroLicitacao 
+				            	classificacaoModalidadeDados:classificacaoModalidadeForm:criterioJulgamento 
+				            	classificacaoModalidadeDados:classificacaoModalidadeForm:pncpModoDisputa
+				            	classificacaoModalidadeDados:classificacaoModalidadeForm:editalNumero
+				            	classificacaoModalidadeDados:classificacaoModalidadeForm:editalAno  
+				            	panelFundamento panelOutro panelJustificativaPresencial internacionalPanel" 
+				            	event="valueChange" 
+				            	listener="#{cc.attrs.managedBean.selecionaTextoLei()}" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:number id="numeroLicitacao" label="Modalidade Número" disabled="#{cc.attrs.readonly}"  required="true" value="#{cc.attrs.managedBean.processo.numeroLicitacao}" />
+				</section>
+				<section class="col col-3">
+					<mcl:number id="anoLicitacao" label="Modalidade Ano" disabled="#{cc.attrs.readonly}" required="true" 
+						value="#{cc.attrs.managedBean.processo.anoLicitacao}" ajax="true" 
+						listener="#{cc.attrs.managedBean.selecionaTextoLei()}" global="false"
+						update="classificacaoModalidadeDados:classificacaoModalidadeForm:numeroLicitacao:numeroLicitacao" />
+				</section>
+				<section class="col col-3" jsf:rendered="#{!cc.attrs.managedBean.processo.maiorDesconto}">
+					<p:outputLabel for="criterioJulgamento" value="Critério de Julgamento" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="criterioJulgamento" value="#{cc.attrs.managedBean.processo.criterioJulgamento}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.getCriterioJulgamento(cc.attrs.managedBean.processo)}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+					
+				<section class="col col-3" jsf:rendered="#{cc.attrs.managedBean.processo.maiorDesconto}">
+					<p:outputLabel for="criterioJulgamentoDesconto" value="Critério de Julgamento" styleClass="label" />
+					<label class="input">
+						<p:inputText id="criterioJulgamentoDesconto" value="#{cc.attrs.managedBean.processo.criterioJulgamento.descricao}" readonly="true" />
+					</label>
+				</section>
+					
+					
+			</div>	
+			<div class="row">
+				<p:outputPanel id="dataInicioPropostasPanel" rendered="#{cc.attrs.managedBean.processo.regimeContratacao eq 'LEI_14133'}">
+					<section class="col col-3">
+						<p:outputLabel for="dataInicioPropostas" value="Data / Hora Início Proposta" styleClass="label"  rendered="#{cc.attrs.managedBean.processo.regimeContratacao eq 'LEI_14133'}"/>
+						<label class="input">
+							<p:calendar id="dataInicioPropostas" style="float:left"
+										value="#{cc.attrs.managedBean.processo.dataInicioPropostas}" 
+										pattern="dd/MM/yyyy HH:mm"
+										disabled="#{cc.attrs.readonly}"
+										mask="true"
+										locale="pt"
+										rendered="#{cc.attrs.managedBean.processo.regimeContratacao eq 'LEI_14133'}" />
+						</label>
+					</section>
+				</p:outputPanel>
+				<p:outputPanel id="dataEncerramentoPanel">
+					<section class="col col-3">
+						<p:outputLabel for="dataEncerramento" value="Data / Hora Encerramento Proposta" styleClass="label" />
+						<label class="input">
+							<p:calendar id="dataEncerramento" style="float:left"
+										value="#{cc.attrs.managedBean.processo.dataEncerramento}" 
+										pattern="dd/MM/yyyy HH:mm"
+										disabled="#{cc.attrs.readonly}"
+										mask="true"
+										locale="pt" />
+						</label>
+					</section>
+				</p:outputPanel>
+				<p:outputPanel id="dataAberturaPanel">
+					<section class="col col-3">
+						<p:outputLabel for="dataAbertura" value="Data / Hora Abertura Sessão" styleClass="label" />
+						<label class="input">
+							<p:calendar id="dataAbertura" style="float:left"
+										value="#{cc.attrs.managedBean.processo.dataAbertura}" 
+										pattern="dd/MM/yyyy HH:mm"
+										disabled="#{cc.attrs.readonly}"
+										mask="true"
+										locale="pt" />
+						</label>
+					</section>
+				</p:outputPanel>
+				
+				<p:outputPanel id="tipoBeneficioMePanel">
+					<section class="col col-3">
+						<p:outputLabel for="tipoBeneficioMe" value="Tipo Benefício M.E. / E.P.P. / M.E.I." styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="tipoBeneficioMe" value="#{cc.attrs.managedBean.processo.tipoBeneficioMe}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{typesController.tipoBeneficioMe}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</p:outputPanel>
+				
+			</div>			
+			<div class="row" >
+				<section class="col col-3">
+					<mcl:number id="editalNumero" label="Número Edital" value="#{cc.attrs.managedBean.processo.editalNumero}" disabled="#{cc.attrs.readonly}"  required="#{cc.attrs.managedBean.isEditalAnoENumeroObrigatorio()}" ajax="true"/>
+				</section>
+				<section class="col col-3">
+					<mcl:number id="editalAno" label="Ano Edital" value="#{cc.attrs.managedBean.processo.editalAno}" disabled="#{cc.attrs.readonly}" required="#{cc.attrs.managedBean.isEditalAnoENumeroObrigatorio()}" ajax="true" /> 
+				</section>
+				<section class="col col-3">
+			        <p:outputLabel for="plataforma" value="Plataforma de Compras?" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="plataforma" value="#{cc.attrs.managedBean.processo.integracaoPlataforma}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.plataforma}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				            <p:ajax process="@this" global="false" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>			
+			<div class="row" >
+				<p:outputPanel id="internacionalPanel">
+					<section class="col col-3" jsf:rendered="#{cc.attrs.managedBean.processo.modalidade eq 'CONCORRENCIA' or cc.attrs.managedBean.processo.modalidade eq 'CONCORRENCIA_ELETRONICA'}" >
+						<p:outputLabel for="internacional" value="Internacional ?" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="internacional" value="#{cc.attrs.managedBean.processo.internacional}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+					            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</p:outputPanel>
+			</div>
+			<div class="row" >
+				<p:fieldset>
+					<h:panelGroup id="panelFundamento" >
+						<section jsf:rendered="#{cc.attrs.managedBean.exibirFundamentoLegal()}">
+							<p:outputLabel for="fundamentoLegal1" value="Fundamento legal" styleClass="label" />
+							<label class="input">
+								<p:selectOneMenu id="fundamentoLegal1" value="#{cc.attrs.managedBean.processo.fundamentoLegal}"  
+									disabled="#{cc.attrs.readonly}" styleClass="select" required="true">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.getFundamentoLegal(cc.attrs.managedBean.processo)}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+									<p:ajax event="change" listener="#{cc.attrs.managedBean.onChangeFundamentoLegal()}" update="panelOutro divPncp" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+					</h:panelGroup>
+					
+					<h:panelGroup id="panelOutro">
+						<section jsf:rendered="#{cc.attrs.managedBean.processo.fundamentoLegal eq 'ART_903' || cc.attrs.managedBean.processo.fundamentoLegal eq 'ART_904'}">
+							<p:outputLabel for="fundamentoLegalDescricaoOutro" value="Descrição do Fundamento Legal ( quando for informado - Outro ) *" styleClass="label" />
+							<label class="input">
+								<p:inputText id="fundamentoLegalDescricaoOutro" value="#{cc.attrs.managedBean.processo.fundamentoLegalDescricaoOutro}" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+					</h:panelGroup>
+				</p:fieldset>
+			</div>
+			<section>
+				<p:outputLabel for="modalidadeJustificativa" value="Justificativa" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="modalidadeJustificativa" value="#{cc.attrs.managedBean.processo.modalidadeJustificativa}" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+			<h:panelGroup id="panelJustificativaPresencial">
+				<section jsf:rendered="#{cc.attrs.managedBean.isModalidadePresencial()}">
+					<p:outputLabel for="pncpJustificativaPresencial" value="Justificativa para realizar Processo Presencial" styleClass="label" />
+					<label class="input">
+						<p:inputTextarea id="pncpJustificativaPresencial" value="#{cc.attrs.managedBean.processo.pncpJustificativaPresencial}" 
+						disabled="#{cc.attrs.readonly}" rows="5" counter="display" maxlength="5120" counterTemplate="{0} restantes." autoResize="false"/><br />
+						<h:outputText id="display" />
+					</label>
+				</section>
+			</h:panelGroup>			
+			
+			<p:fieldset id="divPncp" legend="P.N.C.P." class="fieldset-borda" rendered="#{cc.attrs.managedBean.processo.regimeContratacao eq 'LEI_14133'}">
+				<div class="row">
+					<section class="col col-4">
+						<p:outputLabel for="pncpModoDisputa" value="Modo de Disputa" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="pncpModoDisputa" value="#{cc.attrs.managedBean.processo.pncpModoDisputa}" required="#{cc.attrs.managedBean.processo.regimeContratacao eq 'LEI_14133'}" disabled="#{cc.attrs.readonly}" styleClass="select" >
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{typesController.getPncpModoDisputa(cc.attrs.managedBean.processo)}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+					        </p:selectOneMenu>
+						</label>
+					</section>
+					<section class="col col-4">
+						<p:outputLabel for="pncpOrcamentoSigiloso" value="Orçamento Sigiloso ?" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="pncpOrcamentoSigiloso" value="#{cc.attrs.managedBean.processo.pncpOrcamentoSigiloso}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+					            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+					<section class="col col-4">
+						<p:outputLabel for="pncpCategoriaProcesso" value="Categoria do Processo" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="pncpCategoriaProcesso" value="#{cc.attrs.managedBean.processo.pncpCategoriaProcesso}" required="#{cc.attrs.managedBean.processo.regimeContratacao eq 'LEI_14133'}" disabled="#{cc.attrs.readonly}" styleClass="select" >
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{typesController.pncpCategoriaProcesso}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</div>
+			</p:fieldset>
+			<section>
+				<p:outputLabel for="msgLei" value="Atenção" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="msgLei" value="#{cc.attrs.managedBean.textoLei}" disabled="true" />
+				</label>
+			</section>
+		</fieldset>
+		
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

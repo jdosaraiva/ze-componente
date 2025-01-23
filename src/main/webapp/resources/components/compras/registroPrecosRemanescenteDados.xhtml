@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="rpRemanescenteForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="registroPrecos" 
+						label="Registro de Preços" 
+						controller="#{registroPrecoColumnsView}"
+						descricao="#{cc.attrs.managedBean.registroPrecos.numero.toString().concat(' / ').concat(cc.attrs.managedBean.registroPrecos.ano)
+						.concat(' - ').concat(cc.attrs.managedBean.registroPrecos.processo.modalidade.descricao)
+						.concat(' ').concat(cc.attrs.managedBean.registroPrecos.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.registroPrecos.processo.numeroLicitacao)
+						.concat(' / ').concat(cc.attrs.managedBean.registroPrecos.processo.anoLicitacao)
+						.concat(' - ').concat(cc.attrs.managedBean.registroPrecos.processo.status.descricao)}" 
+						value="#{cc.attrs.managedBean.registroPrecos}" 
+						required="true" 
+						leitura="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.id}"
+						listener="#{cc.attrs.managedBean.carregarDadosRPR()}" 
+						update="registroPrecosRemanescenteDados:rpRemanescenteForm"
+						cabecalho= "Consulta de Registro de Preços" /> 
+				</section>
+				
+				<section class="col col-6">
+					<p:outputLabel for="fornecedAtual" value="Fornecedor Atual" styleClass="label" />
+					<label class="input">
+						<p:inputText id="fornecedAtual" value="#{cc.attrs.managedBean.fornecedorSelecionadoDTO.razaoSocial.concat(cc.attrs.managedBean.fornecedorSelecionadoDTO.status == null ? '' : ' |*| ').concat(cc.attrs.managedBean.fornecedorSelecionadoDTO.status)}" required="true" readonly="true"/>
+					</label>
+				</section>
+				
+				
+
+			</div>
+
+			<div class="row">
+			
+			
+				<section class="col col-6">
+					<p:outputLabel for="fornecedorRemanescenteDTO" value="Fornecedor que vai assumir os Objetos Remanescentes" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="fornecedorRemanescenteDTO" value="#{cc.attrs.managedBean.fornecedorRemanescenteDTO}" required="true" styleClass="select" filter="true" filterMatchMode="contains">
+				            <f:selectItem itemLabel=".: Selecione um Fornecedor Vencedor:." itemValue="" />
+				            <f:selectItems value="#{cc.attrs.managedBean.fornecedorList}" var="item" itemLabel="#{item.razaoSocial} |*| #{item.status}" itemValue="#{item}"/>
+				            <p:ajax listener="#{cc.attrs.managedBean.carregarObjetosFornecedor()}" update="registroPrecosRemanescenteDados:rpRemanescenteForm:dtObjetos" event="change"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			
+			
+				<section class="col col-3">
+					<p:outputLabel for="numeroRPRemanescente" value="Número RP Remanescente" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numeroRPRemanescente" value="#{cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.numero}" required="true" disabled="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.id}"/>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="anoRPRemanescente" value="Ano RP Remanescente" styleClass="label" />
+					<label class="input">
+						<p:inputText id="anoRPRemanescente" value="#{cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.ano}" required="true" disabled="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.id}"/>
+					</label>
+				</section>
+				
+			
+			</div>
+			
+			
+			<div class="row">
+				
+				<section class="col col-3">
+					<mcl:inputSelectCondicaoPagamento id="condicaoPagamento" label="Condição Pagamento" value="#{cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.condicaoPagamento}" 
+						managedBean="#{condicaoPagamentoAutocomplete}" itemLabel="#{item.descricao}" required="true" readonly="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.id}"/>
+				</section>
+			
+			
+				<section class="col col-3">
+					<p:outputLabel for="pncpDataAssinatura" value="Data Assinatura" styleClass="label" />
+					<label class="input">
+						<p:calendar id="pncpDataAssinatura" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.pncpDataAssinatura}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.id}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataInicial" value="Início Vigência" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataInicial" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.dataInicial}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.id}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataFinal" value="Fim Vigência" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataFinal" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.dataFinal}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.registroPrecos.id}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+			
+			
+			<section>
+				<p:outputLabel for="justificativa" value="Justificativa" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="justificativa" value="#{cc.attrs.managedBean.registroPrecosRemanescente.justificativa}" disabled="#{not empty cc.attrs.managedBean.registroPrecosRemanescente.id}"
+									 counter="display" maxlength="1000" counterTemplate="{0} restantes" autoResize="false" required="true" />
+					<h:outputText id="display" class="block" />
+				</label>
+			</section>
+			
+			
+			<section>
+				<p:dataTable id="dtObjetos" var="item" disabledSelection="#{cc.attrs.readonly}"
+					value="#{cc.attrs.managedBean.itemRegistroPrecosList}"
+					selection="#{cc.attrs.managedBean.objetoListDisponiveisSel}" 
+					reflow="true" 
+					emptyMessage="Não há registros." 
+					tableStyleClass="table table-striped" 
+					rowSelectMode="checkbox" 
+					rowKey="#{item.id}" 
+					styleClass="table-reflow-desktop">
+					
+						<f:facet name="header">Objetos do Fornecedor na Ata Atual de RP</f:facet>
+					       <p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.managedBean.onRowSelectDisponiveis}" />
+						   <p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.unRowSelectDisponiveis}" />
+						   <p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.onRowSelectAllDisponiveis}" />
+	        			<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+					    
+					   	<p:column headerText="Descrição" filterBy="#{item.objeto.descricao}" filterMatchMode="contains">
+					        <h:outputText value="#{item.objeto.descricao}" />
+					    </p:column>
+					    <p:column headerText="Unidade" style="width: 80px">
+					        <h:outputText value="#{item.objeto.unidade}" modoConsulta="true" />
+					    </p:column>
+						<p:column headerText="Marca"  style="width: 180px">
+						    <h:inputText value="#{item.marcaLicitante}" style="width: 95%;color: #404040;" readonly="#{item.objeto.processo.divisaoObjeto ne 'LOTE'}" >
+						        <p:ajax event="blur" process="@this" global="false" />
+						    </h:inputText>
+						</p:column>					    
+					    <p:column headerText="Quantidade" style="width: 100px">
+					    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Qtde Disp" style="width: 100px">
+					    	<mcl:money value="#{item.quantidadeDisponivel}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Vlr Unitário" style="width: 100px">
+		           			<mcl:money value="#{item.valorUnitarioInicialRequisicao}" modoConsulta="#{item.objeto.processo.divisaoObjeto ne 'LOTE'}" decimalPlaces="4" />
+					    </p:column>
+					    <p:column headerText="Vlr Total Disp" style="width: 100px">
+					    	<mcl:money value="#{item.valorTotalDisponivel}" modoConsulta="true" />
+					    </p:column>
+					   	<p:column headerText="Status" style="width: 80px">
+					        <h:outputText value="#{item.status.descricao}" modoConsulta="true" />
+					    </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.incluirRemanescente()}" styleClass="btn btn-success btn-lg" 
+				onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Transferir" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

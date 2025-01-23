@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="referenciaMonetariaForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número / Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero} / #{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.processo.modalidade.descricao} - #{cc.attrs.managedBean.processo.numeroLicitacao} / #{cc.attrs.managedBean.processo.anoLicitacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="exclusivoMe" value="Exclusivo M.E. ?" styleClass="label" />
+					<label class="input">
+						<p:inputText id="exclusivoMe" value="#{cc.attrs.managedBean.processo.exclusivoMe ? 'Sim' : 'Não'}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<p:outputPanel id="valorTetoMaximoPanel">
+				<div class="row">
+					<section class="col col-3">
+							<mcl:money id="valorTetoMaximo" label="Valor Teto Máximo" required="true" value="#{cc.attrs.managedBean.processo.valorTetoMaximo}" disabled="#{cc.attrs.readonly}" />
+					</section>
+				</div>
+			</p:outputPanel>
+
+			<section>
+				<p:dataTable id="dtObjetos" var="item" value="#{cc.attrs.managedBean.objetoList}" rowIndexVar="index" rendered="#{cc.attrs.managedBean.processo.divisaoObjeto eq 'ITEM'}">
+				    <f:facet name="header">
+				        Objetos de Licitação do Processo - Itens
+				    </f:facet>
+				    <p:column headerText="Item" style="width: 40px;text-align: center">
+				        <h:outputText value="#{item.item}" />
+				    </p:column>
+				    <p:column headerText="Número" style="width: 50px;text-align: center">
+				        <h:outputText value="#{item.numero}" />
+				    </p:column>
+				   	<p:column headerText="Descrição" >
+				        <h:outputText value="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Un." style="width: 40px;text-align: center">
+				        <h:outputText value="#{item.unidade}" rendered="#{item.tipoRequisicao ne 'CATALOGO'}" />
+				    </p:column>
+				    <p:column headerText="Quantidade" style="width: 80px">
+				    	<mcl:money value="#{item.quantidade}" modoConsulta="true"  rendered="#{item.tipoRequisicao ne 'CATALOGO'}" />
+				    </p:column>
+				    <p:column headerText="Vl. Un. Ref." style="width: 100px">
+				    	<h:panelGroup id="valorUnitarioReferencia">
+				    	<mcl:money value="#{item.valorUnitarioReferencia}" modoConsulta="true" rendered="#{cc.attrs.readonly}" />
+				    	<mcl:money 
+				    			value="#{item.valorUnitarioReferencia}" 
+				    			decimalPlaces="4" 
+				    			ajax="true" 
+				    			global="false"
+				    			rendered="#{item.tipoRequisicao ne 'CATALOGO' and !cc.attrs.readonly}" 
+								listener="#{cc.attrs.managedBean.atualizaValorTotalPeloValorReferencia(item)}"
+								update="referenciaMonetariaDados:referenciaMonetariaForm:dtObjetos:${index}:valor"/>
+						</h:panelGroup>
+				    </p:column>
+				    <p:column headerText="Valor Total" style="width: 100px">
+				    	<h:panelGroup id="valor">
+				    	<mcl:money 
+				    			value="#{item.valor}" 
+				    			global="false"
+				    			modoConsulta="true"
+				    			rendered="#{item.tipoRequisicao ne 'CATALOGO'}" 
+								 />
+						</h:panelGroup>
+				    </p:column>
+				    <p:column headerText="% Mínimo" style="width: 80px">
+				    	<mcl:money value="#{item.percentualMinimo}" modoConsulta="true" rendered="#{cc.attrs.readonly}" />
+				    	<mcl:money value="#{item.percentualMinimo}" global="false" maxValue="99.99" rendered="#{!cc.attrs.readonly}"/>
+				    </p:column>
+				</p:dataTable>
+			</section>
+			
+			<section jsf:rendered="#{cc.attrs.managedBean.processo.divisaoObjeto eq 'LOTE'}">
+				<p:dataTable id="dtObjetosLote" var="lote"  rowIndexVar="indexLote" value="#{cc.attrs.managedBean.objetoList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+				    <f:facet name="header">
+				        Objetos de Licitação do Processo - Lotes
+				    </f:facet>
+				    <p:column style="width: 16px">
+						<p:rowToggler />
+					</p:column>
+				    
+				    <p:column headerText="Item" style="width: 40px;text-align: center">
+				        <h:outputText value="#{lote.item}" />
+				    </p:column>
+				    <p:column headerText="Número" style="width: 50px;text-align: center">
+				        <h:outputText value="#{lote.numero}" />
+				    </p:column>
+				    <p:column headerText="Quantidade" style="width: 80px">
+				    	<mcl:money value="#{lote.quantidade}" modoConsulta="true"  rendered="#{lote.tipoRequisicao ne 'CATALOGO'}" />
+				    </p:column>
+				   	<p:column headerText="Descrição" >
+				        <h:outputText value="#{lote.descricao}" />
+				    </p:column>
+				    <p:column headerText="% Mínimo" style="width: 80px">
+				    	<p:outputPanel id="percentualMinimoLote">
+				    		<h:outputText value="#{lote.percentualMinimo}"  />
+				    	</p:outputPanel>
+				    </p:column>
+			        <p:rowExpansion>
+			        	<p:dataTable id="dtObjetosLoteItens" var="item2" rowIndexVar="indexItem" value="#{lote.objetoItemDoLoteSet}"
+							reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+							styleClass="table-reflow-desktop">
+						    <p:column headerText="Item" style="width: 50px">
+						        <mcl:number value="#{item2.item}" modoConsulta="true" />
+						    </p:column>
+						    <p:column headerText="Número" style="width: 50px">
+						        <mcl:number value="#{item2.numero}" modoConsulta="true" />
+						    </p:column>
+						    <p:column headerText="Descrição">
+						        <h:outputText value="#{item2.descricao}" />
+						    </p:column>
+							<p:column headerText="Un." style="width: 40px;text-align: center">
+						        <h:outputText value="#{item2.unidade}" rendered="#{item2.tipoRequisicao ne 'CATALOGO'}" />
+						    </p:column>
+						    <p:column headerText="Quantidade" style="width: 100px">
+						        <mcl:money value="#{item2.quantidade}" modoConsulta="true" rendered="#{item2.tipoRequisicao ne 'CATALOGO'}" />
+						    </p:column>
+						    <p:column headerText="Vl. Un. Ref." style="width: 100px">
+						    	<h:panelGroup id="valorUnitarioReferenciaLote">
+						    	<mcl:money value="#{item2.valorUnitarioReferencia}" modoConsulta="true" rendered="#{cc.attrs.readonly}" />
+						    	<mcl:money 
+						    			value="#{item2.valorUnitarioReferencia}" 
+						    			decimalPlaces="4" 
+						    			ajax="true" 
+						    			global="false"
+						    			rendered="#{item2.tipoRequisicao ne 'CATALOGO' and !cc.attrs.readonly}" 
+										listener="#{cc.attrs.managedBean.atualizaValorTotalPeloValorReferencia(item2)}"
+										update="referenciaMonetariaDados:referenciaMonetariaForm:dtObjetosLote:${indexLote}:dtObjetosLoteItens:${indexItem}:valorLote"
+										/>
+								</h:panelGroup>
+						    </p:column>
+						    <p:column headerText="Valor Total" style="width: 100px">
+						    	<p:outputPanel id="valorLote">
+							    	<mcl:money 
+							    			value="#{item2.valor}" 
+							    			global="false"
+							    			modoConsulta="true"
+							    			rendered="#{item2.tipoRequisicao ne 'CATALOGO'}" 
+											 />
+						    	</p:outputPanel>
+						    </p:column>
+						    <p:column headerText="% Mínimo" style="width: 80px">
+						    	<mcl:money value="#{item2.percentualMinimo}" modoConsulta="true" rendered="#{cc.attrs.readonly}" />
+						    	<mcl:money 
+						    		value="#{item2.percentualMinimo}" 
+						    		global="false" 
+						    		maxValue="99.99" 
+						    		rendered="#{!cc.attrs.readonly}"
+						    		/>
+						    </p:column>
+						</p:dataTable>
+			        </p:rowExpansion>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

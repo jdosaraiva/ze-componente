@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<p:fieldset legend="Exigência de Obras" id="panelExigenciaObras" class="fieldset-borda">
+		<section>
+			<mcl:inputSelectTceAjuste
+				id="Ajuste" 
+				label="Ajuste TCE" 
+				value="#{cc.attrs.managedBean.tceExigenciaObras.tceAjuste}" 
+				managedBean="#{tceAjusteAutocomplete}" 
+				itemLabel="#{item.tce.processo.numero}" 
+				required="true"
+				readonly="#{cc.attrs.readonly}"
+				ajax="true"
+				listener="#{cc.attrs.managedBean.buscaProcesso()}"
+				update="tceExigenciaObrasDados:tceExigenciaObraForm:tabLicitacao:licencaAmbientalDados:dtLicenca" />
+		</section>
+		<section>
+			<p:outputLabel for="impactoAmbiental" value="Consta nos autos o relatório de impacto ambiental? (Quando tratar-se de obra modificadora do meio ambiente - Lei 8.666/93, art. 12 e Resolução CONAMA 001, de 23.01.86, art. 2º)" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="impactoAmbiental" value="#{cc.attrs.managedBean.tceExigenciaObras.impactoAmbiental}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="artigosEstadual1126302" value="O projeto da obra contempla as exigências contidas nos artigos 11 a 14 da Lei Estadual nº 11.263/02, de forma a assegurar o acesso de pessoas com deficiência ou com mobilidade reduzida? (banheiros acessíveis, rampas de acesso, elevadores acessíveis, etc.)" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="artigosEstadual1126302" value="#{cc.attrs.managedBean.tceExigenciaObras.artigosEstadual1126302}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="alvaraConstrucaoObra" value="Consta nos autos o alvará de construção da obra?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="alvaraConstrucaoObra" value="#{cc.attrs.managedBean.tceExigenciaObras.alvaraConstrucaoObra}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="condicoesFisicas" value="Houve levantamento das condições físicas das áreas selecionadas?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="condicoesFisicas" value="#{cc.attrs.managedBean.tceExigenciaObras.condicoesFisicas}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="criteriosTecnicos" value="Na definição dessas áreas, foram adotados critérios técnicos contidos no art. 6º, IX da lei 8666/93?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="criteriosTecnicos" value="#{cc.attrs.managedBean.tceExigenciaObras.criteriosTecnicos}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="padronizacaoTipoClasse" value="Num conjunto de obras, para um mesmo fim, houve padronização por tipo ou classe de acordo com o projeto? (Lei 8.666/93, art. 11)" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="padronizacaoTipoClasse" value="#{cc.attrs.managedBean.tceExigenciaObras.padronizacaoTipoClasse}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="existeArt" value="Há anotações da Responsabilidade Técnica, ART, do CREA, do responsável técnico pela obra?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="existeArt" value="#{cc.attrs.managedBean.tceExigenciaObras.existeArt}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<div class="row">
+			<section class="col col-5">
+				<p:outputLabel for="dataEmissaoOrdemServico" value="Data da emissão da 1ª (primeira) Ordem de Serviço" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataEmissaoOrdemServico" value="#{cc.attrs.managedBean.tceExigenciaObras.dataEmissaoOrdemServico}" pattern="dd/MM/yyyy" required="true" disabled="#{cc.attrs.readonly}" style="float:left" mask="true" locale="pt" />
+				</label>
+			</section>
+		</div>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

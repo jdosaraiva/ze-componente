@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="aberturaForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section  class="col col-3">
+					<label class="input">
+						<mcl:number id="exercicio" label="Exercício a Abrir" value="#{cc.attrs.managedBean.exercicio}" maxValue="2999" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="importarOrgaos" value=" " styleClass="label" />
+			        <p:commandLink  id="importarOrgaos" action="#{cc.attrs.managedBean.importarOrgaos()}" styleClass="btn btn-success btn-lg" title="Importa todos os Órgãos da Contabilidade para o Exercício Indicado." >
+						<p:confirm header="Atenção" message="Confirma a Importação dos Órgãos da Contabilidade para o Exercício indicado ?" />
+		            	<i class="fa fa-cog"></i>
+		            	<h:outputText value="    Importar Órgãos da Contabilidade" />
+		            </p:commandLink>
+				</section>
+			</div>			
+			
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="importarOrgaosDePara" value=" " styleClass="label" />
+			        <p:commandLink  id="importarOrgaosDePara" action="#{cc.attrs.managedBean.importarOrgaosDePara()}" styleClass="btn btn-success btn-lg" title="Importa 'De - Para' de Órgãos da Contabilidade" >
+						<p:confirm header="Aviso" message="Confirma a Importação 'De - Para' de Órgãos da Contabilidade ?" />
+		            	<i class="fa fa-cog"></i>
+		            	<h:outputText value="    Importar 'De - Para' de Órgãos da Contabilidade" />
+		            </p:commandLink>
+				</section>
+			</div>			
+			
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="validarOrgaos" value=" " styleClass="label" />
+			        <p:commandLink  id="validarOrgaos" action="#{cc.attrs.managedBean.validarOrgaos()}" styleClass="btn btn-success btn-lg" title="Valida Órgãos da Contabilidade" >
+						<p:confirm header="Aviso" message="Confirma a Validação de Órgãos da Contabilidade ?" />
+		            	<i class="fa fa-cog"></i>
+		            	<h:outputText value="    Validar Órgãos da Contabilidade" />
+		            </p:commandLink>
+				</section>
+			</div>			
+			
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="validarRequisicaoRetirada" value=" " styleClass="label" />
+			        <p:commandLink  id="validarRequisicaoRetirada" action="#{cc.attrs.managedBean.validarRequisicaoRetirada()}" styleClass="btn btn-success btn-lg" title="Valida Requisições de Retirada" >
+						<p:confirm header="Aviso" message="Confirma a Validação de Requisições de Retirada ?" />
+		            	<i class="fa fa-cog"></i>
+		            	<h:outputText value="    Validar Requisições de Retirada" />
+		            </p:commandLink>
+				</section>
+			</div>			
+			
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="transferirEstoques" value=" " styleClass="label" />
+			        <p:commandLink  id="transferirEstoques" action="#{cc.attrs.managedBean.transferirEstoques()}" styleClass="btn btn-success btn-lg" title="Transfere os Estoques ativos de todos Órgãos" >
+						<p:confirm header="Aviso" message="Confirma a Transferência dos Estoques ?" />
+		            	<i class="fa fa-cog"></i>
+		            	<h:outputText value="    Transferir Estoques" />
+		            </p:commandLink>
+				</section>
+			</div>			
+			
+
+             <p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+				<p:commandLink value="Sim" title="Sim"
+					styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+	            </p:commandLink>
+	            &#160;&#160;&#160;
+	            <p:commandLink value="Não" title="Não"
+					styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+	            </p:commandLink>
+		    </p:confirmDialog>
+					
+		</fieldset>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

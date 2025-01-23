@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="fechamentoAlmoxarifadoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section style="margin: 10px;">
+				<alert dismissible="true" type="info">
+					<div role="alert" class="alert alert-info alert-dismissible ng-star-inserted">  
+	          			<i class="fa-fw fa fa-info-circle"></i>
+	          			<strong>Atenção</strong> :<br/>
+	          			O Fechamento de Almoxarifado ignora a Data de Trabalho e usa a Data <b>Real</b> do sistema que é <b>#{cc.attrs.managedBean.dataReal}</b>.
+         			</div>
+        		</alert>
+			</section>
+				
+			<div class="row">
+				<section class="col col-9">
+					<H1>#{cc.attrs.managedBean.mensagemDaAcao}</H1>
+				</section>
+			</div>
+			<p:panel id="panelFechamento" header="Fechamento a realizar" rendered="#{cc.attrs.managedBean.mesDoFechamento >0}">
+			
+				<div class="row">	
+					
+					
+					<section class="col col-3">
+						<mcl:number id="mesDoFechamento" label="Mês do Fechamento" value="#{cc.attrs.managedBean.mesDoFechamento}" readonly="true" />
+					</section>
+					<section class="col col-3">
+						<mcl:number id="anoDoFechamento" label="Ano do Fechamento" value="#{cc.attrs.managedBean.anoDoFechamento}" readonly="true" />
+					</section>
+					
+					
+					<section class="col col-3">
+						<p:outputLabel value="Realizado por" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{sessaoMCL.operador.nome}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel for="nomeDoResponsavel" value="Responsável" styleClass="label" />
+						<label class="input">
+							<p:inputText id="nomeDoResponsavel" value="#{cc.attrs.managedBean.nomeDoResponsavel}" required="true" readonly="#{cc.attrs.readonly}"  />
+						</label>
+					</section>
+					
+				</div>
+			
+				
+				
+			</p:panel>
+			
+
+			
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{cc.attrs.managedBean.mesDoFechamento > 0}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="importacaoForm" class="smart-form" acceptcharset="ISO-8859-1" enctype="multipart/form-data" >
+		<fieldset>
+		
+			<div class="row">
+				<section class="col col-9">
+					<p:outputLabel for="atualizarFornecedor" value="Deseja atualizar dados do fornecedor se os dados de Cadastro estiverem diferente do arquivo importado ?" />
+					<p:spacer width="10"></p:spacer>
+	                <p:inputSwitch id="atualizarFornecedor" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.atualizarFornecedor}" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="arquivo" value="Escolha o arquivo de importação" styleClass="label" />
+					<p:fileUpload id="arquivo" value="#{cc.attrs.managedBean.arquivo}" required="true" mode="simple" skinSimple="true" cache="false" />
+				</section>
+			</div>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.importar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

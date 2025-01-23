@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditItemRequisicao" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditItemRequisicao" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Manutenção de Item de Requisição</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="tipoItem" value="Tipo do Item" />
+							        <p:selectOneMenu id="tipoItem" value="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo}" disabled="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" 
+							        	styleClass="select-popup">
+							            <f:selectItems value="#{typesController.tipoItemRequisicaoCompra}" var="item" itemLabel="#{item.descricao}" required="true" itemValue="#{item}"/>
+							        	<p:ajax update="@form" process="@this" global="false" />
+							        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos == null}">
+									<mcl:inputLupa 
+										id="material" 
+										label="Material" 
+										controller="#{materialColumnsView}"
+										descricao="#{cc.attrs.managedBean.materialSelecionado.descricao}"
+										value="#{cc.attrs.managedBean.materialSelecionado}"
+										cabecalho="Consulta de Material"
+										listener="#{cc.attrs.managedBean.carregaMaterial()}" 
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial :editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeMaterial :editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial"  
+										required="true" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL'}"
+										leitura="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" 
+										readonly="#{cc.attrs.readonly}" />
+									<mcl:inputLupa 
+										id="servico" 
+										label="Serviço" 
+										controller="#{servicoColumnsView}"
+										descricao="#{cc.attrs.managedBean.servicoSelecionado.descricao}"
+										value="#{cc.attrs.managedBean.servicoSelecionado}"
+										cabecalho="Consulta de Serviço"
+										listener="#{cc.attrs.managedBean.carregaServico()}" 
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial :editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeServico :editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial"  
+										required="true" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO'}"
+										leitura="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" />
+									<mcl:inputLupa 
+										id="catalogoMateriais" 
+										label="Catálogo Materiais" 
+										controller="#{catalogoColumnsView}"
+										descricao="#{cc.attrs.managedBean.catalogoMaterialSelecionado.descricao}"
+										value="#{cc.attrs.managedBean.catalogoMaterialSelecionado}"
+										cabecalho="Consulta de Catálogo de Materiais"
+										listener="#{cc.attrs.managedBean.carregaCatalogo()}" 
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeMaterial 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeServico 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial"  
+										required="true" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO'}"
+										readonly="#{cc.attrs.readonly}" 
+										leitura="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" />
+								</div>
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO'}">
+								
+									<mcl:inputLupa 
+										id="catalogoMateriaisMaiorDesconto" 
+										label="Catálogo Materiais - Maior Desconto" 
+										controller="#{catalogoRequisicaoCompraColumnsView}"
+										descricao="#{cc.attrs.managedBean.catalogoMaterialSelecionado.descricao}"
+										value="#{cc.attrs.managedBean.catalogoMaterialSelecionado}"
+										cabecalho="Consulta de Catálogo de Materiais"
+										listener="#{cc.attrs.managedBean.carregaCatalogo()}" 
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeMaterial 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeServico 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:percentual_desconto:percentual_desconto"  
+										required="true" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO'}"
+										readonly="#{cc.attrs.readonly}" 
+										leitura="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" />
+								
+								
+									<mcl:inputLupa 
+										id="materialMaiorDesconto" 
+										label="Material" 
+										controller="#{materialColumnsView}"
+										descricao="#{cc.attrs.managedBean.materialSelecionado.descricao}"
+										value="#{cc.attrs.managedBean.materialSelecionado}"
+										cabecalho="Consulta de Material"
+										listener="#{cc.attrs.managedBean.carregaMaterial()}" 
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial :editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeMaterial :editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial"  
+										required="true" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'SERVICO'}"
+										leitura="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" 
+										readonly="#{cc.attrs.readonly}" />
+								
+								
+								</div>
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL'}">
+									<mcl:inputLupa 
+										id="material2" 
+										label="Material Registro de Preços" 
+										controller="#{materialRequisicaoCompraColumnsView}"
+										descricao="#{cc.attrs.managedBean.materialSelecionado.descricao}"
+										value="#{cc.attrs.managedBean.materialSelecionado}"
+										cabecalho="Consulta de Material"
+										listener="#{cc.attrs.managedBean.carregaMaterial()}" 
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial :editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeMaterial :editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial"  
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL'}"
+										required="true" 
+										lazy="false"
+										readonly="#{cc.attrs.readonly}" 
+										leitura="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" />
+								</div>
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO'}">
+									<mcl:inputLupa 
+										id="servico2" 
+										label="Serviço Registro de Preços" 
+										controller="#{servicoRequisicaoCompraColumnsView}"
+										descricao="#{cc.attrs.managedBean.itemRegistroPrecosSelecionado.descricao}"
+										value="#{cc.attrs.managedBean.itemRegistroPrecosSelecionado}"
+										cabecalho="Consulta de Serviço"
+										listener="#{cc.attrs.managedBean.setaServicoDoItemRegistroPrecos()}" 
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:unidadeServico 
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:quantidadeInicial:quantidadeInicial
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial
+										:editItemRequisicaoCompra:formPopupEditItemRequisicao:percentual_desconto:percentual_desconto"  
+										required="true" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO'}"
+										lazy="false"
+										readonly="#{cc.attrs.readonly}" 
+										leitura="#{cc.attrs.managedBean.itemRequisicaoCompra.id != null}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+						
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:money id="percentual_desconto" label="Desc. (%)" value="#{cc.attrs.managedBean.itemRequisicaoCompra.percentualDesconto}" 
+										rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.maiorDesconto == true and
+													(cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO' and cc.attrs.managedBean.requisicaoCompra.registroPrecos != null) }"  
+									required="false" readonly="true" />
+								</div>
+							</div>
+						
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:money id="valorUnitDia" label="Valor Unitário do Dia" value="#{cc.attrs.managedBean.valorUnitDia}" 
+										required="true" ajax="true" global="false" readonly="false"
+										listener="#{cc.attrs.managedBean.calcularValorUnitario()}"  
+										rendered="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos.processo.maiorDesconto == true and
+													(cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO' and cc.attrs.managedBean.requisicaoCompra.registroPrecos != null) }"
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorUnitarioInicial:valorUnitarioInicial" 
+									/>
+								</div>
+							</div>
+						
+						
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:money id="quantidadeInicial" label="Quantidade" value="#{cc.attrs.managedBean.itemRequisicaoCompra.quantidadeInicial}" decimalPlaces="4"
+										required="true" ajax="true" global="false" listener="#{cc.attrs.managedBean.calculaValorTotal()}" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL' or
+													cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO' or
+													(cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO' and cc.attrs.managedBean.requisicaoCompra.registroPrecos != null) }"
+										readonly="#{cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and
+											   cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO' and cc.attrs.managedBean.itemRequisicaoCompra.quantidadeInicial eq 1
+											   or cc.attrs.readonly}" 
+										  
+										update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel value="Unidade" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL' or
+										   				cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO' or
+														(cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO' and cc.attrs.managedBean.requisicaoCompra.registroPrecos != null) }"/>
+									<p:inputText id="unidadeMaterial" value="#{cc.attrs.managedBean.materialSelecionado.unidade.nome}" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL' or
+													(cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO' and cc.attrs.managedBean.requisicaoCompra.registroPrecos != null) }"
+										readonly="true" />
+									<p:inputText id="unidadeServico" value="#{cc.attrs.managedBean.servicoSelecionado.unidade.nome}" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO'}"
+										readonly="true" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:money id="valorUnitarioInicial" label="Valor Unitário" value="#{cc.attrs.managedBean.itemRequisicaoCompra.valorUnitarioInicial}" decimalPlaces="4" 
+											   readonly="#{(cc.attrs.managedBean.requisicaoCompra.registroPrecos != null and
+											   cc.attrs.managedBean.itemRequisicaoCompra.quantidadeInicial ne 1)
+											   or cc.attrs.readonly}"
+											   rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL' or
+										   				cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO' or
+														(cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO' and cc.attrs.managedBean.requisicaoCompra.registroPrecos != null) }"
+											   required="false" ajax="true" global="false" 
+											   listener="#{cc.attrs.managedBean.calculaValorTotal()}" 
+											   update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:valorTotalInicial:valorTotalInicial" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:money id="valorTotalInicial" label="Valor Total" value="#{cc.attrs.managedBean.itemRequisicaoCompra.valorTotalInicial}"
+												rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL' or
+										   				cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO' or
+														(cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO' and cc.attrs.managedBean.requisicaoCompra.registroPrecos != null) }"
+												required="false" readonly="true" />
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<p:outputLabel for="detalhamento" value="Detalhamento" />
+									<p:inputTextarea id="detalhamento" value="#{cc.attrs.managedBean.itemRequisicaoCompra.detalhamento}" />
+								</div>
+							</div>
+						</div>
+						<p:fieldset id="frmLocalObra" legend="Localização da Obra" class="fieldset-borda" 
+							style="margin-bottom:20px;" rendered="#{cc.attrs.managedBean.requisicaoCompra.tipoObjeto == 'OBRAS_SERVICOS_ENGENHARIA'}"  >
+							<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+								<div class="col-sm-9">
+									<div class="form-group">
+										<p:outputLabel for="local" value="Local da Obra ou prestação do serviço" />
+										<p:inputText id="local" maxlength="100" value="#{cc.attrs.managedBean.localObra.local}">
+											<p:ajax update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:frmLocalObra" process="@this" global="false" />
+										</p:inputText>
+									</div>
+								</div>
+							</div>
+							<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<p:outputLabel for="localidadeLatitude" value="Latitude * ( Exemplo: -23.5504473 )" />
+										<p:inputNumber id="localidadeLatitude" value="#{cc.attrs.managedBean.localObra.localidadeLatitude}"
+											decimalSeparator="." decimalPlaces="8" thousandSeparator="," minValue="-90" maxValue="90" style="text-align:right">
+											<p:ajax update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:frmLocalObra" process="@this" global="false" />
+										</p:inputNumber>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<p:outputLabel for="localidadeLongitude" value="Longitude * ( Exemplo: -46.275073 )" />
+										<p:inputNumber id="localidadeLongitude" value="#{cc.attrs.managedBean.localObra.localidadeLongitude}"
+											decimalSeparator="." decimalPlaces="8" thousandSeparator="," minValue="-180" maxValue="180" style="text-align:right">
+											<p:ajax update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:frmLocalObra" process="@this" global="false" />
+										</p:inputNumber>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<p:spacer width="0px" height="80px" />
+										<h:commandLink id="btnAddLocalObra" actionListener="#{cc.attrs.managedBean.adicionarLocalObra()}" immediate="true" styleClass="btn btn-primary btn-sm">
+											<p:ajax update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:frmLocalObra" process="@this" global="false" />
+											<i class="fa fa-plus"></i>
+										</h:commandLink>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-group">
+										<p:dataTable reflow="true" id="dtLocObra" var="item" value="#{cc.attrs.managedBean.itemRequisicaoCompra.localObraList}"
+											emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+											<p:column colspan="2" headerText="Local da obra ou da prestação do serviço">
+												<h:outputText value="#{item.local}" />
+											</p:column>
+											<p:column headerText="Latitude">
+												<h:outputText value="#{item.localidadeLatitude}">
+													<f:convertNumber locale="en_US" pattern="#,##0.0000000" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Longitude">
+												<h:outputText value="#{item.localidadeLongitude}">
+													<f:convertNumber locale="en_US" pattern="#,##0.0000000" />
+												</h:outputText>
+											</p:column>
+											<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+												<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerLocalObra(item)}"
+													immediate="true" styleClass="btn btn-primary btn-sm" >
+													<p:ajax update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:dtLocObra" process="@this" global="false" />
+													<i class="fa fa-trash-o"></i>
+												</h:commandLink>
+											</p:column>
+										</p:dataTable>
+									</div>
+								</div>
+							</div>
+						</p:fieldset>
+						
+						
+						<p:fieldset id="frmTipoObra" legend="Tipo Obra / Serviço Engenharia" class="fieldset-borda" style="margin-bottom:20px;" rendered="#{cc.attrs.managedBean.requisicaoCompra.tipoObjeto == 'OBRAS_SERVICOS_ENGENHARIA'}"  >
+						
+							<div class="col-sm-12">
+								<div class="form-group">
+									<h:panelGroup id="panelPrincipal" style="display: grid;">
+										<p:repeat value="#{requisicaoCompraController.tipoObraServicoDTOList}" var="item">
+											<p:selectBooleanCheckbox value="#{item.selecionado}" itemLabel="#{item.tipoObraServico.descricao}">
+												<p:ajax event="change" process="@this" listener="#{requisicaoCompraController.updateTipoObraServico(item)}" 
+													update=":editItemRequisicaoCompra:formPopupEditItemRequisicao:panelPrincipal"> </p:ajax>
+											</p:selectBooleanCheckbox>
+											<h:panelGroup id="panel1" style="display: grid;margin-left: 30px;" rendered="#{item.selecionado}">
+												<p:repeat value="#{item.tipoServicoEngenharia1List}" var="item1">
+													<p:selectBooleanCheckbox value="#{item1.selecionado}" itemLabel="#{item1.tipoServicoEngenharia.descricao}">
+														<p:ajax event="change" listener="#{requisicaoCompraController.updateTipoServicoEngenharia(item1)}"> </p:ajax>
+													</p:selectBooleanCheckbox>
+												</p:repeat>
+											</h:panelGroup>
+											<h:panelGroup id="panel2" style="display: grid;margin-left: 30px;" rendered="#{item.selecionado}">
+												<p:repeat value="#{item.tipoServicoEngenharia2List}" var="item2">
+													<p:selectBooleanCheckbox value="#{item2.selecionado}" itemLabel="#{item2.tipoServicoEngenharia.descricao}">
+														<p:ajax event="change" listener="#{requisicaoCompraController.updateTipoServicoEngenharia(item2)}"> </p:ajax>
+													</p:selectBooleanCheckbox>
+												</p:repeat>
+											</h:panelGroup>
+										</p:repeat>
+									</h:panelGroup>
+								</div>
+							</div>
+						
+						</p:fieldset>
+						
+						
+					</div>
+					<div class="modal-footer">
+						<button id="btnCancelar" type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink id="btnAdicionar" value="" actionListener="#{cc.attrs.managedBean.adicionarItemRequisicao}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) { $('#popupEditItemRequisicao .close').click();} " />
+			            	<h:outputText value="  Adicionar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

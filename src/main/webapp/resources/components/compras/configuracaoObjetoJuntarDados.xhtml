@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="configuracaoObjetoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="item" value="Item" styleClass="label" />
+					<label class="input">
+						<p:inputText id="item" value="#{cc.attrs.managedBean.objetoSelecionado.item}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.objetoSelecionado.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.objetoSelecionado.material.descricao}" readonly="true" rendered="#{cc.attrs.managedBean.objetoSelecionado.tipoRequisicao == 'MATERIAL'}" />
+						<p:inputText value="#{cc.attrs.managedBean.objetoSelecionado.servico.descricao}" readonly="true" rendered="#{cc.attrs.managedBean.objetoSelecionado.tipoRequisicao == 'SERVICO'}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="tabela" value="Tabela" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tabela" value="#{cc.attrs.managedBean.objetoSelecionado.tabela}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="urlTabela" value="URL Tabela" styleClass="label" />
+					<label class="input">
+						<p:inputText id="urlTabela" value="#{cc.attrs.managedBean.objetoSelecionado.urlTabela}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="dataReferencia" value="Data Referência" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataReferencia" style="float:left"
+									value="#{cc.attrs.managedBean.objetoSelecionado.dataReferencia}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorReferencia" label="Valor Referência" value="#{cc.attrs.managedBean.objetoSelecionado.valorReferencia}" disabled="#{cc.attrs.readonly}" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="exclusivoMe" value="Exclusivo Me" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="exclusivoMe" value="#{cc.attrs.managedBean.objetoSelecionado.exclusivoMe}" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+				            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:pickList value="#{cc.attrs.managedBean.juntarList}" var="item" itemLabel="Item: #{item.item} | Órgão: #{item.orgaoSigla}" itemValue="#{item}" 
+							converter="pickListItemRequisicaoCompraConverter">
+					<f:facet name="sourceCaption">
+						<h:outputText value="Objeto número #{cc.attrs.managedBean.objetoSelecionado.numero} | Item: #{cc.attrs.managedBean.objetoSelecionado.item}" />
+					</f:facet>
+			 		<f:facet name="targetCaption">
+			 			<h:outputText value="Objeto número #{cc.attrs.managedBean.objetoIdenticoSelecionado.numero} | Item: #{cc.attrs.managedBean.objetoIdenticoSelecionado.item}" />
+			 		</f:facet>
+				</p:pickList>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltarObjetos()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.juntar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Juntar/Transferir" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

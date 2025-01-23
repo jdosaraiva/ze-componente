@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+	<composite:attribute name="empenho" type="java.lang.Boolean" default="false" />
+	<composite:attribute name="registroPrecos" type="java.lang.Boolean" default="false" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="processoAnexoForm" class="smart-form" acceptcharset="ISO-8859-1" enctype="multipart/form-data">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="regimeContratacao" value="Regime de Contratação" styleClass="label" />
+					<label class="input">
+						<p:inputText id="regimeContratacao" value="#{cc.attrs.managedBean.processo.regimeContratacao.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{cc.attrs.empenho}">
+				<section class="col col-3">
+					<p:outputLabel for="tipoEmpenho" value="Tipo Empenho" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoEmpenho" value="#{cc.attrs.managedBean.empenho.tipoEmpenho.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numeroEmpenho" value="Empenho Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numeroEmpenho" value="#{cc.attrs.managedBean.empenho.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="anoEmpenho" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="anoEmpenho" value="#{cc.attrs.managedBean.empenho.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Data" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.empenho.data}" readonly="true">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{cc.attrs.registroPrecos}">
+				<section class="col col-3">
+					<p:outputLabel for="numeroRegistroPrecos" value="Ata Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numeroRegistroPrecos" value="#{cc.attrs.managedBean.registroPrecos.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="anoRegistroPrecos" value="Ata Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="anoRegistroPrecos" value="#{cc.attrs.managedBean.registroPrecos.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="fornecedorCodigo" value="Fornecedor Código" styleClass="label" />
+					<label class="input">
+						<p:inputText id="fornecedorCodigo" value="#{cc.attrs.managedBean.registroPrecos.fornecedorCodigo}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="fornecedorRazaoSocial" value="Fornecedor Razão Social" styleClass="label" />
+					<label class="input">
+						<p:inputText id="fornecedorRazaoSocial" value="#{cc.attrs.managedBean.registroPrecos.fornecedorRazaoSocial}" readonly="true" />
+					</label>
+				</section>
+
+			</div>
+			<div class="row">	
+				<section class="col col-3">
+					<p:outputLabel for="tipo" value="Tipo" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="tipo" value="#{cc.attrs.managedBean.anexo.tipo}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems 
+				            	value="#{cc.attrs.empenho ? typesController.tipoAnexoProcessoEmpenho : (cc.attrs.registroPrecos ? typesController.tipoAnexoProcessoRegistroPreco : typesController.tipoAnexoProcesso)}" 
+				            	var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-9">
+					<p:outputLabel for="descricao" value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricao" required="true" value="#{cc.attrs.managedBean.anexo.descricao}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<section jsf:rendered="#{not cc.attrs.readonly}">
+				<p:outputLabel for="anexo" value="Selecionar Anexo" styleClass="label" />
+				<p:fileUpload id="anexo" value="#{cc.attrs.managedBean.arquivo}" mode="simple" skinSimple="true" cache="false" disabled="#{cc.attrs.readonly}" />
+			</section>
+			<section jsf:rendered="#{not cc.attrs.readonly}">
+				<h:commandLink value="" actionListener="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-sm">
+		           	<i class="fa fa-plus"></i>
+		           	<h:outputText value="  Adicionar Anexo" />
+		        </h:commandLink>
+			</section>
+			<section>
+				<p:dataTable id="dtAnexo" value="#{cc.attrs.managedBean.anexoList}" var="item" emptyMessage="Não constam anexos."
+					tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+				    <p:column headerText="Tipo">
+				        <h:outputText value="#{item.tipo.descricao}" />
+				    </p:column>
+				    <p:column headerText="Empenho" style="text-align: center; width: 80px">
+				        <h:outputText value="#{item.empenho!=null ? item.empenho.numero.toString().concat(' / ').concat(item.empenho.ano) : '' }" />
+				    </p:column>
+				    <p:column headerText="Registro Preço" style="text-align: center; width: 80px">
+				        <h:outputText value="#{item.registroPrecos!=null ? item.registroPrecos.numero.toString().concat(' / ').concat(item.registroPrecos.ano) : '' }" />
+				    </p:column>
+				    <p:column headerText="Descrição">
+				        <h:outputText value="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Nome do Arquivo">
+				        <h:outputText value="#{item.nomeArquivo}" />
+				    </p:column>
+			        <p:column headerText="PNCP Env." sortBy="#{item.pncpEnviado}" style="text-align: center; width: 100px">
+			           	<h:outputText value="#{item.pncpEnviado ? 'Sim' : 'Não'}" />
+			        </p:column>
+				    <p:column headerText="Download" style="vertical-align:middle;text-align:center;width: 100px;">
+			            <p:commandLink title="Download" ajax="false" immediate="true" styleClass="btn btn-info btn-sm">
+			            	<i class="fa fa-download"></i>
+			            	<p:fileDownload value="#{cc.attrs.managedBean.download(item)}" />
+			            </p:commandLink>
+			        </p:column>
+			        <p:column headerText="Excluir" style="vertical-align:middle;text-align:center;width: 100px;" rendered="#{not cc.attrs.readonly}">
+			            <p:commandLink title="Excluir" action="#{cc.attrs.managedBean.excluirAnexo(item)}" update="dtAnexo"
+							styleClass="btn btn-info btn-sm" immediate="true">
+							<p:confirm header="Aviso" message="Confirma a exclusão do Documento ?" />
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			        </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+		 <p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+               <p:commandLink value="Sim" title="Sim"
+                   styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+               </p:commandLink>
+               &#160;&#160;&#160;
+               <p:commandLink value="Não" title="Não"
+                   styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+               </p:commandLink>
+           </p:confirmDialog>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

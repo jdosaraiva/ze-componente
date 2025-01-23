@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditLote" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditLote" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Manutenção de Lote</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<p:outputLabel for="numero" value="Número do Lote" />
+									<p:inputText id="numero" value="#{cc.attrs.managedBean.lote.numero}" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<mcl:money id="quantidade" label="Quantidade" value="#{cc.attrs.managedBean.lote.quantidade}" decimalPlaces="4" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<mcl:inputLupa 
+										id="marca" 
+										label="Marca"  
+										controller="#{marcaColumnsView}"
+										descricao="#{cc.attrs.managedBean.lote.marca.nome}"
+										value="#{cc.attrs.managedBean.lote.marca}"
+										cabecalho= "Consulta de Material" 
+										disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<p:outputLabel for="dataValidade" value="Data de Validade" styleClass="label" />
+									<label class="input">
+										<p:calendar id="dataValidade" style="float:left"
+											value="#{cc.attrs.managedBean.lote.dataValidade}" 
+											pattern="dd/MM/yyyy"
+											disabled="#{cc.attrs.readonly}"
+											required="true"
+											mask="true"
+											locale="pt" />
+									</label>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="form-group">
+									<p:outputLabel for="dataInicio" value="Data de Início" styleClass="label" />
+									<label class="input">
+										<p:calendar id="dataInicio" style="float:left"
+											value="#{cc.attrs.managedBean.lote.dataInicio}" 
+											pattern="dd/MM/yyyy"
+											disabled="#{cc.attrs.readonly}"
+											required="false"
+											mask="true"
+											locale="pt" />
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<p:outputLabel for="corredor" value="Corredor" />
+									<p:inputText id="corredor" value="#{cc.attrs.managedBean.lote.corredor}" required="false" />
+								</div>
+							</div>
+						
+							<div class="col-sm-4">
+								<div class="form-group">
+									<p:outputLabel for="prateleira" value="Prateleira" />
+									<p:inputText id="prateleira" value="#{cc.attrs.managedBean.lote.prateleira}" required="false" />
+								</div>
+							</div>
+						
+							<div class="col-sm-4">
+								<div class="form-group">
+									<p:outputLabel for="box" value="Box" />
+									<p:inputText id="box" value="#{cc.attrs.managedBean.lote.box}" required="false" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarLote}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditLote .close').click()" />
+			            	<h:outputText value="  Adicionar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

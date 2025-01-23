@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="processoAnexoForm" class="smart-form" acceptcharset="ISO-8859-1" enctype="multipart/form-data">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="regimeContratacao" value="Regime de Contratação" styleClass="label" />
+					<label class="input">
+						<p:inputText id="regimeContratacao" value="#{cc.attrs.managedBean.processo.regimeContratacao.descricao}" readonly="true" />
+					</label>
+				</section>
+				
+				
+			</div>
+			<section>
+				<p:dataTable id="dtAnexo" value="#{cc.attrs.managedBean.processo.anexoList}" var="item" emptyMessage="Não constam anexos."
+					tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+				    <p:column headerText="Tipo">
+				        <h:outputText value="#{item.tipo.descricao}" />
+				    </p:column>
+				    <p:column headerText="Empenho" style="text-align: center; width: 80px">
+				        <h:outputText value="#{item.empenho!=null ? item.empenho.numero.toString().concat(' / ').concat(item.empenho.ano) : '' }" />
+				    </p:column>
+				    <p:column headerText="Registro Preço" style="text-align: center; width: 80px">
+				        <h:outputText value="#{item.registroPrecos!=null ? item.registroPrecos.numero.toString().concat(' / ').concat(item.registroPrecos.ano) : '' }" />
+				    </p:column>
+				    <p:column headerText="Descrição">
+				        <h:outputText value="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Nome do Arquivo">
+				        <h:outputText value="#{item.nomeArquivo}" />
+				    </p:column>
+			        <p:column headerText="PNCP Env." sortBy="#{item.pncpEnviado}" style="text-align: center; width: 100px">
+			           	<h:outputText value="#{item.pncpEnviado ? 'Sim' : 'Não'}" />
+			        </p:column>
+			        <p:column headerText="Enviar" style="vertical-align:middle;text-align:center;width: 70px;">
+			            <p:commandLink title="Envia o Documento ao P.N.C.P." action="#{cc.attrs.managedBean.enviarDocumento(item)}" update="dtAnexo"
+							styleClass="btn btn-info btn-sm" immediate="true"  rendered="#{!item.pncpEnviado}">
+							<p:confirm header="Aviso" message="Confirma o envio do Documento ao P.N.C.P. ?" />
+			            	<i class="fa fa-send-o"></i>
+			            </p:commandLink>
+			        </p:column>
+			        <p:column headerText="Excluir" style="vertical-align:middle;text-align:center;width: 70px;">
+			            <p:commandLink title="Exclui este documento somente do P.N.C.P., e não do MCL !" action="#{cc.attrs.managedBean.excluirDocumento(item)}" update="dtAnexo"
+							styleClass="btn btn-info btn-sm" immediate="true"  rendered="#{item.pncpEnviado}">
+							<p:confirm header="Aviso" message="Confirma a exclusão do Documento do P.N.C.P. ?" />
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			        </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+		 <p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+               <p:commandLink value="Sim" title="Sim"
+                   styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+               </p:commandLink>
+               &#160;&#160;&#160;
+               <p:commandLink value="Não" title="Não"
+                   styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+               </p:commandLink>
+           </p:confirmDialog>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

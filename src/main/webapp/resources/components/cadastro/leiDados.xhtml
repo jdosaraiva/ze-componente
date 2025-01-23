@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="leiForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-2">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.lei.numero}" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:outputLabel for="artigo" value="Artigo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="artigo" value="#{cc.attrs.managedBean.lei.artigo}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:outputLabel for="inciso" value="Inciso" styleClass="label" />
+					<label class="input">
+						<p:inputText id="inciso" value="#{cc.attrs.managedBean.lei.inciso}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:outputLabel for="letra" value="Letra" styleClass="label" />
+					<label class="input">
+						<p:inputText id="letra" value="#{cc.attrs.managedBean.lei.letra}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="paragrafo" value="Parágrafo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="paragrafo" value="#{cc.attrs.managedBean.lei.paragrafo}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="texto" value="Texto" />
+				<label class="input">
+					<p:inputTextarea id="texto" value="#{cc.attrs.managedBean.lei.texto}" required="true" rows="10" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

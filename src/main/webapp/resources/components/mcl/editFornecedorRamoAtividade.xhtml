@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditFornecedorRamoAtividade" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditFornecedorRamoAtividade" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Manutenção de Ramo de Atividade</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarRamoAtividade}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditFornecedorRamoAtividade').modal('hide')" />
+			            	<h:outputText value="  Salvar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

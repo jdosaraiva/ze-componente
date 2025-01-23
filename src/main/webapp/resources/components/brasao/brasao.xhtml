@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="brasaoForm" class="smart-form" acceptcharset="ISO-8859-1" enctype="multipart/form-data">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:graphicImage cache="false" value="#{sessaoMCL.image}" style="width: 65px; height: 65px" />
+				</section>
+				<section class="col col-9">
+					<p:outputLabel value="Arquivo" styleClass="label" />
+					<p:fileUpload value="#{cc.attrs.managedBean.imagem}" mode="simple" skinSimple="true" cache="false" />
+				</section>
+			</div>
+		</fieldset>
+	
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" ajax="false" styleClass="btn btn-success btn-lg"
+				onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

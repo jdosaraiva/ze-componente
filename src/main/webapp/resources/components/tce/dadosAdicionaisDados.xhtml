@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 100px" class="row"></div>
+	<h:panelGroup id="panelDadosAdicionais">
+		<p:fieldset legend="Permite subcontratação" class="fieldset-borda">
+			<section>
+				<p:outputLabel for="subcontratacao" value="Há previsão de permissão de subcontratação?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="subcontratacao" value="#{cc.attrs.managedBean.tce.subcontratacao}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</p:fieldset>
+		<p:fieldset legend="Benefício da Lei Complementar 123/2006 - Micro e EPP" class="fieldset-borda">
+			<section>
+				<p:outputLabel for="beneficioLei1232006" value="Será aplicado benefício da LC 123/2006?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="beneficioLei1232006" value="#{cc.attrs.managedBean.tce.beneficioLei1232006}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.beneficioLei1232006}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</p:fieldset>
+		<p:fieldset legend="Compras e Serviços de TI" class="fieldset-borda" rendered="#{cc.attrs.managedBean.tce.processo.tipoObjeto eq 'COMPRAS_SERVICOS_TI'}">
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="finalidadeEquipamento" value="No pedido de compra, consta a finalidade da aquisição dos equipamentos?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="finalidadeEquipamento" value="#{cc.attrs.managedBean.tce.finalidadeEquipamento}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="compatibilidadeComputadoresSistemas" value="Consta no pedido a necessidade de compatibilidade com os demais computadores e sistemas (parque de TI) do órgão?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="compatibilidadeComputadoresSistemas" value="#{cc.attrs.managedBean.tce.compatibilidadeComputadoresSistemas}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="pedidoSubstituicaoAntigo" value="Consta no pedido substituição dos equipamentos antigos por novos e há justificativa adequada para tal substituição?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="pedidoSubstituicaoAntigo" value="#{cc.attrs.managedBean.tce.pedidoSubstituicaoEquipamentoAntigos}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="nomesMarcas" value="Consta no pedido nomes e marcas de equipamentos?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="nomesMarcas" value="#{cc.attrs.managedBean.tce.pedidoNomesMarcas}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="descricaoTecnica" value="Consta no pedido informações sobre descrição técnica dos equipamentos para sua finalidade de uso?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="descricaoTecnica" value="#{cc.attrs.managedBean.tce.descricaoTecnica}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="softwareProprietario" value="Consta no pedido a necessidade de software proprietário do mesmo fabricante do equipamento?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="softwareProprietario" value="#{cc.attrs.managedBean.tce.softwareProprietario}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="manuaisPortugues" value="Consta no pedido a necessidade de manuais (impressos ou em mídia digital) em língua portuguesa?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="manuaisPortugues" value="#{cc.attrs.managedBean.tce.manuaisPortugues}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="certificadoAnatel" value="Consta no pedido a exigência de certificação ou homologação da ANATEL?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="certificadoAnatel" value="#{cc.attrs.managedBean.tce.certificadoAnatel}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+		</p:fieldset>
+
+		<br jsf:rendered="#{cc.attrs.managedBean.tce.processo.internacional}" />
+		<p:fieldset legend="Concorrência Internacional" class="fieldset-borda" rendered="#{cc.attrs.managedBean.tce.processo.internacional}">
+			<section>
+				<p:outputLabel for="concorrenciaInternacional" value="Tratando-se de concorrência internacional, há recursos do Banco Interamericano de Desenvolvimento - BID - envolvidos ?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="concorrenciaInternacional" value="#{cc.attrs.managedBean.tce.processo.recursoBid}" required = "true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+						<p:ajax update=":tceDados:tceForm:tabLicitacao:dadosAdicionaisDados:panelDadosAdicionais" process="@this" global="false" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<div class="row" jsf:rendered="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}">
+				<section class="col col-4">
+					<p:outputLabel for="objecaoBidAvisoAberturaPreQualificacao" value="Houve objeção do BID ao aviso de abertura da pré-qualificação?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="objecaoBidAvisoAberturaPreQualificacao" value="#{cc.attrs.managedBean.tce.bidObjecaoAberturaPreQualificacao}" required="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax update=":tceDados:tceForm:tabLicitacao:dadosAdicionaisDados:panelDadosAdicionais" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="objecaoBidEditalFasePreQualificacao" value="Houve objeção do BID ao Edital da fase de pré-qualificação?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="objecaoBidEditalFasePreQualificacao" value="#{cc.attrs.managedBean.tce.bidEditalFasePreQualificacao}" required="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax update=":tceDados:tceForm:tabLicitacao:dadosAdicionaisDados:panelDadosAdicionais" process="@this" global="false" />
+						</p:selectOneMenu> 
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="objecaoBidJulgamentoFasePreQualificacao" value="Houve objeção do BID ao julgamento da fase de pré-qualificação?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="objecaoBidJulgamentoFasePreQualificacao" value="#{cc.attrs.managedBean.tce.bidJulgamentoFasePreQualificacao}" required="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax update=":tceDados:tceForm:tabLicitacao:dadosAdicionaisDados:panelDadosAdicionais" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}">
+				<section class="col col-4">
+					<p:outputLabel for="objecaoBidEditalSegundaFase" value="Houve objeção do BID ao Edital da 2ª Fase?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="objecaoBidEditalSegundaFase" value="#{cc.attrs.managedBean.tce.bidEdital2aFase}" required="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax update=":tceDados:tceForm:tabLicitacao:dadosAdicionaisDados:panelDadosAdicionais" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="objecaoBidJulgamentoPropostasTecnicasComerciais" value="Houve objeção do BID ao julgamento das propostas téc. comerciais?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="objecaoBidJulgamentoPropostasTecnicasComerciais" value="#{cc.attrs.managedBean.tce.bidJulgamentoPropostasTecnicasComerciais}" required="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax update=":tceDados:tceForm:tabLicitacao:dadosAdicionaisDados:panelDadosAdicionais" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="objecaoBidJulgamentoNegociacaoFinal" value="Houve objeção do BID ao julgamento da negociação final?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="objecaoBidJulgamentoNegociacaoFinal" value="#{cc.attrs.managedBean.tce.bidJulgamentoNegociacaoFinal}" required="#{cc.attrs.managedBean.tce.processo.recursoBid eq true}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax update=":tceDados:tceForm:tabLicitacao:dadosAdicionaisDados:panelDadosAdicionais" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+		</p:fieldset>
+		
+		
+						
+				
+		
+		
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

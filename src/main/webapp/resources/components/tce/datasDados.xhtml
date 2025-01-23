@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 150px" class="row"></div>
+	<p:fieldset legend="Datas" id="pnlDatas" class="fieldset-borda">
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="houveEntregaProposta" value="Houve entrega de propostas?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="houveEntregaProposta" value="#{cc.attrs.managedBean.excluir}" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-4">
+				<p:outputLabel for="dataLotacao" value="Data de entrega das propostas" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataLotacao" value="#{cc.attrs.managedBean.excluir}" required="true" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="houveAberturaLicitacao" value="Houve abertura da licitação?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="houveAberturaLicitacao" value="#{cc.attrs.managedBean.excluir}" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-4">
+				<p:outputLabel for="dataAberturaLicitacao" value="Data de abertura da licitação" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataAberturaLicitacao" value="#{cc.attrs.managedBean.excluir}" required="true" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="houveJulgamento" value="Houve julgamento?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="houveJulgamento" value="#{cc.attrs.managedBean.excluir}" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-4">
+				<p:outputLabel for="dataJulgamento" value="Data do julgamento" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataJulgamento" value="#{cc.attrs.managedBean.excluir}" required="true" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</div>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

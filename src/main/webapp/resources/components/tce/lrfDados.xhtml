@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 100px" class="row"></div>
+	<p:fieldset legend="Atendimento à LRF" class="fieldset-borda">
+		<section>
+			<p:outputLabel for="especieDespesa" value="Espécie de despesa" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="especieDespesa" value="#{cc.attrs.managedBean.tce.lrfEspecieDespesa}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.especieDespesa}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					<p:ajax event="change" update="panel16_17" global="false" process="@this" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+	</p:fieldset>
+	<br />
+	<h:panelGroup id="panel16_17">
+		<h:panelGroup id="panel16" rendered ="#{cc.attrs.managedBean.tce.lrfEspecieDespesa eq 'ART_16'}">
+			<p:fieldset legend="Estimativa trienal" class="fieldset-borda">
+				<section>
+					<p:outputLabel for="estimativaTrienal" value="Foi demonstrada a existência da estimativa trienal (com premissas e metodologia de
+				  cálculo utilizado) do impacto orçamentário-financeiro (no exercício em que deva entrar em vigor e nos dois
+				  subseqüentes), conforme inciso I do Art.16 da LRF?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="estimativaTrienal" value="#{cc.attrs.managedBean.tce.lrfEstimativaTrienal}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</p:fieldset>
+			<br />
+			<p:fieldset legend="Adequação ao planejamento" class="fieldset-borda">
+				<section>
+					<p:outputLabel for="adequacaoPlanejamento" value="Há declaração do ordenador de despesa de que o aumento tem adequação orçamentária e
+				  financeira com a lei orçamentária anual (LOA) e compatibilidade com o Plano Plurianual (PPA) e com a Lei de
+				  Diretrizes Orçamentárias (LDO), conforme inc. II do Art.16 da LRF?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="adequacaoPlanejamento" value="#{cc.attrs.managedBean.tce.lrfAdequacaoPlano}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</p:fieldset>
+		</h:panelGroup>
+		<h:panelGroup id="panel17" rendered ="#{cc.attrs.managedBean.tce.lrfEspecieDespesa eq 'ART_17'}">
+			<p:fieldset legend="Metas de resultado" class="fieldset-borda">
+				<section>
+					<p:outputLabel for="metasResultado" value="O ato de criação da despesa corrente de caráter continuado está acompanhado de
+				  comprovação de que a despesa aumentada ou criada não afetará as metas de Resultados previstas no Anexo de
+				  Metas Fiscais (artigo 17, §2º da LRF)?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="metasResultado" value="#{cc.attrs.managedBean.tce.lrfMetasResultado}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</p:fieldset>
+			<br />
+			<p:fieldset legend="Medidas de compensação" class="fieldset-borda">
+				<section>
+					<p:outputLabel for="medidasCompensacao" value="O ato de criação da despesa corrente de caráter continuado está acompanhado de
+				  medidas de compensação em virtude de seus efeitos financeiros, para os próximos exercícios, seja através do
+				  aumento permanente da receita (elevação de alíquotas, ampliação da base de cálculo ou majoração ou criação de
+				  tributo ou arrecadação) ou pela redução permanente da despesa (artigo 17, §2º e 3º da LRF)?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="medidasCompensacao" value="#{cc.attrs.managedBean.tce.lrfMedidasCompensacao}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</p:fieldset>
+			<br />
+			<p:fieldset legend="Previsão no PPA e na LDO" class="fieldset-borda">
+				<section>
+					<p:outputLabel for="caracterContinuado" value="Existe previsão da despesa obrigatória de caráter continuado criada no PPA e na LDO? (artigo 17, §4º da LRF)?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="caracterContinuado" value="#{cc.attrs.managedBean.tce.lrfPrevisaoPpaLdo}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</p:fieldset>
+		</h:panelGroup>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

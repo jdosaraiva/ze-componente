@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:cadastro="http://java.sun.com/jsf/composite/components/cadastro" lang="ptBR">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="rpcForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa id="processo" label="Processo" controller="#{processoColumnsView}"
+						descricao="#{cc.attrs.managedBean.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.processo.ano)
+						.concat(' - ').concat(cc.attrs.managedBean.processo.modalidade.descricao)
+						.concat(' ').concat(cc.attrs.managedBean.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.processo.numeroLicitacao)
+						.concat(' / ').concat(cc.attrs.managedBean.processo.anoLicitacao)
+						.concat(' - ').concat(cc.attrs.managedBean.processo.status.descricao)}" 
+						value="#{cc.attrs.managedBean.processo}" 
+						leitura="#{not empty cc.attrs.managedBean.registroPrecos.id}"
+						listener="#{cc.attrs.managedBean.carregarDadosProcesso()}" 
+						update="registroPrecosCancelamentoDados:rpcForm:fornecedor registroPrecosCancelamentoDados:rpcForm" 
+						cabecalho= "Consulta de Processo" />
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="dataInicial" value="Início Vigência" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataInicial" style="float:left" value="#{cc.attrs.managedBean.registroPrecos.dataInicial}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataFinal" value="Fim Vigência" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataFinal" style="float:left" value="#{cc.attrs.managedBean.registroPrecos.dataFinal}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel value="Ata de Registro de Preços" styleClass="label" />
+					<label class="input">
+						<p:inputText id="registroPreco" value="#{cc.attrs.managedBean.registroPrecos.numero.toString().concat(' / ').concat(cc.attrs.managedBean.registroPrecos.ano.toString())}" readonly="true"/>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Status" styleClass="label" />
+					<label class="input">
+						<p:inputText id="status" value="#{cc.attrs.managedBean.registroPrecos.status.descricao}" readonly="true"/>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel value="Fornecedor" styleClass="label" />
+					<label class="input">
+						<p:inputText id="fornecedor" value="#{cc.attrs.managedBean.registroPrecos.fornecedorRazaoSocial.concat(' ( Ata ').concat(cc.attrs.managedBean.registroPrecos.numero.toString()).concat(' / ').concat(cc.attrs.managedBean.registroPrecos.ano).concat(' ) ')}" readonly="true"/>
+					</label>
+				</section>
+			</div>
+		</fieldset>
+		<fieldset>
+			<section>
+				<p:dataTable id="naoCanceladosDT" var="item" value="#{cc.attrs.managedBean.naoCancelados}"
+					selection="#{cc.attrs.managedBean.objetosAtivosSelecionados}" 
+					rowKey="#{item.id}" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">Itens do Registro de Preços Não Cancelados</f:facet>
+					<p:column selectionMode="multiple" style="width:16px;text-align:center" rendered="#{!cc.attrs.readonly}" />
+			        <p:column headerText="Descrição">
+						<h:outputText value="#{item.descricao}" />
+					</p:column>
+					<p:column headerText="Unidade" style="width: 80px">
+						<h:outputText value="#{item.objeto.unidade}" />
+					</p:column>
+					<p:column headerText="Quantidade" style="width: 100px">
+				    	<mcl:number value="#{item.quantidade}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Quantidade Disp." style="width: 120px">
+				    	<mcl:number value="#{item.quantidadeDisponivel}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Valor Unitário" style="width: 100px">
+				    	<mcl:money value="#{item.valorUnitario}" decimalPlaces="4" modoConsulta="true"  />
+					</p:column>
+					<p:column headerText="Valor Total Disp." style="width: 110px">
+						<mcl:money value="#{item.valorTotalDisponivel}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Obs." style="width: 50px;text-align: center" rendered="#{!cc.attrs.readonly}">
+				        <h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditRPRescisaoObservacao').modal('show');">
+			        		<f:setPropertyActionListener target="#{cc.attrs.managedBean.objetoSelecionado}" value="#{item}" />
+			        		<p:ajax update=":editRPRescisaoObservacao:formPopupEditRPRescisaoObservacao" />
+			            	<i class="fa fa-pencil"></i>
+			            </h:commandLink>
+				    </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<fieldset jsf:rendered="#{!cc.attrs.readonly}">
+			<div class="row">
+				<section class="col col-2">
+					<p:outputLabel for="dataCancelamento" value="Data Rescisão/Cancelamento" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataCancelamento" style="float:left" value="#{cc.attrs.managedBean.registroPrecos.dataCancelamento}" 
+									pattern="dd/MM/yyyy" required="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				
+				<section class="col col-10">
+					<div role="alert" class="alert alert-info alert-dismissible ng-star-inserted">  
+	          			<i class="fa-fw fa fa-info-circle"></i>
+	          			<strong>Atenção</strong> :<br/>
+						Nesse módulo, serão cancelados somente as <b>quantidades</b> que estão <b>disponíveis</b> para a contratação da Ata de Registro de Preços.<br/>
+					</div>
+				</section>
+			</div>
+			
+		
+			<div class="row">
+				<section style="margin: 10px;margin-top: 5px;">
+					<p:outputLabel for="justificativa" value="Justificativa do Cancelamento ( a encaminhar ao TCE e PNCP )" styleClass="label"/>
+					<label class="input">
+						<p:inputTextarea id="justificativa" required="false" value="#{cc.attrs.managedBean.objetoSelecionado.cancelamentoJustificativa}" disabled="#{cc.attrs.readonly}" rows="3" counter="display" maxlength="255" counterTemplate="{0} restantes." autoResize="false" >
+						<p:ajax process="@this" 
+								ajax="true"  
+								global="false"
+								listener="#{cc.attrs.managedBean.ajaxMetodoPadrao()}"   />
+						 </p:inputTextarea>
+						<h:outputText id="display" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+				</section>
+				<section class="col col-3">
+					<h:commandLink value="" action="#{cc.attrs.managedBean.incluirCancelamentoAta()}" styleClass="btn btn-danger btn-sm">
+			           	<i class="fa fa-plus"></i>
+			           	<h:outputText value="  Incluir Cancelamento" />
+			        </h:commandLink>
+				</section>
+				<section class="col col-3">
+					<h:commandLink value="" action="#{cc.attrs.managedBean.excluirCancelamento()}" styleClass="btn btn-primary btn-sm">
+			           	<i class="fa fa-minus"></i>
+			           	<h:outputText value="  Excluir Cancelamento" />
+			        </h:commandLink>
+				</section>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<section>
+				<p:dataTable id="canceladosDT" var="item" value="#{cc.attrs.managedBean.cancelados}"
+					selection="#{cc.attrs.managedBean.objetosCanceladosSelecionados}" 
+					rowKey="#{item.id}" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">Itens do Registro de Preços Cancelados</f:facet>
+					<p:column selectionMode="multiple" style="width:16px;text-align:center" rendered="#{!cc.attrs.readonly}" />
+			        <p:column headerText="Descrição">
+						<h:outputText value="#{item.descricao}" />
+					</p:column>
+					<p:column headerText="Quantidade" style="width: 100px">
+						<h:outputText value="#{item.quantidade}" />
+					</p:column>
+					<p:column headerText="Unidade" style="width: 80px">
+						<h:outputText value="#{item.objeto.unidade}" />
+					</p:column>
+					<p:column headerText="Valor Unitário" style="width: 100px">
+						<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Valor Total" style="width: 110px">
+						<mcl:money value="#{item.valorTotal}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Tipo" sortBy="#{item.objeto.cancelamentoTipo}" style="width: 80px">
+			           	<h:outputText value="#{item.objeto.cancelamentoTipo.descricao}" />
+			        </p:column>
+					<p:column headerText="Data Movimento" sortBy="#{item.dataRescisao}" style="text-align: center; width: 130px">
+						<h:outputText value="#{item.dataRescisao}">
+			           		<f:convertDateTime pattern="dd/MM/yyyy" />
+			           	</h:outputText>
+					</p:column>
+					<p:column headerText="Data Cancel." sortBy="#{item.dataCancelamento}" style="text-align: center; width: 110px">
+						<h:outputText value="#{item.dataCancelamento}">
+			           		<f:convertDateTime pattern="dd/MM/yyyy" />
+			           	</h:outputText>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

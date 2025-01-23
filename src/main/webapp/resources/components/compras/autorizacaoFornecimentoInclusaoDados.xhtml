@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="afForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="pedidoCompleto" 
+						label="Pedido" 
+						controller="#{pedidoColumnsView}"
+						descricao="#{cc.attrs.managedBean.pedido.numero.toString().concat(' / ').concat(cc.attrs.managedBean.pedido.ano)
+						.concat(' - ').concat(cc.attrs.managedBean.pedido.fornecedorRazaoSocial)
+						.concat(' ').concat(cc.attrs.managedBean.pedido.processo.numero)
+						.concat(' / ').concat(cc.attrs.managedBean.pedido.processo.ano)
+						.concat(' - ').concat(cc.attrs.managedBean.pedido.status.descricao)}" 
+						value="#{cc.attrs.managedBean.pedido}" 
+						required="true" 
+						listener="#{cc.attrs.managedBean.carregaItensPedido()}" 
+						update="autorizacaoFornecimentoDados:afForm:itemPedidoPanel autorizacaoFornecimentoDados:afForm:observacao" 
+						cabecalho= "Consulta de Pedido" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Registrada por" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{sessaoMCL.operador.nome}" readonly="true" />
+						</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="almoxarifado" 
+						label="Almoxarifado"  
+						controller="#{almoxarifadoColumnsView}"
+						descricao="#{cc.attrs.managedBean.af.almoxarifado.nome}"
+						value="#{cc.attrs.managedBean.af.almoxarifado}"
+						required="true" 
+						cabecalho= "Consulta de Almoxarifado" 
+						leitura="#{cc.attrs.readonly}"/>
+				</section>
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="localEntrefa" 
+						label="Local de Entrega"  
+						controller="#{localEntregaColumnsView}"
+						descricao="#{cc.attrs.managedBean.af.localEntrega.endereco.concat(', ')
+							.concat(cc.attrs.managedBean.af.localEntrega.numero).concat(' - ').concat(cc.attrs.managedBean.af.localEntrega.bairro).concat(' - ').concat(cc.attrs.managedBean.af.localEntrega.cidade).concat(' / ').concat(cc.attrs.managedBean.af.localEntrega.uf)}"
+						value="#{cc.attrs.managedBean.af.localEntrega}"
+						cabecalho= "Consulta de Local de Entrega" 
+						leitura="#{cc.attrs.readonly}"/>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="observacao" value="Observação" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" required="false" value="#{cc.attrs.managedBean.af.observacao}" 
+					disabled="#{cc.attrs.readonly}" rows="5" counter="display" maxlength="8000" counterTemplate="{0} restantes." autoResize="false"/><br />
+					<h:outputText id="display" />
+				</label>
+			</section>
+			<section>
+				<h:panelGroup id="itemPedidoPanel">
+					<p:dataTable id="dtItem" var="item" value="#{cc.attrs.managedBean.pedidoCompleto.itemPedidoList}"
+						reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						rowKey="#{item.id}" rowSelectMode="checkbox" styleClass="table-reflow-desktop">
+						<f:facet name="header">
+	         			   Itens do Pedido
+	       				</f:facet>
+	        			<p:column style="width:16px">
+				            <p:rowToggler />
+				        </p:column>
+	        			<p:column headerText="Item" sortBy="#{item.item}" style="width:80px;">
+							<mcl:number value="#{item.item}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Objeto Descrição" sortBy="#{item.objetoDescricao}">
+				           	<h:outputText value="#{item.objetoDescricao}" />
+				        </p:column>
+	        			<p:column headerText="Quant." sortBy="#{item.quantidadeSolicitada}" style="width:80px;">
+							<mcl:number value="#{item.quantidadeSolicitada}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Unid." sortBy="#{item.objeto.unidade}"  style="width:80px;">
+				           	<h:outputText value="#{item.objeto.unidade}" />
+				        </p:column>
+	        			<p:column headerText="Quant. Disp. A.F." sortBy="#{item.quantidadeAfGerar}" style="width:80px;">
+							<mcl:number value="#{item.quantidadeAfGerar}" modoConsulta="true" />
+				        </p:column>
+	        			<p:column headerText="Valor Disp. A.F." sortBy="#{item.valorTotalAfGerar}" style="width:80px;">
+							<mcl:money value="#{item.valorTotalAfGerar}" modoConsulta="true" />
+				        </p:column>
+				        <p:rowExpansion>
+				        	<p:dataTable var="subitem" value="#{item.itemRequisicaoCompraList}"
+								reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+								rowKey="#{subitem.id}" rowSelectMode="checkbox" styleClass="table-reflow-desktop">
+								<f:facet name="header">
+			         			   Itens de Requisição de Compra
+			       				</f:facet>
+							    <p:column headerText="Requisição" style="text-align: right; width: 80px">
+							        <h:outputText value="#{subitem.requisicaoCompra.numero} / #{subitem.requisicaoCompra.ano}" />
+							    </p:column>
+							    <p:column headerText="Órgão">
+							        <h:outputText value="#{subitem.requisicaoCompra.orgaoSigla} - #{subitem.requisicaoCompra.orgaoDescricao}" />
+							    </p:column>
+							    <p:column headerText="Almoxarifado">
+							        <h:outputText value="#{subitem.requisicaoCompra.almoxarifado.nome}" />
+							    </p:column>
+			        			<p:column headerText="Quant. Aprov." style="text-align: right; width: 80px">
+							    	<mcl:money value="#{subitem.quantidadeAprovada}" modoConsulta="true"  decimalPlaces="4"/>
+							    </p:column>
+			        			<p:column headerText="Qt. Disp. AF" style="text-align: right; width: 80px">
+							    	<mcl:money value="#{subitem.quantidadeDisponivelAf}" modoConsulta="true"  decimalPlaces="4"/>
+							    </p:column>
+							    <p:column headerText="Unidade"  style="width: 80px">
+							        <h:outputText value="#{subitem.objeto.unidade}" />
+							    </p:column>
+							    <p:column headerText="Valor Unitário"  style="text-align: right; width: 80px">
+							    	<mcl:money value="#{subitem.valorUnitario}" modoConsulta="true"  decimalPlaces="4"/>
+							    </p:column>
+							    <p:column headerText="Vl Disp. AF"  style="text-align: right; width: 80px">
+							    	<mcl:money value="#{subitem.valorDisponivelAf}" modoConsulta="true"  />
+							    </p:column>
+							    <p:column headerText="Quantidade Desejada"  style="text-align: right; width: 150px">
+							    	<mcl:money value="#{subitem.quantidadeDesejada}" modoConsulta="#{item.objeto.controlePorValor}" decimalPlaces="4" />
+							    </p:column>
+							    <p:column headerText="Valor Desejado"  style="text-align: right; width: 150px">
+							    	<mcl:money value="#{subitem.valorDesejado}" modoConsulta="#{!item.objeto.controlePorValor}" />
+							    </p:column>
+							</p:dataTable>
+				        </p:rowExpansion>
+					</p:dataTable>
+				</h:panelGroup>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar Total" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvarParcial()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar Parcial" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

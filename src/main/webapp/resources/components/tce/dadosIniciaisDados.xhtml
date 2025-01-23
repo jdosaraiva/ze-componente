@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 100px" class="row"></div>
+	<h:panelGroup id="pnlDadosIniciais">
+		<h:panelGroup>
+			<p:fieldset id="panelDados" legend="Dados" class="fieldset-borda">
+				<div class="row">
+					<section class="col col-6">
+						<mcl:inputLupa 
+							id="processo" 
+							label="Processo" 
+							controller="#{processoColumnsView}"
+							descricao="#{cc.attrs.managedBean.tce.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.tce.processo.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.tce.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.tce.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.tce.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.tce.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.tce.processo.status.descricao)}" 
+							value="#{cc.attrs.managedBean.processoSelecionado}" 
+							listener="#{cc.attrs.managedBean.buscaProcesso()}"
+							update="tceDados:tceForm:tabLicitacao"
+							required="true" 
+							cabecalho= "Consulta de Processo" 
+							parametroConsulta="#{cc.attrs.managedBean.filtroProcesso}"/>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel for="numero" value="Código da Licitação (apenas o número)" styleClass="label" />
+						<label class="input">
+							<p:inputText id="numero" maxlength="13" value="#{cc.attrs.managedBean.tce.numero}" required="true" disabled="#{cc.attrs.readonly}" 
+							title="Digite apenas o Número. O sistema monta o código com o Ano e os zeros necessários."/>
+						</label>
+					</section>				
+				</div>
+			</p:fieldset>
+		</h:panelGroup>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="adicaoRequisicaoProcessoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">	
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" disabled="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:number id="ano" label="Processo Ano" value="#{cc.attrs.managedBean.processo.ano}" disabled="true" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Objeto" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto}" disabled="true" styleClass="select" >
+				            <f:selectItems value="#{typesController.tipoObjeto}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorEstimado" label="Valor Estimado" value="#{cc.attrs.managedBean.processo.valorEstimado}" disabled="true" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data"  style="float:left"
+									value="#{cc.attrs.managedBean.processo.data}" 
+									pattern="dd/MM/yyyy"
+									disabled="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="naturezaLicitacao" value="Natureza da Licitação" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="naturezaLicitacao" value="#{cc.attrs.managedBean.processo.naturezaLicitacao}" disabled="true" styleClass="select" >
+				            <f:selectItems value="#{typesController.naturezaLicitacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="objetoLicitacao" value="Objeto da Licitação" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="objetoLicitacao" value="#{cc.attrs.managedBean.processo.objetoLicitacao}" disabled="true" styleClass="select" >
+				            <f:selectItems value="#{typesController.objetoLicitacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="finalidadeObjeto" value="Finalidade do Objeto" styleClass="label" />
+				<label class="input">
+					<p:inputText id="finalidadeObjeto" value="#{cc.attrs.managedBean.processo.finalidadeObjeto.codigo} - #{cc.attrs.managedBean.processo.finalidadeObjeto.descricao}" disabled="true" />
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="descricaoObjeto" value="Descrição do Objeto" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea rows="6" cols="50" id="descricaoObjeto"  value="#{cc.attrs.managedBean.processo.descricaoObjeto}" disabled="true" />
+				</label>
+			</section>
+		</fieldset>
+		<fieldset>
+			<section>
+				<p:dataTable id="dtObjeto" var="item" value="#{cc.attrs.managedBean.processo.objetoList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">Objetos</f:facet>
+					<p:column style="width:16px">
+			            <p:rowToggler />
+			        </p:column>
+					<p:column headerText="Item" sortBy="#{item.item}">
+			           	<h:outputText value="#{item.item}" />
+			        </p:column>
+			        <p:column headerText="Número" sortBy="#{item.numero}">
+			           	<h:outputText value="#{item.numero}" />
+			        </p:column>
+			        <p:column headerText="Descrição" sortBy="#{item.descricao}">
+			           	<h:outputText value="#{item.descricao}" />
+			        </p:column>
+			        <p:column headerText="Quantidade" sortBy="#{item.quantidade}">
+			        	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+			        </p:column>
+			        <p:column headerText="Unidade" sortBy="#{item.unidade}">
+			           	<h:outputText value="#{item.unidade}" />
+			        </p:column>
+			        <p:column headerText="Valor Unitário" sortBy="#{item.valorUnitario}">
+		           		<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+			        </p:column>
+			        <p:column headerText="Valor Total" sortBy="#{item.valor}">
+		           		<mcl:money value="#{item.valor}" modoConsulta="true" />
+			        </p:column>
+			        <p:rowExpansion>
+			            <p:dataTable var="subitem" value="#{item.itemRequisicaoCompraList}"
+							reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+							styleClass="table-reflow-desktop">
+							<f:facet name="header">Itens de Requisição de Compra do Objeto</f:facet>
+						    <p:column headerText="Req.Nro." style="text-align:right; width: 60px">
+						        <h:outputText value="#{subitem.requisicaoCompra.numero}" />
+						    </p:column>
+						    <p:column headerText="Quantidade">
+						    	<mcl:money value="#{subitem.quantidadeSolicitada}" modoConsulta="true" />
+						    </p:column>
+						    <p:column headerText="Unidade">
+						        <h:outputText value="#{subitem.material != null ? subitem.material.unidade.nome : subitem.servico.unidade.nome}" />
+						    </p:column>
+						    <p:column headerText="Valor Unitário">
+						    	<mcl:money value="#{subitem.valorUnitarioInicial}" modoConsulta="true" />
+						    </p:column>
+						    <p:column headerText="Objeto">
+						        <h:outputText value="#{subitem.material.descricao}" rendered="#{subitem.material != null}" />
+						        <h:outputText value="#{subitem.servico.descricao}" rendered="#{subitem.servico != null}" />
+						    </p:column>
+						    <p:column headerText="Concluído" style="text-align:center">
+						        <h:outputText value="#{subitem.concluido ? 'Sim' : 'Não'}" />
+						    </p:column>
+						    <p:column headerText="Status" style="text-align:center">
+						        <h:outputText value="#{subitem.status.descricao}" />
+						    </p:column>
+						</p:dataTable>
+			        </p:rowExpansion>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<header>
+			Requisições
+		</header>
+		<fieldset>
+			<section jsf:rendered="#{!cc.attrs.readonly}">
+				<h:commandLink id="btnAdicionarRequisicao" value="" onclick="javascript: $('#popupEditAdicaoRequisicaoProcesso').modal('show');" styleClass="btn btn-primary btn-sm"
+								disabled="#{not cc.attrs.managedBean.habilitaEdicaoProcesso}">
+		           	<p:ajax listener="#{cc.attrs.managedBean.novaRequisicao}" update=":editAdicaoRequisicaoProcesso:formPopupAdicaoRequisicaoProcesso" />
+		           	<i class="fa fa-plus"></i>
+		           	<h:outputText value="  Adicionar Requisição" />
+		        </h:commandLink>
+			</section>
+			<section>
+				<p:dataTable id="listaItens" var="item" value="#{cc.attrs.managedBean.requisicaoCompraList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">Requisição de Compra</f:facet>
+					<p:column headerText="Data" sortBy="#{item.data}">
+			           	<h:outputText value="#{item.data}">
+			           		<f:convertDateTime pattern="dd/MM/yyyy" />
+			           	</h:outputText>
+			        </p:column>
+			        <p:column headerText="Número" sortBy="#{item.numero}">
+			           	<h:outputText value="#{item.numero}" />
+			        </p:column>
+			        <p:column headerText="Orgão" sortBy="#{item.orgaoDescricao}">
+			           	<h:outputText value="#{item.orgaoSigla.concat(' - ').concat(item.orgaoDescricao)}" />
+			        </p:column>
+			        <p:column headerText="Almoxarifado" sortBy="#{item.almoxarifado.nome}">
+			           	<h:outputText value="#{item.almoxarifado.nome}" />
+			        </p:column>
+			        <p:column headerText="Destino" sortBy="#{item.destino.nome}">
+			           	<h:outputText value="#{item.destino.nome}" />
+			        </p:column>
+			        <p:column headerText="Requisitante" sortBy="#{item.requisitante}">
+			           	<h:outputText value="#{item.requisitante}" />
+			        </p:column>
+			        <p:column headerText="Itens" sortBy="#{item.quantidadeItens}">
+			           	<h:outputText value="#{item.quantidadeItens}" />
+			        </p:column>
+		         	<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<p:commandLink title="Excluir" ajax="true" update="listaItens adicaoRequisicaoProcessoDados:adicaoRequisicaoProcessoForm:dtObjeto" action="#{cc.attrs.managedBean.removerRequisicaoAProcesso(item)}" 
+								 styleClass="btn btn-info btn-sm" disabled="#{not cc.attrs.managedBean.habilitaEdicaoProcesso}">
+			            	<f:setPropertyActionListener target="#{cc.attrs.managedBean.requisicaoCompra}" value="#{item}" />
+			            	<p:confirm header="Aviso" message="Confirma a exclusão da Requisição no Processo ?" />
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			         </p:column>
+				</p:dataTable>	
+			</section>
+			
+			<p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" 
+				closable="false" rendered="#{!cc.attrs.readonly}">
+				<h:commandLink  value="Sim" title="Sim"
+					styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+					<p:ajax update=":editAdicaoRequisicaoProcesso:formPopupAdicaoRequisicaoProcesso" />
+	            </h:commandLink>
+	            &#160;&#160;&#160;
+	            <p:commandLink value="Não" title="Não"
+					styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+	            </p:commandLink>
+		    </p:confirmDialog>
+		</fieldset>
+		<footer>
+            <h:commandLink id="btnVoltar" value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink id="btnSalvar" value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" disabled="#{not cc.attrs.managedBean.habilitaEdicaoProcesso}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

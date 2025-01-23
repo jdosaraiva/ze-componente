@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 150px" class="row"></div>
+	<p:fieldset legend="Data de Abertura da Licitação e Entrega das Propostas" id="panelHabilitacaoPregao" class="fieldset-borda">
+		<div class="row">
+	   		<section class="col col-3">
+				<p:outputLabel for="dataAberturaLicitacao" value="Data de Abertura da Licitação" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataAberturaLicitacao" value="#{cc.attrs.managedBean.tce.dataAberturaLicitacao}"
+						pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataEntregaProposta" value="Data de Entrega das Propostas" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataEntregaProposta" value="#{cc.attrs.managedBean.tce.dataEntregaProposta}"
+						pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+	  	</div>
+	</p:fieldset>
+	<p:fieldset legend="Ata de abertura e julgamento da habilitação" id="panelHabilitacao" class="fieldset-borda">
+		<div class="row">
+	   		<section class="col col-3">
+				<p:outputLabel for="dataAtaAberturaHabilitacao" value="Data da ata de abertura" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataAtaAberturaHabilitacao" value="#{cc.attrs.managedBean.tce.dataAtaAberturaHabilitacao}"
+						pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataAtaJulgamentoHabilitacao" value="Data da ata de julgamento" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataAtaJulgamentoHabilitacao" value="#{cc.attrs.managedBean.tce.dataAtaJulgamentoHabilitacao}"
+						pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+	  	</div>
+	</p:fieldset>
+	<br/>
+	<p:fieldset legend="Ata de abertura e julgamento das propostas" id="panelJulgamento" class="fieldset-borda">
+		<div class="row">
+	   		<section class="col col-3">
+				<p:outputLabel for="dataAtaAberturaJulgProp" value="Data da ata de abertura" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataAtaAberturaJulgProp" value="#{cc.attrs.managedBean.tce.dataAtaAberturaJulgamentoProposta}"
+						pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataAtaJulgamentoProposta" value="Data da ata de julgamento" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataAtaJulgamentoProposta" value="#{cc.attrs.managedBean.tce.dataAtaJulgamentoProposta}"
+						pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+	  	</div>
+	</p:fieldset>
+	<br/>
+	<p:fieldset legend="Quadro comparativo de preços das propostas" id="panelQuadroComparativo" class="fieldset-borda">
+		<section>
+	   		<p:outputLabel for="quadroComparativo" value="Existe quadro comparativo de preços das proposta?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="quadroComparativo" value="#{cc.attrs.managedBean.tce.quadroComparativo}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao}" />
+				</p:selectOneMenu>
+			</label>
+	 	</section>
+	</p:fieldset>
+	<p:fieldset legend="Recursos" id="panelRecursos" class="fieldset-borda">
+	 	<section>
+		 	<p:fieldset legend="Interposição de recurso" id="panelInterposicaoRecurso" class="fieldset-borda processInterposicaoRecurso">
+		 		<h:panelGroup id="processInterposicaoRecurso">
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="tipoDocumento" value="Tipo de documento" styleClass="label" />
+							<label class="input">
+								<p:selectOneMenu id="tipoDocumento" value="#{cc.attrs.managedBean.recurso.tipo}" styleClass="select"
+									required="#{param['tceDados:tceForm:btnSalvar']==null}">
+									<f:selectItem itemLabel=".: Selecione :." itemValue="#{null}" />
+									<f:selectItems value="#{typesController.tipoDocumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item.descricao}" />
+									<p:ajax event="change" process="@this" update="recursoDocumento" global="false" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+						<h:panelGroup id="recursoDocumento">
+							<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.recurso.tipo eq 'CNPJ'}">
+								<p:outputLabel for="cnpj" value="Número do documento" styleClass="label" />
+								<label class="input">
+									<p:inputMask id="cnpj" value="#{cc.attrs.managedBean.recurso.cnpj}" required="#{param['tceDados:tceForm:btnSalvar']==null}" mask="99.999.999/9999-99" />
+								</label>
+							</section>
+							<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.recurso.tipo eq 'CPF'}">
+								<p:outputLabel for="cpf" value="Número do documento" styleClass="label" />
+								<label class="input">
+									<p:inputMask id="cpf" value="#{cc.attrs.managedBean.recurso.cpf}" required="#{param['tceDados:tceForm:btnSalvar']==null}" mask="999.999.999-99" />
+								</label>
+							</section>
+							<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.recurso.tipo != 'CPF' and cc.attrs.managedBean.recurso.tipo != 'CNPJ'}">
+								<p:outputLabel for="outro" value="Número do documento" styleClass="label" />
+								<label class="input">
+									<p:inputText id="outro" value="#{cc.attrs.managedBean.recurso.outro}" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+								</label>
+							</section>
+						</h:panelGroup>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="data" value="Data da impetração do recurso" styleClass="label" />
+							<label class="input">
+								<p:calendar id="data" value="#{cc.attrs.managedBean.recurso.dataImpetracao}" pattern="dd/MM/yyyy" style="float:left" 
+								required="#{param['tceDados:tceForm:btnSalvar']==null}" mask="true" locale="pt" />
+							</label>
+						</section>
+						<section class="col col-6">
+							<p:outputLabel for="prazoLegal" value="Foi respeitado o prazo legal para interposição do recurso?" styleClass="label" />
+							<label class="input">
+								<p:selectOneMenu id="prazoLegal" value="#{cc.attrs.managedBean.recurso.prazoLegal}" styleClass="select"
+									required="#{param['tceDados:tceForm:btnSalvar']==null}">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.condicao}" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="resultadoRecurso" value="Resultado do recurso" styleClass="label" />
+							<label class="input">
+								<p:selectOneMenu id="resultadoRecurso" value="#{cc.attrs.managedBean.recurso.resultado}" styleClass="select"
+									required="#{param['tceDados:tceForm:btnSalvar']==null}">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.resultadoRecurso}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-4">
+							<p:spacer width="0px" height="80px"/>
+							<p:commandLink id="btnAddRecurso" actionListener="#{cc.attrs.managedBean.adicionarRecurso()}" process="@(.processInterposicaoRecurso)" 
+								update="processInterposicaoRecurso,dtRecursos" styleClass="btn btn-primary btn-sm">
+								<i class="fa fa-plus"></i>
+							</p:commandLink>
+						</section>
+					</div>
+				</h:panelGroup>
+				<section>
+					<p:dataTable reflow="true" id="dtRecursos" var="item" value="#{cc.attrs.managedBean.tce.processo.recursoList}"
+						emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+						<p:column headerText="Tipo de documento">
+							<h:outputText value="#{item.tipo}" />
+						</p:column>
+						<p:column headerText="Documento">
+							<h:outputText value="#{item.cpf}" rendered="#{item.tipo eq 'CPF'}" />
+							<h:outputText value="#{item.cnpj}" rendered="#{item.tipo eq 'CNPJ'}" />
+							<h:outputText value="#{item.outro}" rendered="#{item.tipo eq 'Estrangeiro'}" />
+						</p:column>
+						<p:column headerText="Data da impetração do recurso" style="text-align: center">
+							<h:outputText value="#{item.dataImpetracao}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Respeitado o prazo legal" style="text-align: center">
+							<h:outputText value="#{item.prazoLegal ? 'Sim' : 'Não'}" />
+						</p:column>
+						<p:column headerText="Resultado do recurso">
+							<h:outputText value="#{item.resultado.descricao}" />
+						</p:column>
+						<p:column headerText="Ação" style="text-align:center;width:60px" rendered="#{!cc.attrs.readonly}">
+							<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerRecurso(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+								<i class="fa fa-trash-o"></i>
+							</h:commandLink>
+						</p:column>
+					</p:dataTable>	
+				</section>
+			</p:fieldset>
+		</section>
+	</p:fieldset>
+	<p:fieldset legend="Sessão pública" id="panelSessaoPublica" class="fieldset-borda">
+		<section>
+			<p:outputLabel for="houveSessaoPublica" value="Houve ata de sessão pública?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="houveSessaoPublica" value="#{cc.attrs.managedBean.tce.sessaoPublica}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<p:fieldset legend="Critério de julgamento" class="fieldset-borda" style="margin-top: 100px;">
+		<section>
+			<p:outputLabel for="criteriosJulgamento" value="Critérios de julgamento/pontuação na pré-qualificação" styleClass="label" />
+			<label class="input">
+				<p:inputTextarea id="criteriosJulgamento" value="#{cc.attrs.managedBean.excluir}" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

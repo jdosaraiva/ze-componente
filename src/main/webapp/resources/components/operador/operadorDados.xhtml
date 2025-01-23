@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="operadorForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="login" value="CPF" styleClass="label" />
+					<label class="input">
+						<p:inputMask id="login" mask="999.999.999-99" value="#{cc.attrs.managedBean.operador.chave}" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-9">
+					<p:outputLabel for="email" value="E-mail" styleClass="label" />
+					<label class="input">
+						<p:inputText id="email" value="#{cc.attrs.managedBean.operador.email}" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="nome" value="Nome" styleClass="label" />
+				<label class="input">
+					<p:inputText id="nome" value="#{cc.attrs.managedBean.operador.nome}" required="true" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="rg" value="RG" styleClass="label" />
+					<label class="input">
+						<p:inputText id="rg" value="#{cc.attrs.managedBean.operador.rg}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="rgOrgaoEmissor" value="RG Órgão Emissor" styleClass="label" />
+					<label class="input">
+						<p:inputText id="rgOrgaoEmissor" value="#{cc.attrs.managedBean.operador.rgOrgaoEmissor}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataNascimento" value="Data Nascimento" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataNascimento" style="float:left"
+							value="#{cc.attrs.managedBean.operador.dataNascimento}" 
+							pattern="dd/MM/yyyy"
+							mask="true"
+							disabled="#{cc.attrs.readonly}"
+							locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="admissao2" value="Admissão" styleClass="label" />
+					<label class="input">
+						<p:calendar id="admissao2" style="float:left"
+							value="#{cc.attrs.managedBean.operador.admissao}" 
+							pattern="dd/MM/yyyy"
+							mask="true"
+							disabled="#{cc.attrs.readonly}"
+							locale="pt" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="matricula" value="Matrícula" styleClass="label" />
+					<label class="input">
+						<p:inputText id="matricula" value="#{cc.attrs.managedBean.operador.matricula}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="cargo" value="Cargo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="cargo" value="#{cc.attrs.managedBean.operador.cargo}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="telefone" value="Telefone" styleClass="label" />
+					<label class="input">
+						<p:inputMask id="telefone" mask="(99) 99999-9999" value="#{cc.attrs.managedBean.operador.telefone}" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{not cc.attrs.readonly}">
+				<section class="col col-3" jsf:rendered="#{cc.attrs.managedBean.operador.id > 0}">
+					<p:outputLabel value="Alterar a Senha?" styleClass="label" />
+					<p:selectBooleanCheckbox value="#{cc.attrs.managedBean.alteraSenha}">
+						<p:ajax update="senha confirmarSenha" />
+					</p:selectBooleanCheckbox>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="senha" value="Senha" styleClass="label" />
+					<label class="input">
+						<p:password id="senha" value="#{cc.attrs.managedBean.senha}" match="confirmarSenha" required="true" disabled="#{cc.attrs.readonly or not cc.attrs.managedBean.alteraSenha}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="confirmarSenha" value="Confirmar Senha" styleClass="label" />
+					<label class="input">
+						<p:password id="confirmarSenha" value="#{cc.attrs.managedBean.senha}" required="true" disabled="#{cc.attrs.readonly or not cc.attrs.managedBean.alteraSenha}" />
+					</label>
+				</section>
+			</div>
+		</fieldset>
+		<header>
+			Lista de Órgãos
+		</header>
+		<fieldset>
+			<h:panelGroup id="formOrgao" rendered="#{!cc.attrs.readonly}">
+				<section>
+					<mcl:inputLupa 
+						id="orgaoSelecionado" 
+						label="Órgão" 
+						controller="#{orgaoColumnsView}"
+						descricao="#{cc.attrs.managedBean.orgaoSelecionado.codigoCompleto.toString()
+						.concat(' - ').concat(cc.attrs.managedBean.orgaoSelecionado.descricao) }"
+						value="#{cc.attrs.managedBean.orgaoSelecionado}"
+						required="false" 
+						lazy="true"
+						cabecalho= "Consulta de Órgão" />
+				</section>
+				<section>
+					<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarOrgao}" styleClass="btn btn-primary btn-sm">
+		            	<f:ajax execute="@form" render="dtOrgao operadorDados:operadorForm:formOrgao" />
+		            	<i class="fa fa-plus"></i>
+		            	<h:outputText value="  Adicionar" />
+		            </h:commandLink>
+				</section>
+			</h:panelGroup>
+			<div>
+				<div class="widget-body">
+					<div class="table-responsive">
+						<h:panelGroup id="panelOrgao">
+							<p:dataTable id="dtOrgao" var="item" value="#{cc.attrs.managedBean.operador.operadorOrgaoList}" reflow="true" paginator="false" 
+										emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+								<p:column headerText="Órgão" sortBy="#{item.orgaoSigla}">
+						           	<h:outputText value="#{item.orgaoSigla} - #{item.orgaoDescricao}" />
+						        </p:column>
+						        <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						            <h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerOrgao(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+						            	<p:ajax update=":operadorDados:operadorForm:panelOrgao" />
+						            	<i class="fa fa-trash-o"></i>
+						            </h:commandLink>
+						        </p:column>
+							</p:dataTable>
+					    </h:panelGroup>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

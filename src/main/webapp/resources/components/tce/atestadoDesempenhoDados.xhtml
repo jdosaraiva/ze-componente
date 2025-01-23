@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 100px" class="row"></div>
+	<p:fieldset legend="Atestados de desempenho" id="pnlAtestado" class="fieldset-borda">
+		<h:panelGroup id="formAtestado">
+			<div class="row">
+				<section class="col col-4">
+					<p:outputLabel for="lote" value="Referente ao lote" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="lote" 
+								value="#{cc.attrs.managedBean.atestadoDesempenho.objeto}" 
+								styleClass="select-popup" 
+								style="width: 100%;"
+								required="#{param['tceDados:tceForm:btnSalvar']==null}"
+								widgetVar="loteWidgetVar">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{cc.attrs.managedBean.tce.processo.loteList}" 
+									var="item" 
+									itemLabel="#{item.numeroDescricao}" 
+									itemValue="#{item}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="editalItem" value="Item do edital" styleClass="label" />
+					<label class="input">
+						<p:inputText id="editalItem" 
+								value="#{cc.attrs.managedBean.atestadoDesempenho.atestadoEditalItem}" 
+								maxlength="20" 
+								widgetVar="editalItemWidgetVar" />
+					</label>
+				</section>
+				<section class="col col-4">
+					<mcl:dinheiro id="atestadoPercentual" 
+							label="Percentual do objeto licitado" 
+							value="#{cc.attrs.managedBean.atestadoDesempenho.atestadoPercentual}" 
+							required="#{param['tceDados:tceForm:btnSalvar']==null}"
+							identificador="atestadoPercentual" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-8">
+					<p:outputLabel for="descricao" value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricao" 
+								value="#{cc.attrs.managedBean.atestadoDesempenho.atestadoDescricao}" 
+								maxlength="100" 
+             					widgetVar="descricaoWidgetVar" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:dinheiro id="atestadoQuantidade" 
+							label="Quantidade do item" 
+							value="#{cc.attrs.managedBean.atestadoDesempenho.atestadoQuantidade}" 
+							required="#{param['tceDados:tceForm:btnSalvar']==null}"
+							identificador="atestadoQuantidade" />
+				</section>
+				<section class="col col-1">
+					<p:spacer width="0px" height="80px"/>
+					
+					<p:commandLink id="btnAddAtestado" 
+					               actionListener="#{cc.attrs.managedBean.adicionarAtestadoDesempenho()}"
+					               process="@this formAtestado" 
+					               update="tabelaAtestado"
+					               oncomplete="PF('loteWidgetVar').selectValue('');
+					                           PF('editalItemWidgetVar').jq.val('');
+					                           PF('descricaoWidgetVar').jq.val('');
+					                           PF('atestadoPercentualWidgetVar').setValue(''); 
+					                           PF('atestadoQuantidadeWidgetVar').setValue('');"
+					               styleClass="btn btn-primary btn-sm">
+					    <i class="fa fa-plus"></i>
+					</p:commandLink>
+				</section>
+			</div>
+		</h:panelGroup>
+		<section>
+			<h:panelGroup id="tabelaAtestado">
+			<p:dataTable lazy="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop"
+				id="dtAtestadoDesempenho" var="item" reflow="true" value="#{cc.attrs.managedBean.tce.processo.atestadoDesempenhoAsSortedList}">
+				<p:column headerText="Lote">
+					<h:outputText value="#{item.descricaoLote}" title="#{item.descricaoLote}" />
+				</p:column>
+				<p:column headerText="Item do edital">
+					<h:outputText value="#{item.atestadoEditalItem}" />
+				</p:column>
+				<p:column headerText="Percentual">
+					<mcl:money value="#{item.atestadoPercentual}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Descrição">
+					<h:outputText value="#{item.atestadoDescricao}" title="#{item.atestadoDescricao}" />
+				</p:column>
+				<p:column headerText="Quantidade do item">
+					<mcl:money value="#{item.atestadoQuantidade}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+					<h:commandLink actionListener="#{cc.attrs.managedBean.removerAtestadoDesempenho(item)}"
+						value="" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-trash-o"></i>
+					</h:commandLink>
+				</p:column>
+			</p:dataTable>
+			</h:panelGroup>		
+		</section>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

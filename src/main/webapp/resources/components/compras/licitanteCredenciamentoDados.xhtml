@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="licitanteCredenciamentoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número / Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero} / #{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.processo.modalidade.descricao} - #{cc.attrs.managedBean.processo.numeroLicitacao} / #{cc.attrs.managedBean.processo.anoLicitacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="exclusivoMe" value="Exclusivo M.E. ?" styleClass="label" />
+					<label class="input">
+						<p:inputText id="exclusivoMe" value="#{cc.attrs.managedBean.processo.exclusivoMe ? 'Sim' : 'Não'}" readonly="true" />
+					</label>
+				</section>
+				
+			</div>
+		</fieldset>
+		<header>
+			Participantes
+		</header>
+		<fieldset>
+			<section jsf:rendered="#{!cc.attrs.readonly}">
+				<h:commandLink value="" onclick="javascript: $('#popupEditLicitanteCredenciamento').modal('show');" styleClass="btn btn-primary btn-sm">
+		           	<p:ajax listener="#{cc.attrs.managedBean.novoLicitante}" update=":editLicitanteCredenciamento:formPopupEditLicitanteCredenciamento" />
+		           	<i class="fa fa-plus"></i>
+		           	<h:outputText value="  Adicionar Participante" />
+		        </h:commandLink>
+			</section>
+			<section>
+				<p:dataTable id="dtLicitantes" var="item" value="#{cc.attrs.managedBean.processo.licitanteList}"
+					reflow="true" emptyMessage="Nenhum Fornecedor relacionado." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+				    <p:column headerText="Razão Social">
+				    	<h:outputText value="#{item.fornecedorRazaoSocial}" title="#{item.fornecedorRazaoSocial}" />
+				    </p:column>
+				    <p:column headerText="Número Documento" style="text-align: center; width: 150px">
+				        <h:outputText value="#{item.fornecedorNumeroDocumento}" />
+				    </p:column>
+				    <p:column headerText="Código" style="text-align: right; width: 50px">
+				        <h:outputText value="#{item.fornecedorCodigo}" />
+				    </p:column>
+				    
+				    <p:column headerText="Condição Participação" style="width: 150px">
+				        <h:outputText value="#{item.condicaoParticipacao.descricao}" />
+				    </p:column>
+				    <p:column headerText="Situação" style="text-align: center; width: 90px">
+				        <h:outputText value="#{item.status.descricao}" />
+				    </p:column>
+				    <p:column headerText="Movimento Autorizado" style="text-align: center; width: 90px">
+				        <h:outputText value="#{item.fornecedorMovimentoAutorizado ? 'Sim' : 'Não'}" />
+				    </p:column>
+				    <p:column headerText="Cadastro Oficial" style="text-align: center; width: 90px">
+				        <h:outputText value="#{item.fornecedorCadastroOficial ? 'Sim' : 'Não'}" />
+				    </p:column>
+				    <p:column headerText="M.E." style="text-align: center; width: 90px">
+				        <h:outputText value="#{item.fornecedorMicroEmpresa ? 'Sim' : 'Não'}" />
+				    </p:column>
+				    <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+				    	<h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditLicitanteCredenciamento').modal('show');" >
+			        		<p:ajax listener="#{cc.attrs.managedBean.editarLicitante(item)}" update=":editLicitanteCredenciamento:formPopupEditLicitanteCredenciamento" />
+			            	<i class="fa fa-edit"></i>
+			            </h:commandLink>
+			            &#160;
+			            <h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerLicitante(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax update=":licitanteCredenciamentoDados:licitanteCredenciamentoForm:dtLicitantes" />
+			            	<i class="fa fa-trash-o"></i>
+			            </h:commandLink>
+			        </p:column>
+				</p:dataTable>	
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

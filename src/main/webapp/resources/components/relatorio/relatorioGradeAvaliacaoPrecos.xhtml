@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="relatorioForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa id="processo" label="Processo" controller="#{processoColumnsView}"
+						descricao="#{cc.attrs.managedBean.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.processo.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.processo.status.descricao)}" 
+						value="#{cc.attrs.managedBean.processo}" required="true" update="@form" cabecalho="Consulta de Processo" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+					<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+						<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</section>
+			</div>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.gerar('Analitico')}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Analítico" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.gerar('Sintetico')}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Sintético" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

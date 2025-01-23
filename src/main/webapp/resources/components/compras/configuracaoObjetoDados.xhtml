@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="configuracaoObjetoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<f:event type="preRenderView" listener="#{configuracaoObjetoController.buscaObjetos()}" />
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:dataTable var="item" value="#{cc.attrs.managedBean.objetoList}" emptyMessage="Não há registros" rowExpandMode="single"
+					selection="#{cc.attrs.managedBean.objetoSelecionado}" rowKey="#{item.id}" disabledSelection="#{item.tipo == 'LOTE' || item.loteObjeto != null}">
+				    <f:facet name="header">
+				        Objetos do Processo
+				    </f:facet>
+				    <p:column selectionMode="single" style="width:16px;text-align:center"/>
+				    <p:column style="width:16px">
+			            <p:rowToggler />
+			        </p:column>
+				    <p:column headerText="Item" style="width:90px">
+				    	<mcl:number value="#{item.item}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Lote" style="width:90px">
+				    	<mcl:number value="#{item.loteObjeto.item}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Número" style="width:90px">
+				    	<mcl:number value="#{item.numero}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Tipo" style="text-align: center; width:90px">
+				        <h:outputText value="#{item.tipo.descricao}" />
+				    </p:column>
+				    <p:column headerText="Descrição">
+				        <h:outputText value="#{item.material.descricao}" title="#{item.material.descricao}" rendered="#{item.tipoRequisicao == 'MATERIAL' and item.tipo == 'ITEM'}" />
+				        <h:outputText value="#{item.servico.descricao}" title="#{item.servico.descricao}" rendered="#{item.tipoRequisicao == 'SERVICO' and item.tipo == 'ITEM'}" />
+				        <h:outputText value="#{item.descricao}" title="#{item.descricao}" rendered="#{item.tipo == 'LOTE'}" />
+				    </p:column>
+				    <p:rowExpansion>
+			            <p:dataTable var="subitem" value="#{item.itemRequisicaoCompraList}" emptyMessage="Não há registros"
+							rowKey="#{subitem.id}">
+						    <f:facet name="header">Itens de Requisição de Compra do Objeto</f:facet>
+						    <p:column headerText="Quantidade" style="width:90px">
+						    	<mcl:money value="#{subitem.quantidadeInicial}" modoConsulta="true" />
+						    </p:column>
+						    <p:column headerText="Unidade" style="width:100px">
+						        <h:outputText value="#{subitem.material != null ? subitem.material.unidade.nome : ''}" />
+						    </p:column>
+						    <p:column headerText="Valor Unitário" style="width:100px">
+						    	<mcl:money value="#{subitem.valorUnitarioInicial}" modoConsulta="true" />
+						    </p:column>
+						    <p:column headerText="Objeto">
+						        <h:outputText value="#{subitem.material.descricao}" title="#{subitem.material.descricao}" rendered="#{subitem.material != null}" />
+						        <h:outputText value="#{subitem.servico.descricao}" title="#{subitem.servico.descricao}" rendered="#{subitem.servico != null}" />
+						    </p:column>
+						    <p:column headerText="Concluído" style="text-align:center; width:90px">
+						        <h:outputText value="#{subitem.concluido ? 'Sim' : 'Não'}" />
+						    </p:column>
+						    <p:column headerText="Status" style="text-align:center; width:90px">
+						        <h:outputText value="#{subitem.status.descricao}" />
+						    </p:column>
+						</p:dataTable>
+			        </p:rowExpansion>
+				</p:dataTable>
+			</section>
+			<div class="row">
+				<section class="col col-6" style="text-align: center">
+					<h:commandLink value="" action="#{cc.attrs.managedBean.navegaJuntar()}" styleClass="btn btn-primary btn-sm">
+		            	<h:outputText value="  Juntar/Transferir Objetos" />
+		            </h:commandLink>
+				</section>
+				<section class="col col-6" style="text-align: center">
+					<h:commandLink value="" action="#{cc.attrs.managedBean.navegaSeparar()}" styleClass="btn btn-primary btn-sm">
+		            	<h:outputText value="  Separar Objetos" />
+		            </h:commandLink>
+				</section>
+			</div>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

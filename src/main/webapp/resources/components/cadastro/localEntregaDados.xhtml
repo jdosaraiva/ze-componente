@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="localEntregaForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-9">
+					<p:outputLabel for="descricao" value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:focus for="descricao" />
+						<p:inputText id="descricao" value="#{cc.attrs.managedBean.localEntrega.descricao}" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="cep" value="CEP" styleClass="label" />
+					<label class="input">
+                        <p:inputMask id="cep" value="#{cc.attrs.managedBean.localEntrega.cep}" required="false" disabled="#{cc.attrs.readonly}" mask="99999-999">
+                        	<p:ajax event="blur" listener="#{cc.attrs.managedBean.buscaCep()}" update="endereco,bairro,cidade, uf" />
+                        </p:inputMask>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="endereco" value="Endereço" styleClass="label" />
+					<label class="input">
+						<p:inputText id="endereco" value="#{cc.attrs.managedBean.localEntrega.endereco}" required="true" disabled="#{cc.attrs.readonly}"/>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.localEntrega.numero}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="complemento" value="Complemento" styleClass="label" />
+					<label class="input">
+						<p:inputText id="complemento" value="#{cc.attrs.managedBean.localEntrega.complemento}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="bairro" value="Bairro" styleClass="label" />
+					<label class="input">
+						<p:inputText id="bairro" value="#{cc.attrs.managedBean.localEntrega.bairro}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="cidade" value="Cidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="cidade" value="#{cc.attrs.managedBean.localEntrega.cidade}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="uf" value="U.F." styleClass="label" />
+					<label class="input">
+						<p:inputText id="uf" value="#{cc.attrs.managedBean.localEntrega.uf}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="pais" value="País" styleClass="label" />
+					<label class="input">
+						<p:inputText id="pais" value="#{cc.attrs.managedBean.localEntrega.pais}" required="false" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="telefone" value="Telefone" styleClass="label" />
+					<label class="input">
+                        <p:inputMask id="telefone" value="#{cc.attrs.managedBean.localEntrega.telefone}" required="false" disabled="#{cc.attrs.readonly}" mask="(99) 9999-9999"/>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="localidadeLatitude" value="Latitude ( Exemplo: -23.5504473 )" />
+					<p:inputNumber id="localidadeLatitude" value="#{cc.attrs.managedBean.localEntrega.localidadeLatitude}"
+						decimalSeparator="." decimalPlaces="8" thousandSeparator="," style="text-align:right">
+					</p:inputNumber>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="localidadeLongitude" value="Longitude ( Exemplo: -46.275073 )" />
+					<p:inputNumber id="localidadeLongitude" value="#{cc.attrs.managedBean.localEntrega.localidadeLongitude}"
+						decimalSeparator="." decimalPlaces="8" thousandSeparator="," style="text-align:right">
+					</p:inputNumber>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="email" value="Email" styleClass="label" />
+				<label class="input">
+					<p:inputText id="email" value="#{cc.attrs.managedBean.localEntrega.email}" required="false" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

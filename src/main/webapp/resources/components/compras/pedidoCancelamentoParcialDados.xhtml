@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pedidoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<p:panel id="pedidoPanel" header="Dados do Pedido">
+				<div class="row">	
+					<section class="col col-3">
+						<p:outputLabel value="Pedido" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.pedido.numero} / #{cc.attrs.managedBean.pedido.ano}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel value="Processo" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.pedido.processo.numero} / #{cc.attrs.managedBean.pedido.processo.ano}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel value="Tipo de Objeto" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.pedido.processo.tipoObjeto.descricao}" readonly="true" />
+						</label>
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-3">
+						<p:outputLabel value="Condição Pagamento" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.pedido.condicaoPagamento.descricao}" readonly="true" />
+						</label>
+					</section>
+					<section class="col col-3">
+						<p:outputLabel value="Data do Pedido" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.pedido.data}" readonly="true">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:inputText>
+						</label>
+					</section>
+					<section class="col col-6">
+						<p:outputLabel value="Fornecedor" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{cc.attrs.managedBean.pedido.fornecedorRazaoSocial}" readonly="true" />
+						</label>
+					</section>
+				</div>
+				<section>
+					<p:outputLabel for="observacao" value="Observação" styleClass="label" />
+					<label class="input">
+						<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.pedido.observacao}" readonly="true" />
+					</label>
+				</section>
+			</p:panel>
+			<br/>
+			<p:panel id="itemPedidoPanel" header="Dados do Item de Pedido Selecionado">
+				<section>
+					<p:outputLabel value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{cc.attrs.managedBean.itemPedidoSelecionado.objeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<div class="row">
+					<section class="col col-3">
+						<mcl:number id="item" label="Item" value="#{cc.attrs.managedBean.itemPedidoSelecionado.item}" readonly="true" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="quantidadeSolicitada" label="Quantidade Solicitada" value="#{cc.attrs.managedBean.itemPedidoSelecionado.quantidadeSolicitada}" readonly="true" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="quantidadeReceber" label="Quantidade a Receber" value="#{cc.attrs.managedBean.itemPedidoSelecionado.quantidadeReceber}" readonly="true" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="valorUnitario" label="Valor Unitário" value="#{cc.attrs.managedBean.itemPedidoSelecionado.valorUnitario}" readonly="true" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-3">
+						<mcl:money id="valorTotalSolicitado" label="Valor Total Solicitado" value="#{cc.attrs.managedBean.itemPedidoSelecionado.valorTotalSolicitado}" readonly="true" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="saldoReceber" label="Saldo a Receber" value="#{cc.attrs.managedBean.itemPedidoSelecionado.saldoReceber}" readonly="true" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="quantidadeCancelada" label="Qtde. a Cancelar" value="#{cc.attrs.managedBean.itemPedidoSelecionado.quantidadeACancelar}" readonly="#{cc.attrs.managedBean.itemPedidoSelecionado.objeto.material == null}" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="valorTotalCancelado" label="Valor a Cancelar" value="#{cc.attrs.managedBean.itemPedidoSelecionado.valorACancelar}" readonly="#{cc.attrs.managedBean.itemPedidoSelecionado.objeto.servico == null}" />
+					</section>
+				</div>
+			</p:panel>
+			<br/>
+			<p:dataTable var="subitem" value="#{cc.attrs.managedBean.itemPedidoSelecionado.itemRequisicaoCompraList}"
+				reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+				styleClass="table-reflow-desktop">
+				<f:facet name="header">Itens de Requisição de Compra do Objeto</f:facet>
+				<p:column headerText="Requisição"  style="width: 100px;text-align: left">
+					<h:outputText value="#{subitem.requisicaoCompra.numero} / #{subitem.requisicaoCompra.ano}" />
+				</p:column>
+				<p:column headerText="Quantidade" style="width: 100px;text-align: right">
+					<mcl:money value="#{subitem.quantidadeSolicitada}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Unidade"  style="width: 120px;text-align: left">
+					<h:outputText value="#{subitem.material != null ? subitem.material.unidade.nome : ''}" />
+				</p:column>
+				<p:column headerText="Valor Unitário"  style="width: 120px;text-align: right">
+					<mcl:money value="#{subitem.valorUnitarioInicial}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Objeto">
+					<h:outputText value="#{subitem.material.descricao}" rendered="#{subitem.material != null}" />
+					<h:outputText value="#{subitem.servico.descricao}" rendered="#{subitem.servico != null}" />
+				</p:column>
+				<p:column headerText="Concluído"  style="width: 100px;text-align: center">
+					<h:outputText value="#{subitem.concluido ? 'Sim' : 'Não'}" />
+				</p:column>
+				<p:column headerText="Status"  style="width: 100px;text-align: center">
+					<h:outputText value="#{subitem.status.descricao}" />
+				</p:column>
+				<p:column headerText="Qtde. a Cancelar" style="width: 150px">
+					<mcl:money value="#{subitem.quantidadeACancelar}" modoConsulta="#{cc.attrs.managedBean.itemPedidoSelecionado.objeto.material == null}" />
+				</p:column>
+				<p:column headerText="Valor a Cancelar" style="width: 150px">
+					<mcl:money value="#{subitem.valorACancelar}" modoConsulta="#{cc.attrs.managedBean.itemPedidoSelecionado.objeto.servico == null}" />
+				</p:column>
+			</p:dataTable>
+			<br/>
+			<p:dataTable id="dtEmpenho" var="subitem" value="#{cc.attrs.managedBean.itemPedidoSelecionado.empenhos}"
+				reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+				styleClass="table-reflow-desktop">
+				<f:facet name="header">Empenhos do item de pedido</f:facet>
+				<p:column headerText="Tipo Empenho">
+					<h:outputText value="#{subitem.tipoEmpenho}" />
+				</p:column>
+				<p:column headerText="Dotação" style="width: 80px;text-align: center">
+					<h:panelGroup id="ajudaClassificacao"><i class="fa fa-lg fa-fw fa-exclamation-circle"></i></h:panelGroup>
+					<p:overlayPanel for="ajudaClassificacao" hideEffect="fade">
+						<p:panelGrid  columns="2" columnClasses="label,value" style="width:300px">
+							<h:outputText value="Fonte Recurso:" />
+							<h:outputText value="#{subitem.reserva.dotacaoFonteRecurso}" />
+			 
+							<h:outputText value="Código Aplicação:" />
+							<h:outputText value="#{subitem.reserva.dotacaoCodigoAplicacao}" />
+			 
+							<h:outputText value="Função:" />
+							<h:outputText value="#{subitem.reserva.dotacaoFuncao}" />
+			 
+							<h:outputText value="SubFunção:" />
+							<h:outputText value="#{subitem.reserva.dotacaoSubfuncao}" />
+							
+							<h:outputText value="Programa:" />
+							<h:outputText value="#{subitem.reserva.dotacaoPrograma}" />
+							
+							<h:outputText value="CND:" />
+							<h:outputText value="#{subitem.dotacaoCnd} - #{subitem.reserva.dotacaoCndDescricao}" />
+						</p:panelGrid>
+					</p:overlayPanel>
+				</p:column>
+				<p:column headerText="Número" style="width: 80px">
+					<mcl:number value="#{subitem.numero} / #{subitem.ano}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Data" style="width: 80px;text-align: center">
+					<h:outputText value="#{subitem.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Valor" style="width: 100px">
+					<mcl:money value="#{subitem.valor}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Vl Liquidar" style="width: 100px">
+					<mcl:money value="#{subitem.valorALiquidar}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Total Estornado" style="width: 100px">
+					<mcl:money value="#{subitem.valorTotalEstornado}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Valor a Estornar" style="width: 150px">
+					<mcl:money value="#{subitem.valorEstornar}" />
+				</p:column>
+			</p:dataTable>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltarParcial()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

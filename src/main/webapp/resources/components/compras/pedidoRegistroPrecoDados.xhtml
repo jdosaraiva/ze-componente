@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pedidoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa 
+							id="processo" 
+							label="Processo" 
+							controller="#{processoColumnsView}"
+							descricao="#{cc.attrs.managedBean.pedido.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.pedido.processo.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.pedido.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.pedido.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.pedido.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.pedido.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.pedido.processo.status.descricao)}" 
+							value="#{cc.attrs.managedBean.pedido.processo}" 
+							required="true" 
+							listener="#{cc.attrs.managedBean.carregarTodosObjetos()}" 
+							cabecalho= "Consulta de Processo" />
+				</section>
+				<section class="col col-3">
+						<mcl:inputLupa 
+							id="condicaoPagamento" 
+							label="Condição de Pagamento"  
+							controller="#{condicaoPagamentoColumnsView}"
+							descricao="#{cc.attrs.managedBean.pedido.condicaoPagamento.descricao}"
+							value="#{cc.attrs.managedBean.pedido.condicaoPagamento}"
+							cabecalho= "Consulta de Condição Pagamento"
+							required="true" 
+							leitura="#{cc.attrs.readonly}"/>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.pedido.data}" 
+									pattern="dd/MM/yyyy"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="observacao" value="Observação" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.pedido.observacao}" />
+				</label>
+			</section>
+		</fieldset>
+	
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

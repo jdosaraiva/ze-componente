@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="loteObjetoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">	
+				
+				<section class="col col-6" jsf:rendered="#{not cc.attrs.aditamento}">
+						<mcl:inputLupa 
+							id="processo" 
+							label="Processo" 
+							controller="#{processoColumnsView}"
+							descricao="#{cc.attrs.managedBean.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.processo.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.processo.status.descricao)}" 
+							value="#{cc.attrs.managedBean.processo}" 
+							required="true" 
+							listener="#{cc.attrs.managedBean.buscaProcesso()}" 
+							update="loteObjetoDados:loteObjetoForm:objetosDisponiveis,loteObjetoDados:loteObjetoForm:objetosAdicionados" 
+							cabecalho= "Consulta de Processo" />
+				</section>
+				
+				
+				
+				
+				
+				
+				
+				
+				<section class="col col-6">
+					<p:outputLabel for="unidade" value="Unidade de Medida do Lote" styleClass="label" />
+					<label class="input">
+						<p:inputText id="unidade" value="#{cc.attrs.managedBean.objeto.unidade}" maxlength="20" required="true" readonly="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="descricaoLote" value="Descrição do Lote" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea rows="6" cols="50" id="descricaoLote" required="true" value="#{cc.attrs.managedBean.objeto.descricao}" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</fieldset>
+		<fieldset>
+			<section>
+				<p:dataTable id="objetosDisponiveis" var="item" value="#{cc.attrs.managedBean.objetoListDisponiveis}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					rowKey="#{item.id}"
+					rowSelectMode="checkbox"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">
+         			   Objetos tipo Item disponíveis no Processo
+       				</f:facet>
+       					<p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.managedBean.onRowSelectDisponiveis}"  />	
+					   <p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.unRowSelectDisponiveis}"  />
+					   <p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.onRowSelectAllDisponiveis}" />
+        			<p:column selectionMode="multiple" rendered="#{not cc.attrs.readonly}" style="width:16px;text-align:center"/>
+					<p:column headerText="Item" sortBy="#{item.item}">
+			           	<h:outputText value="#{item.item}" />
+			        </p:column>
+			        <p:column headerText="Número" sortBy="#{item.numero}">
+			           	<h:outputText value="#{item.numero}" />
+			        </p:column>
+			        <p:column headerText="Excl. ME">
+			           	<h:outputText value="#{item.exclusivoMeLabel}" />
+			        </p:column>
+			        <p:column headerText="Descrição">
+			           	<h:outputText value="#{item.descricao}" title="#{item.descricao}" />
+			        </p:column>
+			        <p:column headerText="Quantidade" sortBy="#{item.quantidade}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Quantidade" sortBy="#{item.quantidade}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+			           	<h:outputText value="#{item.quantidade}" />
+			        </p:column>
+			        <p:column headerText="Unidade" sortBy="#{item.unidade}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Unidade" sortBy="#{item.unidade}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+			           	<h:outputText value="#{item.unidade}" />
+			        </p:column>
+			        <p:column headerText="Valor Unitário" sortBy="#{item.valorUnitario}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Valor Unitário" sortBy="#{item.valorUnitario}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+		           		<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+			        </p:column>
+			        <p:column headerText="Valor Total" sortBy="#{item.valor}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Valor Total" sortBy="#{item.valor}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+		           		<mcl:money value="#{item.valor}" modoConsulta="true" />
+			        </p:column>
+				</p:dataTable>	
+			</section>
+		</fieldset>
+		<fieldset jsf:rendered="#{!cc.attrs.readonly}">
+			<div class="row">
+				<section class="col col-3">
+				</section>
+				<section class="col col-3">
+						<h:commandLink value=""  styleClass="btn btn-primary btn-sm"
+										>
+				           	<p:ajax listener="#{cc.attrs.managedBean.adicionaObjetoLote()}" update="objetosDisponiveis,objetosAdicionados" />
+				           	<i class="fa fa-plus"></i>
+				           	<h:outputText value="  Adicionar Objeto ao Lote" />
+				        </h:commandLink>
+				</section>
+				<section class="col col-3">
+						<h:commandLink value=""  styleClass="btn btn-primary btn-sm">
+				           	<p:ajax listener="#{cc.attrs.managedBean.removeObjetoLote()}" update="objetosDisponiveis,objetosAdicionados" />
+				           	<i class="fa fa-minus"></i>
+				           	<h:outputText value="  Remover Objeto ao Lote" />
+				        </h:commandLink>
+				</section>
+			</div>
+		</fieldset>
+		<fieldset>
+			<section>
+				<p:dataTable id="objetosAdicionados" var="item" value="#{cc.attrs.managedBean.objetoListAdicionados}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					rowSelectMode="checkbox"
+					rowKey="#{item.id}"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">
+         			   Objetos adicionados ao Lote
+       				</f:facet>
+					<p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.managedBean.onRowSelectAdicionados}"  />	
+					<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.unRowSelectAdicionados}"  />
+					<p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.onRowSelectAllAdicionados}" />
+					
+        			<p:column selectionMode="multiple" rendered="#{not cc.attrs.readonly}" style="width:16px;text-align:center" />
+				
+					<p:column headerText="Item" sortBy="#{item.item}">
+			           	<h:outputText value="#{item.item}" />
+			        </p:column>
+			        <p:column headerText="Número" sortBy="#{item.numero}">
+			           	<h:outputText value="#{item.numero}" />
+			        </p:column>
+			        <p:column headerText="Excl. ME">
+			           	<h:outputText value="#{item.exclusivoMeLabel}" />
+			        </p:column>
+			        <p:column headerText="Descrição">
+			           	<h:outputText value="#{item.descricao}" title="#{item.descricao}" />
+			        </p:column>
+			        <p:column headerText="Quantidade" sortBy="#{item.quantidade}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Quantidade" sortBy="#{item.quantidade}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+			           	<h:outputText value="#{item.quantidade}" />
+			        </p:column>
+			        <p:column headerText="Unidade" sortBy="#{item.unidade}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Unidade" sortBy="#{item.unidade}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+			           	<h:outputText value="#{item.unidade}" />
+			        </p:column>
+			        <p:column headerText="Valor Unitário" sortBy="#{item.valorUnitario}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Valor Unitário" sortBy="#{item.valorUnitario}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+		           		<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+			        </p:column>
+			        <p:column headerText="Valor Total" sortBy="#{item.valor}" rendered="#{item.tipoRequisicao == 'CATALOGO'}"/>
+			        <p:column headerText="Valor Total" sortBy="#{item.valor}" rendered="#{item.tipoRequisicao != 'CATALOGO'}">
+		           		<mcl:money value="#{item.valor}" modoConsulta="true" />
+			        </p:column>
+				</p:dataTable>	
+			</section>
+		</fieldset>
+		
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

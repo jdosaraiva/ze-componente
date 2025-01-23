@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:tceAjuste="http://java.sun.com/jsf/composite/components/tceAjuste">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="tceAjusteForm" class="smart-form formProcess" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<p:fieldset legend="Dados Iniciais" class="fieldset-borda">
+					<div class="row">
+						<section class="col col-6">
+							<mcl:inputSelectTce
+								id="tce" 
+								label="Complemento TCE" 
+								value="#{cc.attrs.managedBean.tceAjuste.tce}" 
+								managedBean="#{tceAutocomplete}" 
+								itemLabel="#{item.processo.numero}" 
+								required="true"
+								readonly="#{cc.attrs.readonly}"
+								ajax="true"
+								listener="#{cc.attrs.managedBean.carregaDadosIniciais()}" 
+								update="tceAjusteDados:tceAjusteForm:panelDados" />
+						</section>
+						<section class="col col-3">
+							<p:outputLabel for="numero" value="Código do Ajuste (apenas o número)" styleClass="label" />
+							<label class="input">
+								<p:inputText id="numero" maxlength="13" value="#{cc.attrs.managedBean.tceAjuste.numero}" required="true" disabled="#{cc.attrs.readonly}" 
+								title="Digite apenas o Número. O sistema monta o código com o Ano e os zeros necessários."/>
+							</label>
+						</section>	
+						<p:outputPanel id="divInstrumento"	>
+							<section class="col col-3">
+								<p:outputLabel for="instrumento" value="Instrumento" styleClass="label" />
+								<label class="input">
+									<p:selectOneMenu id="instrumento" value="#{cc.attrs.managedBean.tceAjuste.instrumento}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+										<f:selectItems value="#{typesController.instrumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							        	<p:ajax listener="#{cc.attrs.managedBean.carregaDadosIniciais()}" update="panelDados" process="@this"  event="change" />
+									</p:selectOneMenu>
+								</label>
+							</section>
+						</p:outputPanel>
+					</div>
+				</p:fieldset>
+				<h:panelGroup id="panelDados">
+					<p:fieldset id="divContrato" legend="Dados Contrato" class="fieldset-borda" rendered="#{cc.attrs.managedBean.tceAjuste.instrumento eq 'CONTRATO' and cc.attrs.managedBean.tceAjuste.tce != null}">
+						<div class="row">
+							<section class="col col-6">
+								<p:outputLabel for="contrato" value="Contrato" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="contrato" value="#{cc.attrs.managedBean.tceAjuste.contrato}" required="true" 
+							        	 styleClass="select" filter="true" filterMatchMode="contains">
+							            <f:selectItem itemLabel=".: Selecione um Contrato para gerar o Ajuste. Gerou Contratos ? :." itemValue="" />
+							            <f:selectItems value="#{cc.attrs.managedBean.contratoList}" var="item" itemLabel="#{item.numero.concat('/').concat(item.ano)
+							            .concat(' - ').concat(item.fornecedorRazaoSocial)}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+						</div>
+					</p:fieldset>
+					<p:fieldset id="divEmpenho" legend="Dados Empenho" class="fieldset-borda" rendered="#{cc.attrs.managedBean.tceAjuste.instrumento ne 'CONTRATO' and cc.attrs.managedBean.tceAjuste.tce != null}">
+						<section>
+							<p:dataTable id="dtEmpenhos" var="item" value="#{cc.attrs.managedBean.empenhoList}" selection="#{cc.attrs.managedBean.empenhosSelecionadosList}" rowKey="#{item}" emptyMessage="Não constam registros de Empenho SEM Ajuste neste Processo."  >
+							    <f:facet name="header">
+							        Empenhos do Processo 
+							    </f:facet>
+							    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+							    <p:column headerText="Número" style="width: 50px;text-align: center">
+							        <h:outputText value="#{item.numero}" />
+							    </p:column>
+							    <p:column headerText="Ano" style="width: 50px;text-align: center">
+							        <h:outputText value="#{item.ano}" />
+							    </p:column>
+							   	<p:column headerText="Fornecedor" filterBy="#{item.fornecedorRazaoSocial}" filterMatchMode="contains">
+							        <h:outputText value="#{item.fornecedorRazaoSocial}" />
+							    </p:column>
+							    <p:column headerText="Valor" style="width: 200px">
+							    	<mcl:money value="#{item.valor}" modoConsulta="true"  />
+							    </p:column>
+							    <p:column headerText="C.N.D" style="width: 150px;text-align: center">
+							        <h:outputText value="#{item.dotacaoCnd}" />
+							    </p:column>
+							    <p:column headerText="Fonte Recurso" style="width: 200px;text-align: center">
+							        <h:outputText value="#{item.dotacaoFonteRecursoDescricao}" />
+							    </p:column>
+							    <p:column headerText="Tipo TCE" style="width: 200px;text-align: center">
+							        <h:outputText value="#{item.tipoTce.descricao}" />
+							    </p:column>
+							</p:dataTable>
+						</section>
+						<br/>
+						<section>
+							<p:fieldset legend="Responsável pelo Ajuste - parte Contratante" class="fieldset-borda processResponsavelContratante">
+								<h:panelGroup id="processResponsavelContratante">
+									<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+										<section class="col col-3">
+											<p:outputLabel for="cpf" value="CPF" styleClass="label" />
+											<label class="input">
+												<p:inputMask id="cpf" mask="999.999.999-99" value="#{cc.attrs.managedBean.contratante.cpf}" required="#{param['tceAjusteDados:tceAjusteForm:btnSalvar']==null}" />
+											</label>
+										</section>
+										<section class="col col-9">
+											<p:outputLabel for="nome" value="Nome" styleClass="label" />
+											<label class="input">
+												<p:inputText id="nome" maxlength="100" value="#{cc.attrs.managedBean.contratante.nome}" required="#{param['tceAjusteDados:tceAjusteForm:btnSalvar']==null}" />
+											</label>
+										</section>
+									</div>
+									<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+										<section class="col col-6">
+											<p:outputLabel for="emailProfissional" value="E-mail profissional" styleClass="label" />
+											<label class="input">
+												<p:inputText id="emailProfissional" maxlength="100" value="#{cc.attrs.managedBean.contratante.emailProfissional}" />
+											</label>
+										</section>
+										<section class="col col-6">
+											<p:outputLabel for="emailPessoal" value="E-mail pessoal" styleClass="label" />
+											<label class="input">
+												<p:inputText id="emailPessoal" maxlength="100" value="#{cc.attrs.managedBean.contratante.emailPessoal}" />
+											</label>
+										</section>
+									</div>
+									<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+										<section class="col col-3">
+											<p:outputLabel for="assinouContrato" value="Assinou o contrato?" styleClass="label" />
+											<label class="input">
+												<p:selectOneMenu id="assinouContrato" value="#{cc.attrs.managedBean.contratante.assinouContrato}" styleClass="select">
+													<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+													<f:selectItems value="#{typesController.condicao}" />
+												</p:selectOneMenu>
+											</label>
+										</section>
+										<section class="col col-2">
+											<p:spacer width="0px" height="80px"/>
+											<p:commandLink id="btnAddContratante" actionListener="#{cc.attrs.managedBean.adicionarContratante()}" process="@(.processResponsavelContratante)" 
+												update="processResponsavelContratante,dtContratantes" styleClass="btn btn-primary btn-sm">
+												<i class="fa fa-plus"></i>
+											</p:commandLink>
+										</section>
+									</div>
+								</h:panelGroup>
+								<section>
+									<p:dataTable reflow="true" id="dtContratantes" var="item" value="#{cc.attrs.managedBean.contratanteList}"
+										emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+										<p:column headerText="CPF">
+											<h:outputText value="#{item.cpf}" />
+										</p:column>
+										<p:column headerText="Nome">
+											<h:outputText value="#{item.nome}" />
+										</p:column>
+										<p:column headerText="E-mail profissional">
+											<h:outputText value="#{item.emailProfissional}" />
+										</p:column>
+										<p:column headerText="E-mail pessoal">
+											<h:outputText value="#{item.emailPessoal}" />
+										</p:column>
+										<p:column headerText="Assinou o contrato?">
+											<h:outputText value="#{item.assinouContrato == null ? '' : item.assinouContrato ? 'Sim' : 'Não'}" />
+										</p:column>
+										<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+											<h:commandLink actionListener="#{cc.attrs.managedBean.removerContratante(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+												<i class="fa fa-trash-o"></i>
+											</h:commandLink>
+										</p:column>
+									</p:dataTable>
+								</section>
+							</p:fieldset>
+							<br />
+							<p:fieldset legend="Responsável pelo Ajuste - parte Contratada" class="fieldset-borda processResponsavelContratada">
+								<h:panelGroup id="processResponsavelContratada">
+									<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+										<section class="col col-3">
+											<p:outputLabel for="cpf2" value="CPF" styleClass="label" />
+											<label class="input">
+												<p:inputMask id="cpf2" mask="999.999.999-99" value="#{cc.attrs.managedBean.contratada.cpf}" required="#{param['tceAjusteDados:tceAjusteForm:btnSalvar']==null}" />
+											</label>
+										</section>
+										<section class="col col-9">
+											<p:outputLabel for="nome2" value="Nome" styleClass="label" />
+											<label class="input">
+												<p:inputText id="nome2" maxlength="100" value="#{cc.attrs.managedBean.contratada.nome}" required="#{param['tceAjusteDados:tceAjusteForm:btnSalvar']==null}" />
+											</label>
+										</section>
+									</div>
+									<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+										<section class="col col-6">
+											<p:outputLabel for="emailProfissional2" value="E-mail profissional" styleClass="label" />
+											<label class="input">
+												<p:inputText id="emailProfissional2" maxlength="100" value="#{cc.attrs.managedBean.contratada.emailProfissional}" />
+											</label>
+										</section>
+										<section class="col col-6">
+											<p:outputLabel for="emailPessoal2" value="E-mail pessoal" styleClass="label" />
+											<label class="input">
+												<p:inputText id="emailPessoal2" maxlength="100" value="#{cc.attrs.managedBean.contratada.emailPessoal}" />
+											</label>
+										</section>
+									</div>
+									<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+										<section class="col col-3">
+											<p:outputLabel for="assinouContrato2" value="Assinou o contrato?" styleClass="label" />
+											<label class="input">
+												<p:selectOneMenu id="assinouContrato2" value="#{cc.attrs.managedBean.contratada.assinouContrato}" styleClass="select">
+													<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+													<f:selectItems value="#{typesController.condicao}" />
+												</p:selectOneMenu>
+											</label>
+										</section>
+										<section class="col col-2">
+											<p:spacer width="0px" height="80px"/>
+											<p:commandLink id="btnAddContratada" actionListener="#{cc.attrs.managedBean.adicionarContratada()}" process="@(.processResponsavelContratada)" 
+												update="processResponsavelContratada,dtContratadas" styleClass="btn btn-primary btn-sm">
+												<i class="fa fa-plus"></i>
+											</p:commandLink>
+										</section>
+									</div>
+								</h:panelGroup>
+								<section>
+									<p:dataTable reflow="true" id="dtContratadas" var="item" value="#{cc.attrs.managedBean.contratadaList}"
+										emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+										<p:column headerText="CPF">
+											<h:outputText value="#{item.cpf}" />
+										</p:column>
+										<p:column headerText="Nome">
+											<h:outputText value="#{item.nome}" />
+										</p:column>
+										<p:column headerText="E-mail profissional">
+											<h:outputText value="#{item.emailProfissional}" />
+										</p:column>
+										<p:column headerText="E-mail pessoal">
+											<h:outputText value="#{item.emailPessoal}" />
+										</p:column>
+										<p:column headerText="Assinou o contrato?">
+											<h:outputText value="#{item.assinouContrato == null ? '' : item.assinouContrato ? 'Sim' : 'Não'}" />
+										</p:column>
+										<p:column headerText="Ação" style="text-align:cedar;width:80px" rendered="#{!cc.attrs.readonly}">
+											<h:commandLink actionListener="#{cc.attrs.managedBean.removerContratada(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+												<i class="fa fa-trash-o"></i>
+											</h:commandLink>
+										</p:column>
+									</p:dataTable>
+								</section>
+							</p:fieldset>
+						</section>
+					</p:fieldset>
+				</h:panelGroup>
+			</section>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left" immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<p:commandButton id="btnSalvar" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}"
+				icon="fa fa-save" value="Salvar" process="@(.formProcess :not(.noProcess))" />
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 100px" class="row"></div>
+	<p:fieldset legend="Índices Econômicos" id="pnlIndice" class="fieldset-borda processIndicesEconomicos">
+		<h:panelGroup id="processIndicesEconomicos">
+			<div class="row">
+				<section class="col col-4">
+					<p:outputLabel for="editalItem" value="Item do edital" styleClass="label" />
+					<label class="input">
+						<p:inputText id="editalItem" value="#{cc.attrs.managedBean.indiceEconomico.itemEdital}" maxlength="20" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="indice" value="Índice" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="indice" value="#{cc.attrs.managedBean.indiceEconomico.tipo}" styleClass="select-popup"
+							required="#{param['tceDados:tceForm:btnSalvar']==null}">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.indiceEconomico}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							<p:ajax event="change" process="@this" update="indiceDescricao" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-4">
+					<mcl:money id="valor" label="Valor" value="#{cc.attrs.managedBean.indiceEconomico.valor}" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+				</section>
+				<h:panelGroup id="indiceDescricao">
+				<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.indiceEconomico.tipo eq 'OUTRO'}">
+					<p:outputLabel for="descricao" value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricao" value="#{cc.attrs.managedBean.indiceEconomico.outroDescricao}" maxlength="200" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+					</label>
+				</section>
+				</h:panelGroup>
+				<section class="col col-1">
+					<p:spacer width="0px" height="80px"/>
+					<p:commandLink id="btnAddIndice" actionListener="#{cc.attrs.managedBean.adicionarIndiceEconomico()}" process="@(.processIndicesEconomicos)" 
+						update="processIndicesEconomicos,dtIndice" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i>
+					</p:commandLink>
+				</section>
+			</div>
+		</h:panelGroup>
+		<section>
+			<p:dataTable id="dtIndice" reflow="true" var="item" value="#{cc.attrs.managedBean.tce.processo.indiceEconomicoList}"
+				emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+				<p:column headerText="Item do Edital">
+					<h:outputText value="#{item.itemEdital}" />
+				</p:column>
+				<p:column headerText="Índice">
+					<h:outputText value="#{item.tipo.descricao}" />
+				</p:column>
+				<p:column headerText="Valor">
+					<mcl:money value="#{item.valor}" modoConsulta="true" />
+				</p:column>
+				<p:column headerText="Descrição">
+					<h:outputText value="#{item.outroDescricao}" />
+				</p:column>
+				<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+					<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerIndiceEconomico(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-trash-o"></i>
+					</h:commandLink>
+				</p:column>
+			</p:dataTable>	
+		</section>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

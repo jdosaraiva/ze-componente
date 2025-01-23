@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="cota147Form" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:outputLabel for="ano" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="exclusivoMe" value="Exclusivo M.E. / E.P.P. / M.E.I." styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="exclusivoMe" value="#{cc.attrs.managedBean.processo.exclusivoMe}" disabled="#{!cc.attrs.readonly}" style=""  styleClass="select" >
+				        	<f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+				            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:dataTable id="objetosDisponiveis" var="item" value="#{cc.attrs.managedBean.objetoListDisponiveis}" reflow="true" emptyMessage="Não há registros." 
+					tableStyleClass="table table-striped"
+					rowSelectMode="checkbox"
+					rowKey="#{item.id}"
+					styleClass="table-reflow-desktop">
+					
+				    <f:facet name="header">
+				        Objetos
+				    </f:facet>
+				       <p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.managedBean.onRowSelectDisponiveis}" />
+					   <p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.unRowSelectDisponiveis}" />
+					   <p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.onRowSelectAllDisponiveis}" />
+        			<p:column selectionMode="multiple" rendered="#{not cc.attrs.readonly}" style="width:16px;text-align:center"/>
+					<p:column headerText="Exclusivo M.E. / E.P.P. / M.E.I." style="width:210px" sortBy="#{item.numero}">
+			           	<h:outputText value="#{item.exclusivoMeDescricao}" />
+			        </p:column>
+				    <p:column headerText="Nº Objeto" style="width:90px">
+				    	<h:outputText value="#{item.numero}" />
+				    </p:column>
+				    <p:column headerText="Tipo de Requisição" style="width:130px">
+				    	<mcl:number value="#{item.tipoRequisicao}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Quantidade" style="width:90px">
+				    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Unidade" style="width:100px">
+				        <h:outputText value="#{item.material != null ? item.material.unidade.nome : ''}" />
+				    </p:column>
+				    <p:column headerText="Valor Unitário" style="width:100px">
+				    	<mcl:money value="#{item.valor}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Objeto">
+				        <h:outputText value="#{item.material.descricao}" title="#{item.material.descricao}" rendered="#{item.material != null}" />
+				        <h:outputText value="#{item.servico.descricao}" title="#{item.servico.descricao}" rendered="#{item.servico != null}" />
+				    </p:column>
+				    <p:column headerText="Concluído" style="text-align:center; width:90px">
+				        <h:outputText value="#{item.itemRegistroPrecos.concluido ? 'Sim' : 'Não'}" />
+				    </p:column>
+				    <p:column headerText="Status" style="text-align:center; width:60px">
+				        <h:outputText value="#{item.status.descricao}" />
+				    </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltarIE()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.salvarItensExclusivos()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

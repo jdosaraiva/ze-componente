@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pedidoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="pedido" value="Pedido" styleClass="label" />
+					<label class="input">
+						<p:inputText id="pedido" value="#{cc.attrs.managedBean.pedido.numero}/#{cc.attrs.managedBean.pedido.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data do Pedido" styleClass="label" />
+					<label class="input">
+						<p:inputText id="data" value="#{cc.attrs.managedBean.pedido.data}" readonly="true">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="status" value="Status" styleClass="label" />
+					<label class="input">
+						<p:inputText id="status" value="#{cc.attrs.managedBean.pedido.status.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="fornecedorRazaoSocial" value="Fornecedor" styleClass="label" />
+					<label class="input">
+						<p:inputText id="fornecedorRazaoSocial" value="#{cc.attrs.managedBean.pedido.fornecedorRazaoSocial} - #{cc.attrs.managedBean.pedido.fornecedorNumeroDocumento}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="processo" value="Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="processo" value="#{cc.attrs.managedBean.pedido.processo.numero}/#{cc.attrs.managedBean.pedido.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ataRegistroPrecos" value="Ata Registro de Preços" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ataRegistroPrecos" value="#{cc.attrs.managedBean.pedido.processo.registroPrecos.numero} / #{cc.attrs.managedBean.pedido.processo.registroPrecos.ano}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="observacao" value="Observação" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.pedido.observacao}" readonly="true" />
+				</label>
+			</section>
+		</fieldset>
+		<header>
+			Itens do Pedido
+		</header>
+		<fieldset>
+			<section>
+				<p:dataTable id="dtItemPedido" var="item" value="#{cc.attrs.managedBean.pedido.itemPedidoList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+				    <p:column headerText="Item" style="width: 50px">
+				    	<mcl:number value="#{item.item}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Objeto">
+				        <h:outputText value="#{item.objetoDescricao}" title="#{item.objetoDescricao}" />
+				    </p:column>
+				    <p:column headerText="Quant." style="width: 60px">
+				    	<mcl:money value="#{item.quantidadeSolicitada}" modoConsulta="true" decimalPlaces="4" />
+				    </p:column>
+				    <p:column headerText="Unidade" style="width: 80px">
+				        <h:outputText value="#{item.objeto.unidade}" title="#{item.objeto.unidade}" />
+				    </p:column>
+				    <p:column headerText="Valor Unitário" style="width: 120px">
+				    	<mcl:money value="#{item.valorUnitario}" modoConsulta="true" decimalPlaces="4" />
+				    </p:column>
+				    <p:column headerText="Valor Total" style="width: 120px">
+				    	<mcl:money value="#{item.valorTotalSolicitado}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor AF Gerar" style="width: 120px">
+				    	<mcl:money value="#{item.valorTotalAfGerar}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Saldo a Receber" style="width: 120px">
+				    	<mcl:money value="#{item.saldoReceber}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Status" style="text-align:center; width: 100px">
+				        <h:outputText value="#{item.status.descricao}" />
+				    </p:column>
+				</p:dataTable>	
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

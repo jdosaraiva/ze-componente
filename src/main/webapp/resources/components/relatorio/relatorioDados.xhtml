@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="relatorioGlassForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<p:outputLabel for="nome" value="Nome" styleClass="label" />
+				<label class="input">
+					<p:inputText id="nome" value="#{cc.attrs.managedBean.relatorioGlass.nome}" maxlength="255" disabled="#{cc.attrs.readonly}">
+						<p:ajax process="@this" partialSubmit="true" global="false" />
+					</p:inputText>
+				</label>
+			</section>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="classe" value="Categoria" styleClass="label" />
+					<p:selectOneMenu id="classe" value="#{cc.attrs.managedBean.relatorioGlass.classe}" styleClass="select"
+						disabled="#{cc.attrs.readonly}" filter="true" filterMatchMode="contains">
+						<f:selectItem itemLabel=".: Selecione :." />
+						<f:selectItems value="#{cc.attrs.managedBean.classeList}" var="item" itemLabel="#{item.description}" itemValue="#{item.name}" />
+						<p:ajax event="change" listener="#{cc.attrs.managedBean.classeChange}" update="@form" global="false" />
+					</p:selectOneMenu>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Modo" styleClass="label" />
+					<p:inputSwitch value="#{cc.attrs.managedBean.relatorioGlass.paisagem}" offLabel="Retrato" onLabel="Paisagem" disabled="#{cc.attrs.readonly}">
+						<p:ajax process="@this" partialSubmit="true" global="false" />
+					</p:inputSwitch>
+					
+				</section>
+			</div>
+
+			<p:panel id="campos" header="Campos">
+				<p:pickList value="#{cc.attrs.managedBean.campoList}" var="item" itemValue="#{item}" itemLabel="#{item.label}" 
+					showSourceControls="true" showTargetControls="true" responsive="true" disabled="#{cc.attrs.readonly}"
+			        showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="reportFieldConverter">
+			    </p:pickList>
+			</p:panel>
+			<br />
+
+			<p:panel id="groupBy" header="Agrupamento">
+			
+				<div class="row">
+					<section class="col col-4">
+						<p:outputLabel for="nomeGrupo" value="Nome" styleClass="label" />
+						<label class="input">
+							<p:inputText id="nomeGrupo" value="#{cc.attrs.managedBean.nomeGrupo}" disabled="#{cc.attrs.readonly}">
+								<p:ajax process="@this" partialSubmit="true" global="false" />
+							</p:inputText>
+						</label>
+					</section>
+
+					<section class="col col-4">
+						<p:outputLabel for="campoExpressao" value="Expressão" styleClass="label" />
+						<h:panelGroup id="campoExpressao">
+							<p:selectOneMenu id="versaoPPA" value="#{cc.attrs.managedBean.campoExpressao}"  required="false" styleClass="select">
+								<f:selectItem itemValue="" itemLabel=".: Selecione :." />
+								<f:selectItems value="#{cc.attrs.managedBean.expressaoGrupoList}" var="item" itemLabel="#{item.label}" itemValue="#{item.name}" />
+								<p:ajax process="@this" partialSubmit="true" global="false" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+					</section>					
+					
+					<section class="col col-4">
+						<p:outputLabel value="Quebra" styleClass="label" />
+						<p:inputSwitch value="#{cc.attrs.managedBean.quebraGrupo}" offLabel="Não" onLabel="Sim" disabled="#{cc.attrs.readonly}">
+							<p:ajax process="@this" partialSubmit="true" global="false" />
+						</p:inputSwitch>
+					</section>
+					
+				</div>
+			
+				<p:panel id="grupos" header="Campos">
+					<p:pickList value="#{cc.attrs.managedBean.grupoList}" var="item" itemValue="#{item}" itemLabel="#{item.label}" 
+						responsive="true" showSourceControls="true" showTargetControls="true" disabled="#{cc.attrs.readonly}"
+				        showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="reportFieldConverter">
+				        <p:ajax event="transfer" partialSubmit="true" global="false" />
+				    </p:pickList>
+				</p:panel>
+				<br />
+				<p:panel id="gruposSubtotal" header="Subtotais" >
+					<p:pickList value="#{cc.attrs.managedBean.grupoSubtotalList}" var="item" itemValue="#{item}" itemLabel="#{item.label}" 
+						responsive="true" showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" 
+						converter="reportFieldConverter" showSourceControls="true" showTargetControls="true" disabled="#{cc.attrs.readonly}">
+						<p:ajax event="transfer" partialSubmit="true" global="false" />
+				    </p:pickList>
+				</p:panel>
+				<br/>
+				<section>
+					<p:commandLink styleClass="btn btn-info btn-sm" immediate="true"
+						actionListener="#{cc.attrs.managedBean.incluirAgrupamento()}" process="@this" update="dtGrupo nomeGrupo grupos gruposSubtotal">
+						<i class="fa fa-plus"></i>
+						<span>Adicionar</span>
+					</p:commandLink>
+				</section>
+				
+				<p:dataTable id="dtGrupo" var="item" value="#{cc.attrs.managedBean.relatorioGlass.relatorioGrupoList}" reflow="true" paginator="true" rows="10" 
+					rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped" 
+					styleClass="table-reflow-desktop" paginatorPosition="bottom"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+					currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+		            <p:column headerText="Nome">
+		                <h:outputText value="#{item.nome}" />
+		            </p:column>
+		            <p:column headerText="Expressão Agrupamento">
+		                <h:outputText value="#{item.descricaoExpressao}" />
+		            </p:column>
+		            <p:column headerText="Campos">
+		                <h:outputText value="#{item.relatorioGrupoCampoListAsString}" />
+		            </p:column>
+		            <p:column headerText="Totalização">
+		                <h:outputText value="#{item.relatorioGrupoSubtotalListAsString}" />
+		            </p:column>
+		            <p:column headerText="Quebra" style="width:80px;text-align:center;">
+		                <h:outputText value="#{item.quebra ? 'Sim' : 'Não'}" />
+		            </p:column>
+		            <p:column style="width:80px" rendered="#{not cc.attrs.readonly}">
+		                <p:commandLink title="Excluir" actionListener="#{cc.attrs.managedBean.excluirAgrupamento(item)}" update="dtGrupo"
+							styleClass="btn btn-info btn-sm">
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+		            </p:column>
+	            </p:dataTable>
+			</p:panel>
+			<br />
+			<p:panel id="pageTotal" header="Totalização" >
+				<p:pickList value="#{cc.attrs.managedBean.pageTotalList}" var="item" itemValue="#{item}" itemLabel="#{item.label}" 
+					responsive="true" showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" 
+					converter="reportFieldConverter" showSourceControls="true" showTargetControls="true" disabled="#{cc.attrs.readonly}">
+			    </p:pickList>
+			</p:panel>
+			<br />
+			<p:panel id="pageFiltro" header="Filtros">
+				<div class="row">
+					<section class="col col-4">
+						<p:outputLabel for="filtro" value="Campo" styleClass="label" />
+						<p:selectOneMenu id="filtro" value="#{cc.attrs.managedBean.filtroSelecionado}" styleClass="select"
+							disabled="#{cc.attrs.readonly}" filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel=".: Selecione :." />
+							<f:selectItems value="#{cc.attrs.managedBean.pageFiltroSource}" var="item" itemLabel="#{item.description}" itemValue="#{item}" />
+							<p:ajax event="change" process="@this" listener="#{cc.attrs.managedBean.filtroChange()}" global="false" update="enumPanel" />
+						</p:selectOneMenu>
+					</section>
+					<section class="col col-6">
+						<h:panelGroup id="enumPanel" styleClass="removeBorder">
+							<mcl:selectEnum value="#{cc.attrs.managedBean.reportFieldEnumList}" nomeCampo="false" rendered="#{not empty cc.attrs.managedBean.reportFieldEnumList}"/>
+							<p:outputLabel for="vi" value="Valor Inicial" styleClass="label" rendered="#{cc.attrs.managedBean.filtroSelecionado != null and cc.attrs.managedBean.filtroSelecionado.tipo.equals('java.lang.String')}" />
+							<label class="input" jsf:rendered="#{cc.attrs.managedBean.filtroSelecionado != null and cc.attrs.managedBean.filtroSelecionado.tipo.equals('java.lang.String')}">
+								<p:inputText id="vi" value="#{cc.attrs.managedBean.filtroSelecionado.valorInicial}" maxlength="255">
+									<p:ajax process="@this" partialSubmit="true" global="false" />
+								</p:inputText>
+							</label>
+						</h:panelGroup>
+					</section>
+				</div>
+				<section>
+					<p:commandLink styleClass="btn btn-info btn-sm" immediate="true"
+						actionListener="#{cc.attrs.managedBean.incluirFiltro()}" process="@this" update="enumPanel dtFiltro">
+						<i class="fa fa-plus"></i>
+						<span>Adicionar</span>
+					</p:commandLink>
+				</section>
+				<section>
+					<p:dataTable id="dtFiltro" var="item" value="#{cc.attrs.managedBean.pageFiltroTarget}" reflow="true" paginator="true" rows="10" 
+						rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped" 
+						styleClass="table-reflow-desktop" paginatorPosition="bottom"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+						currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+			            <p:column headerText="Campo">
+			                <h:outputText value="#{item.description}" />
+			            </p:column>
+			            <p:column headerText="Valor Inicial">
+			                <h:outputText value="#{item.valorInicial}" />
+			            </p:column>
+			            <p:column style="width:80px" rendered="#{not cc.attrs.readonly}">
+			                <p:commandLink title="Excluir" actionListener="#{cc.attrs.managedBean.excluirFiltro(item)}" update="dtFiltro"
+								styleClass="btn btn-info btn-sm">
+				            	<i class="fa fa-trash-o"></i>
+				            </p:commandLink>
+			            </p:column>
+		            </p:dataTable>
+				</section>
+			</p:panel>
+			
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" immediate="true" styleClass="btn btn-primary btn-lg pull-left">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

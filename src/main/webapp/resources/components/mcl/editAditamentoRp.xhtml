@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mpc="http://java.sun.com/jsf/composite/components/mpc"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditAditamentoRp" style="z-index:1000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<h:form id="formPopupAditamentoRp" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Itens Registro Preços - Órgão</strong></h4>
+					</div>
+					
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<p:dataTable var="item" value="#{cc.attrs.managedBean.itemRegistroPrecosSelecionado.itemRegistroPrecosOrgaoList}" 
+										reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+										styleClass="table-reflow-desktop">
+										<f:facet name="header">Distribuição do Item de Registro de Preços por Órgão</f:facet>
+									    <p:column headerText="Órgão">
+									        <h:outputText value="#{item.orgaoSigla}" />
+									    </p:column>
+									    <p:column headerText="Quantidade">
+									    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+									    </p:column>
+									    <p:column headerText="Quant. Pedida">
+									    	<mcl:money value="#{item.quantidadePedida}" modoConsulta="true" />
+									    </p:column>
+									    <p:column headerText="Quant. Cancelada">
+									    	<mcl:money value="#{item.quantidadeCancelada}" modoConsulta="true" />
+									    </p:column>
+									    <p:column headerText="Quant. Disponível">
+									    	<mcl:money value="#{item.quantidadeDisponivel}" modoConsulta="true" />
+									    </p:column>
+									    <p:column headerText="Valor Total Disponível">
+									    	<mcl:money value="#{item.valorTotalDisponivel}" modoConsulta="true" />
+									    </p:column>
+									    <p:column headerText="Valor Aditar" rendered="#{cc.attrs.managedBean.itemRegistroPrecosSelecionado.objeto.controlePorValor}">
+									    	<mcl:money value="#{item.valorAditar}" decimalPlaces="4" />
+									    </p:column>
+									    <p:column headerText="Qtde. a Aditar" rendered="#{!cc.attrs.managedBean.itemRegistroPrecosSelecionado.objeto.controlePorValor}">
+									    	<mcl:money value="#{item.quantidadeAditar}" decimalPlaces="4" />
+									    </p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="Adicionar"  
+							actionListener="#{cc.attrs.managedBean.adicionarAditamento()}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditAditamentoRp').modal('hide')" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

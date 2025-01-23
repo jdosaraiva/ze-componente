@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="reservaForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<p:outputLabel for="tipoReserva" value="Selecione o tipo de Reserva" styleClass="label" />
+			    <p:selectOneRadio styleClass="label" id="tipoReserva" required="true" value="#{cc.attrs.managedBean.tipoReserva}" layout="responsive" columns="3">
+			        <f:selectItems value="#{typesController.tipoReserva}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+			        <p:ajax update="@form"  listener="#{cc.attrs.managedBean.selecionaTipoReserva()}" event="valueChange" />
+			    </p:selectOneRadio>
+			</section>
+			<div class="row">
+				<p:outputPanel layout="block" id="requisicaoPanel">
+					<section class="col col-6">
+						<mcl:inputLupa 
+							id="requisicaoCompra" 
+							label="Requisição Compra" 
+							controller="#{requisicaoCompraColumnsView}"
+							descricao="#{cc.attrs.managedBean.requisicaoCompra.numero}"
+							value="#{cc.attrs.managedBean.requisicaoCompra}"
+							cabecalho= "Consulta de Requisição Compra" 
+							listener="#{cc.attrs.managedBean.selecionaRequisicao()}" 
+							leitura="#{cc.attrs.managedBean.tipoReserva == null or cc.attrs.readonly}"
+							update="@form" />
+					</section>
+					<section class="col col-6">
+						<mcl:inputLupa 
+							id="itemRequisicaoCompra" 
+							label="Item de Requisição"  
+							controller="#{itemRequisicaoCompraReservaColumnsView}"
+							descricao="#{cc.attrs.managedBean.getDescricaoItem(cc.attrs.managedBean.reserva.itemRequisicaoCompra)}"
+							value="#{cc.attrs.managedBean.itemRequisicaoCompra}"
+							cabecalho= "Consulta de Item Requisição Compra" 
+							listener="#{cc.attrs.managedBean.changeItemRequisicao()}" 
+							leitura="#{!cc.attrs.managedBean.habilitaItemRequisicaoSelect or cc.attrs.readonly}"
+							lazy="false" 
+							update="@form" />
+					</section>
+				</p:outputPanel>
+			</div>
+			<section>
+				<p:accordionPanel id="objetoPanel" tabindex="0" activeIndex="null">
+					<p:tab title="Clique aqui para visualizar todos os dados da requisição">
+						<section>
+							<p:outputLabel value="Descrição" styleClass="label" />
+							<label class="input">
+								<p:inputText value="#{cc.attrs.managedBean.reserva.itemRequisicaoCompra.objeto.descricao}" readonly="true" />
+							</label>
+						</section>
+						<div class="row">
+							<section class="col col-9">
+								<p:outputLabel value="Detalhamento" styleClass="label" />
+								<label class="input">
+									<p:inputText value="#{cc.attrs.managedBean.detalhementoItens}" readonly="true" />
+								</label>
+							</section>
+							<section class="col col-9">
+								
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel value="Requisição Número" styleClass="label" />
+								<label class="input">
+									<p:inputText value="#{cc.attrs.managedBean.requisicaoCompra.numero}" readonly="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel value="Item" styleClass="label" />
+								<label class="input">
+									<p:inputText value="#{cc.attrs.managedBean.reserva.itemRequisicaoCompra.item}" readonly="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="data" value="Data" styleClass="label" />
+								<label class="input">
+									<p:calendar id="data" style="float:left"
+										value="#{cc.attrs.managedBean.requisicaoCompra.data}" 
+										readonly="true" 
+										pattern="dd/MM/yyyy"
+										mask="true"
+										locale="pt" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel value="Tipo do Objeto" styleClass="label" />
+								<label class="input">
+									<p:inputText value="#{cc.attrs.managedBean.reserva.itemRequisicaoCompra.objeto.tipo.descricao}" readonly="true" />
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<mcl:number id="quantidade" label="Quantidade" value="#{cc.attrs.managedBean.reserva.itemRequisicaoCompra.quantidadeAprovada}" readonly="true" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel value="Unidade" styleClass="label" />
+								<label class="input">
+									<p:inputText value="#{cc.attrs.managedBean.reserva.itemRequisicaoCompra.material.unidade.nome}" readonly="true" />
+								</label>
+							</section>
+						</div>
+					</p:tab>
+				</p:accordionPanel>
+			</section>
+			<p:outputPanel layout="block" id="reservaPanel" rendered="#{cc.attrs.managedBean.mostrarReservaPanel}">
+				<div class="row">	
+					<section class="col col-3">
+						<mcl:money id="valorTotalReq" label="#{cc.attrs.managedBean.descCampoValor}" readonly="true" value="#{cc.attrs.managedBean.valorTotal}" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="valorTotalRes" label="Valor Total Reservado" readonly="true" value="#{cc.attrs.managedBean.valorTotalReservado}" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="valorAReservar" label="Valor a Reservar" readonly="true" value="#{cc.attrs.managedBean.valorAReservar}" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-6">
+						<mcl:inputLupa 
+							id="dotacao" 
+							label="Dotação" 
+							controller="#{dotacaoColumnsView}"
+							descricao="#{cc.attrs.managedBean.dotacao.codigoReduzido.toString().concat(' - ').concat(cc.attrs.managedBean.dotacao.codigoOrgao)
+							.concat(' - ').concat(cc.attrs.managedBean.dotacao.cndCodigo)
+							.concat(' - ').concat(cc.attrs.managedBean.dotacao.cnd.descricao) }" 
+							value="#{cc.attrs.managedBean.dotacao}" 
+							required="true" 
+							lazy="false"
+							cabecalho= "Consulta de Dotação" 
+							update="reservaDados:reservaForm:itemDotacao,reservaDados:reservaForm:saldoDisponivel:saldoDisponivel" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-6">
+						<label class="input">
+							<p:outputLabel for="itemDotacao" value="Item" styleClass="label" />
+							<p:selectOneMenu id="itemDotacao" value="#{cc.attrs.managedBean.item}" disabled="#{cc.attrs.readonly}" required="true" styleClass="select">
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{cc.attrs.managedBean.dotacao.cnd.itens}" var="item" itemLabel="#{item.codigo
+					            .toString().concat(' - ').concat(item.descricao)
+					            }" itemValue="#{item}"/>
+								<p:ajax event="change" update="subItemDotacao" process="@this" />
+					      	</p:selectOneMenu>
+				      	</label>
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-6">
+						<p:outputLabel for="subItemDotacao" value="Subitem" styleClass="label" />
+				        <p:selectOneMenu id="subItemDotacao" value="#{cc.attrs.managedBean.subItem}" disabled="#{cc.attrs.readonly}" required="true" styleClass="select" >
+			            	<f:selectItem itemLabel=".: Selecione :." itemValue="" />
+			            	<f:selectItems value="#{cc.attrs.managedBean.item.subItens}" var="item" itemLabel="#{item.codigo
+					            .toString().concat(' - ').concat(item.descricao)
+			            	}" itemValue="#{item}" />
+			            	<p:ajax process="@this" global="false" />
+			        	</p:selectOneMenu>
+					</section>
+					<section class="col col-3">
+						<mcl:money id="saldoDisponivel" label="Saldo Disponível" value="#{cc.attrs.managedBean.dotacao.saldoDotacao}" readonly="true" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-3">
+						<mcl:money id="percentual" label="Percentual (opcional)" value="#{cc.attrs.managedBean.reserva.percentual}" ajax="true" listener="#{cc.attrs.managedBean.calculaPercentual()}" update="reservaDados:reservaForm:reservaPanel" disabled="#{cc.attrs.readonly}" />
+					</section>
+					<section class="col col-3">
+						<mcl:money id="valorASolicitar" label="Valor a Reservar" required="true" value="#{cc.attrs.managedBean.reserva.valor}" disabled="#{cc.attrs.readonly}" />
+					</section>
+				</div>
+			</p:outputPanel>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

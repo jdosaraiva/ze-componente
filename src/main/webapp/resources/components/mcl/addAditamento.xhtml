@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mpc="http://java.sun.com/jsf/composite/components/mpc"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupAddAditamento" style="z-index:1000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<h:form id="formPopupAddAditamento" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Reserva dos itens de requisição</strong></h4>
+					</div>
+
+					<div class="modal-body">
+			        <!-- Seu formulário vai aqui -->
+			        <p:panelGrid style="border: none;">
+			            <!-- Linha de rótulos -->
+			        	<p:row style="border: none;">
+			        		<p:column>
+			           			<p:outputLabel value="Item" />
+			        		</p:column>
+			        		<p:column>
+			            		<p:outputLabel value="Subitem" />
+			        		</p:column>
+			        		<p:column>
+			            		<p:outputLabel value="Saldo Disponível" />
+			        		</p:column>
+			        	</p:row>
+			        	<p:row  style="border: none;">
+			        		<p:column style="border: none;">
+					            <mcl:money 	id="valorAReservar" 
+					            			label="Valor a Reservar NESTE exercício *"
+											value="#{cc.attrs.managedBean.itemRequisicaoSelecionado.valorDesejado}"
+											maxValue="#{cc.attrs.managedBean.itemRequisicaoSelecionado.valorDesejadoTemporario}" 
+											decimalPlaces="4" 
+											process="@this"  
+											ajax="true" 
+											global="false" 
+											listener="#{cc.attrs.managedBean.ajaxMetodoPadrao()}" />
+			        		</p:column>
+			        		<p:column>
+								<mcl:money 	id="valorAReservarRestante" 
+											label="Valor Reservar Restante"
+											readonly="true" 
+											value="#{cc.attrs.managedBean.itemRequisicaoSelecionado.valorDesejadoTemporario}"
+											decimalPlaces="4" 
+											process="@this"  
+											ajax="true" 
+											global="false" 
+											listener="#{cc.attrs.managedBean.ajaxMetodoPadrao()}" />
+			        		</p:column>
+			        		<p:column>
+								<mcl:inputLupaDotacao 
+									id="dotacao"
+									label="Dotação *" 
+									requisicao="#{cc.attrs.managedBean.itemRequisicaoSelecionado.requisicaoCompra}"
+									nomePopup="dotacao"
+									controller="#{dotacaoColumnsView}"
+									descricao="#{cc.attrs.managedBean.itemRequisicaoSelecionado.dotacao.codigoReduzido.toString()
+									.concat(' - ').concat(cc.attrs.managedBean.itemRequisicaoSelecionado.dotacao.codigoOrgao)
+									.concat(' - ').concat(cc.attrs.managedBean.itemRequisicaoSelecionado.dotacao.cndCodigo)
+									.concat(' - ').concat(cc.attrs.managedBean.itemRequisicaoSelecionado.dotacao.cnd.descricao) }"
+									value="#{cc.attrs.managedBean.itemRequisicaoSelecionado.dotacao}" 
+									lazy="false"
+									cabecalho="Consulta de Dotação"
+									update="@form" />
+			        		</p:column>
+			        		<p:column>
+			            		<p:inputText id="item" />
+			        		</p:column>
+			        		<p:column>
+			        		    <p:inputText id="subitem" />
+			        		</p:column>
+			        		<p:column>
+					            <p:inputText id="saldoDisponivel" />
+			        		</p:column>
+			        	</p:row>
+			
+			        </p:panelGrid>
+					</div>
+			
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="Adicionar"  
+							actionListener="#{cc.attrs.managedBean.adicionarAditamento()}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupAddAditamento').modal('hide')" />
+			            </h:commandLink>
+					</div>
+			    </h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

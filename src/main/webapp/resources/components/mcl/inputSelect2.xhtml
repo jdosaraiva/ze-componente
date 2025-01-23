@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="value" required="true" />
+	<composite:attribute name="required" required="false" />
+	<composite:attribute name="disabled" required="false" default="false" />
+	<composite:attribute name="ajax" default="false" />
+	<composite:attribute name="eventSelect" type="java.lang.Boolean" default="false" />
+	<composite:attribute name="managedBeanEventSelect" />
+	<composite:attribute name="update" />
+	<composite:attribute name="identificador" default="#{cc.id}" />
+	<composite:attribute name="label" required="false" />
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="managedBeanUso" />
+	<composite:attribute name="listener" method-signature="void Listener()" default="#{cc.attrs.managedBean.listener()}" />
+	<composite:attribute name="itemLabel" required="true" />
+	<composite:attribute name="global" type="java.lang.Boolean" default="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<label class="input" style="z-index: 0 !important;">
+		<p:outputLabel for="#{cc.id}:#{cc.attrs.identificador}" value="#{cc.attrs.label}" styleClass="label" />
+		<p:autoComplete id="#{cc.id}" value="#{cc.attrs.value}" dropdown="true" disabled="#{cc.attrs.disabled}"
+			completeMethod="#{cc.attrs.managedBean.listar}" forceSelection="true" widgetVar="#{cc.id}"
+			var="item" itemLabel="#{cc.attrs.itemLabel}" itemValue="#{item}" required="#{cc.attrs.required}" emptyMessage="Nenhum registro encontrado"
+			maxResults="#{cc.attrs.managedBean.maxResults}" title="Digite para pesquisar">
+			<f:attribute name="parametros" value="#{cc.attrs.managedBeanUso.mapParametro}" />
+			<p:ajax event="itemSelect" listener="#{cc.attrs.listener}" update="#{cc.attrs.update}" disabled="#{not cc.attrs.ajax}" global="#{cc.attrs.global}" />
+			<p:ajax event="itemSelect" listener="#{cc.attrs.managedBeanEventSelect.onItemSelect}" update="#{cc.attrs.update}" disabled="#{not cc.attrs.eventSelect}" />
+			<p:column>
+				<p:panelGrid styleClass="ui-noborder" style="width: 100%">
+					<composite:insertChildren />
+                </p:panelGrid>
+            </p:column>
+		</p:autoComplete>
+	</label>
+</composite:implementation>
+
+</html>

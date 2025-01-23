@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="materialForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<p:tabView id="tabMaterial">
+		        <p:tab title="Dados">
+		        	<br/><br/>
+					<div class="row">
+						<section class="col col-9">
+							<p:outputLabel for="descricao" value="Descrição" styleClass="label" />
+							<label class="input">
+								<p:focus for="descricao" />
+								<p:inputText id="descricao" value="#{cc.attrs.managedBean.material.descricao}" required="true" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<mcl:number id="codigo" label="Código" value="#{cc.attrs.managedBean.material.codigo}" required="true" disabled="true" />
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<mcl:inputLupa 
+								id="familia" 
+								label="Família"  
+								controller="#{familiaColumnsView}"
+								descricao="#{cc.attrs.managedBean.material.familia.codigo.toString().concat(' - ').concat(cc.attrs.managedBean.material.familia.nome)}"
+								value="#{cc.attrs.managedBean.material.familia}"
+								cabecalho= "Consulta de Plano Conta Contábil"
+								required="true" 
+								leitura="#{cc.attrs.readonly}" />
+						</section>
+						<section class="col col-4">
+							<mcl:inputLupa 
+								id="unidade" 
+								label="Unidade"  
+								controller="#{unidadeColumnsView}"
+								descricao="#{cc.attrs.managedBean.material.unidade.sigla.toString().concat(' - ').concat(cc.attrs.managedBean.material.unidade.nome)}"
+								value="#{cc.attrs.managedBean.material.unidade}"
+								cabecalho= "Consulta de Plano Conta Contábil"
+								required="true" 
+								leitura="#{cc.attrs.readonly}" />
+						</section>
+						<section class="col col-4">
+							<mcl:inputLupa 
+								id="planoContaContabil" 
+								label="Plano Conta Contábil"  
+								controller="#{planoContaContabilColumnsView}"
+								descricao="#{cc.attrs.managedBean.material.planoContaContabil.codigo.toString().concat(' - ').
+								concat(cc.attrs.managedBean.material.planoContaContabil.nome)}"
+								value="#{cc.attrs.managedBean.material.planoContaContabil}"
+								cabecalho= "Consulta de Plano Conta Contábil"
+								required="true" 
+								leitura="#{cc.attrs.managedBean.material.id != null}" />
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<mcl:money id="estoqueMinimo" label="Estoque Mínimo" value="#{cc.attrs.managedBean.material.estoqueMinimo}" required="false" disabled="#{cc.attrs.readonly}" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="estoqueMaximo" label="Estoque Máximo" value="#{cc.attrs.managedBean.material.estoqueMaximo}" required="false" disabled="#{cc.attrs.readonly}" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="pontoReposicao" label="Ponto de Reposição" value="#{cc.attrs.managedBean.material.pontoReposicao}" required="false" disabled="#{cc.attrs.readonly}" />
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<p:outputLabel for="validade" value="Controle de Validade ?" styleClass="label" />
+							<label class="input">
+						        <p:selectOneMenu id="validade" value="#{cc.attrs.managedBean.material.validade}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+						            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+						        </p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-4">
+							<p:outputLabel for="incorporavel" value="Incorporável ?" styleClass="label" />
+							<label class="input">
+						        <p:selectOneMenu id="incorporavel" value="#{cc.attrs.managedBean.material.incorporavel}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+						            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+						        </p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-4">
+							<p:outputLabel for="gtin" value="Código de Barras Gtin" styleClass="label" />
+							<label class="input">
+								<p:inputText id="gtin" value="#{cc.attrs.managedBean.material.gtin}" required="false" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<p:outputLabel for="codigoNcm" value="Código NCM (Nomenclatura Comum do Mercosul)" styleClass="label" />
+							<label class="input">
+								<p:inputText id="codigoNcm" value="#{cc.attrs.managedBean.material.codigoNcm}" required="false" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<p:outputLabel for="assinaturaEletronica" value="Assinatura eletrônica ?" styleClass="label" />
+							<label class="input">
+						        <p:selectOneMenu id="assinaturaEletronica" value="#{cc.attrs.managedBean.material.assinaturaEletronica}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+						            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+						        </p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-4">
+					        <p:outputLabel for="status" value="Status" styleClass="label" />
+							<label class="input">
+						        <p:selectOneMenu id="status" value="#{cc.attrs.managedBean.material.status}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+						            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+						            <f:selectItems value="#{typesController.statusMaterial}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+						        </p:selectOneMenu>
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-8">
+							<p:outputLabel for="nomeFabricante" value="Nome Fabricante" styleClass="label" />
+							<label class="input">
+								<p:inputText id="nomeFabricante" value="#{cc.attrs.managedBean.material.nomeFabricante}" required="false" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<p:outputLabel for="pncpIncentivoProdutivoBasico" value="PPB Incentivo Produtivo Básico ?" styleClass="label" />
+							<label class="input">
+						        <p:selectOneMenu id="pncpIncentivoProdutivoBasico" value="#{cc.attrs.managedBean.material.pncpIncentivoProdutivoBasico}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+						            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+						        </p:selectOneMenu>
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<p:outputLabel for="codigoExterno" value="Código Externo" styleClass="label" />
+							<label class="input">
+								<p:inputText id="codigoExterno" value="#{cc.attrs.managedBean.material.codigoExterno}" required="false" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+						<section class="col col-4">
+							<p:outputLabel for="codigoLegado" value="Código Legado" styleClass="label" />
+							<label class="input">
+								<p:inputText id="codigoLegado" value="#{cc.attrs.managedBean.material.codigoLegado}" required="false" readonly="true" />
+							</label>
+						</section>
+					</div>
+					<section>
+						<p:outputLabel for="observacao" value="Observações" styleClass="label" />
+						<label class="input">
+							<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.material.observacao}" disabled="#{cc.attrs.readonly}" />
+						</label>
+					</section>
+		        </p:tab>
+	           	<p:tab title="Saldos" rendered="#{cc.attrs.readonly}">
+	           		<br/><br/>
+					<div class="row">
+						<section class="col col-4">
+							<mcl:money id="saldoAtual" label="Saldo Atual" value="#{cc.attrs.managedBean.material.saldoAtual}" readonly="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorUnitario" label="Valor Unitário" value="#{cc.attrs.managedBean.material.valorUnitario}" readonly="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorTotal" label="Valor Total" value="#{cc.attrs.managedBean.material.valorTotal}" readonly="true" />
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<mcl:money id="saldoAnterior" label="Saldo Anterior" value="#{cc.attrs.managedBean.material.saldoAnterior}" readonly="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorUnitarioAnterior" label="Valor Unitário Anterior" value="#{cc.attrs.managedBean.material.valorUnitarioAnterior}" readonly="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorTotalAnterior" label="Valor Total Anterior" value="#{cc.attrs.managedBean.material.valorTotalAnterior}" readonly="true" />
+						</section>
+					</div>
+		        </p:tab>
+	           	<p:tab title="Movimentos" rendered="#{cc.attrs.readonly}">
+					<br/><br/>
+					<div class="row">
+						<section class="col col-3">
+							<p:outputLabel for="dataFiltro" value="Data" styleClass="label" />
+							<label class="input">
+								<p:calendar
+									id="dataFiltro" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.dataFiltro}"
+									pattern="dd/MM/yyyy"
+									mask="true" locale="pt" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<p:commandLink value="Buscar" action="#{cc.attrs.managedBean.buscarMovimentos()}" styleClass="btn btn-info btn-sm" style="margin-top: 24px;" 
+								process="dataFiltro, @this" update="dtMovimento" />
+						</section>
+					</div>
+					<section>
+						<p:dataTable id="dtMovimento" var="item" value="#{cc.attrs.managedBean.movimentoEstoqueList}" reflow="true"
+							emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+							<p:column style="width: 16px">
+								<p:rowToggler rendered="#{not empty item.movimentoEstoqueOrgaoList}" />
+							</p:column>
+							<p:column headerText="Data" style="width: 130px;text-align: center">
+							   	<h:outputText value="#{item.data}">
+							   		<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+							   	</h:outputText>
+							</p:column>
+							<p:column headerText="Tipo Movimento" style="width: 70px">
+								<h:outputText value="#{item.tipo.descricao}" />
+							</p:column>
+							<p:column headerText="Quantidade" style="width: 90px">
+								<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Fornecedor">
+								<h:outputText value="#{item.fornecedorRazaoSocial}" title="#{item.fornecedorRazaoSocial}" />
+							</p:column>
+							<p:column headerText="Tipo Documento" style="width: 100px;text-align: center">
+							   	<h:outputText value="#{item.tipoDocumento.descricao}" title="#{item.tipoDocumento.descricao}" />
+							</p:column>
+							<p:column headerText="Documento" style="width: 90px;text-align: center">
+							   	<h:outputText value="#{item.numeroDocumento}" title="#{item.numeroDocumento}" />
+							</p:column>
+							<p:column headerText="A.F." style="width: 80px">
+								<h:outputText value="#{item.itemAf.af.numero.toString().concat('/').concat(item.itemAf.af.ano)}" />
+							</p:column>
+							<p:rowExpansion>
+								<p:dataTable var="subitem" value="#{item.movimentoEstoqueOrgaoList}" styleClass="table-reflow-desktop" reflow="true" 
+									emptyMessage="Não constam registros." tableStyleClass="table table-striped">
+									<f:facet name="header">Dados da movimentação</f:facet>
+									<p:column headerText="Almoxarifado">
+										<h:outputText value="#{subitem.estoque.almoxarifado.nome}" />
+									</p:column>
+									<p:column headerText="Órgão" style="width: 80px;text-align: center">
+										<h:outputText value="#{subitem.estoque.orgaoSigla}" />
+									</p:column>
+									<p:column headerText="Data" style="width: 130px;text-align: center">
+									   	<h:outputText value="#{subitem.data}">
+									   		<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+									   	</h:outputText>
+									</p:column>
+									<p:column headerText="Tipo" style="width: 100px">
+									   	<h:outputText value="#{subitem.tipo.descricao}" />
+									</p:column>
+									<p:column headerText="Quantidade" style="width: 100px">
+										<mcl:money value="#{subitem.quantidade}" modoConsulta="true" />
+									</p:column>
+									<p:column headerText="Requisição" style="width: 100px; text-align: center">
+										<h:outputText value="#{item.itemAf.numeroRequisicao}" />
+									</p:column>
+								</p:dataTable>
+							</p:rowExpansion>
+						</p:dataTable>
+					</section>
+				</p:tab>
+	           	<p:tab title="Por Almoxarifado" rendered="#{cc.attrs.readonly}">
+	           		<br/><br/>
+					<section>
+						<p:dataTable var="item" value="#{cc.attrs.managedBean.almoxarifadoPorMaterial}" reflow="true"
+							emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+							<p:column headerText="Almoxarifado">
+								<h:outputText value="#{item.almoxarifado}" title="#{item.almoxarifado}" />
+							</p:column>
+							<p:column headerText="Saldo Anterior" style="width: 100px">
+							   	<mcl:money value="#{item.saldoAnterior}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Entrada" style="width: 100px">
+							   	<mcl:money value="#{item.entrada}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Saída" style="width: 100px">
+							   	<mcl:money value="#{item.saida}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Saldo Atual" style="width: 100px">
+							   	<mcl:money value="#{item.saldoAtual}" modoConsulta="true" />
+							</p:column>
+						</p:dataTable>
+					</section>
+		        </p:tab>
+	           	<p:tab title="Por Órgão" rendered="#{cc.attrs.readonly}">
+	           		<br/><br/>
+					<section>
+						<p:dataTable 	var="item" value="#{cc.attrs.managedBean.orgaoPorMaterial}" reflow="true"
+							emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+							<p:column headerText="Almoxarifado">
+								<h:outputText value="#{item.almoxarifado}" title="#{item.almoxarifado}" />
+							</p:column>
+							<p:column headerText="Órgão" style="width: 100px;text-align: center">
+								<h:outputText value="#{item.orgao}" title="#{item.orgao}" />
+							</p:column>
+							<p:column headerText="Saldo" style="width: 100px">
+							   	<mcl:money value="#{item.saldoAtual}" modoConsulta="true" />
+							</p:column>
+						</p:dataTable>
+					</section>
+		        </p:tab>
+		        <p:tab title="Lotes de Validade" rendered="#{cc.attrs.readonly}">
+	           		<br/><br/>
+	           		<section>
+						<p:dataTable 	var="item" value="#{cc.attrs.managedBean.lotesValidade}" reflow="true"
+							emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+							<p:column headerText="Dias para Consumo" style="width: 80px; text-align: center">
+								<h:outputText value="#{item.dias}" title="#{item.dias}" />
+							</p:column>
+							<p:column headerText="Data Validade" style="width: 100px; text-align: center">
+								<h:outputText value="#{item.dataValidade}">
+							   		<f:convertDateTime pattern="dd/MM/yyyy" />
+							   	</h:outputText>
+							</p:column>
+							<p:column headerText="Número Lote" style="width: 100px">
+								<h:outputText value="#{item.numero}" title="#{item.numero}" />
+							</p:column>
+							<p:column headerText="Almoxarifado">
+								<h:outputText value="#{item.almoxarifado}" title="#{item.almoxarifado}" />
+							</p:column>
+							<p:column headerText="Quantidade" style="width: 100px">
+								<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Consumo" style="width: 100px">
+								<mcl:money value="#{item.consumo}" modoConsulta="true" />
+							</p:column>
+							<p:column headerText="Órgão" style="width: 80px; text-align: center">
+							   	<h:outputText value="#{item.orgao}" title="#{item.orgao}" />
+							</p:column>
+							<p:column headerText="Marca" style="width: 80px">
+							   	<h:outputText value="#{item.marca}" title="#{item.marca}" />
+							</p:column>
+							<p:column headerText="Corredor" style="width: 80px">
+							   	<h:outputText value="#{item.corredor}" title="#{item.corredor}" />
+							</p:column>
+							<p:column headerText="Prateleira" style="width: 80px">
+							   	<h:outputText value="#{item.prateleira}" title="#{item.prateleira}" />
+							</p:column>
+							<p:column headerText="Box" style="width: 80px">
+							   	<h:outputText value="#{item.box}" title="#{item.box}" />
+							</p:column>
+						</p:dataTable>
+					</section>
+           		</p:tab>
+		    </p:tabView>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

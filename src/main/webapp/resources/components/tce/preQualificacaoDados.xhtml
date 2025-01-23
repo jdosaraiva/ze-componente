@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:preQualificacao="http://java.sun.com/jsf/composite/components/preQualificacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 150px" class="row"></div>
+	<h:panelGroup id="pnlPreQualificacao">
+		<p:fieldset legend="Pré-qualificação" class="fieldset-borda">
+			<div class="row">
+				<section class="col col-8">
+					<p:outputLabel for="preQualificacao" value="Houve fase de pré-qualificação?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="preQualificacao" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<br/>
+			<p:tabView id="tabPreQualificacao">
+				<!-- 1 - Edital -->
+				<p:tab title="Edital">
+					<h:panelGroup id="pnlEdital">
+						<preQualificacao:editalDados id="editalDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+					</h:panelGroup>
+				</p:tab>
+				<!-- 2 - Parecer Jurídico/Garantia -->
+			   	<p:tab title="Parecer Jurídico/Garantia">
+			   		<h:panelGroup id="pnlGarantia">
+						<preQualificacao:garantiaDados id="garantiaDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+					</h:panelGroup>
+				</p:tab>
+				<!-- 3 - Índices Econômicos -->
+			   	<p:tab title="Índices Econômicos">
+			   		<h:panelGroup id="pnlIndice">
+			   			<preQualificacao:indiceDados id="indiceDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			   	<!-- 4 - Critérios de Julgamento -->
+			   	<p:tab title="Critérios de Julgamento">
+			   		<h:panelGroup id="pnlCriteriosJulgamento">
+			   			<preQualificacao:criteriosJulgamentoDados id="criteriosJulgamentoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			   	<!-- 5 - Ata de Recebimento da Documentação -->
+			   	<p:tab title="Ata de Recebimento da Documentação">
+			   		<h:panelGroup id="pnlAtaRecebimento">
+			   			<preQualificacao:ataRecebimentoDocumentacaoDados id="ataRecebimentoDocumentacaoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			   	<!-- 6 - Relatório de Qualificação Técnica -->
+			   	<p:tab title="Relatório de Qualificação Técnica">
+			   		<h:panelGroup id="pnlRelatorioQualificacao">
+			   			<preQualificacao:relatorioQualificacaoTecnicaDados id="relatorioQualificacaoTecnicaDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			   	<!-- 7 - Participantes -->
+			   	<p:tab title="Participantes">
+			   		<h:panelGroup id="pnlParticipante">
+			   			<preQualificacao:participantesDados id="participantesDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			   	<!-- 8 - Julgamento -->
+			   	<p:tab title="Julgamento">
+			   		<h:panelGroup id="pnlJulgamento">
+			   			<preQualificacao:julgamentoDados id="julgamentoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			   	<!-- 9 - Recursos -->
+			   	<p:tab title="Recursos">
+			   		<h:panelGroup id="pnlRecurso">
+			   			<preQualificacao:recursoDados id="recursoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			   	<!-- 10 - Homologação -->
+			   	<p:tab title="Homologação">
+			   		<h:panelGroup id="pnlHomologacao">
+			   			<preQualificacao:homologacaoDados id="homologacaoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+			   		</h:panelGroup>
+			   	</p:tab>
+			</p:tabView>
+		</p:fieldset>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

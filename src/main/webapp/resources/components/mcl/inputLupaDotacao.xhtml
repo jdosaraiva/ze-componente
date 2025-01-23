@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="identificador" default="#{cc.id}" />
+	<composite:attribute name="value" required="true" />
+	<composite:attribute name="requisicao" required="true" />
+	<composite:attribute name="nomePopup" required="true" />
+	<composite:attribute name="descricao" required="true" />
+	<composite:attribute name="label" required="false" />
+	<composite:attribute name="leitura" type="java.lang.Boolean" />
+	<composite:attribute name="required" type="java.lang.Boolean" />
+	<composite:attribute name="lazy" type="java.lang.Boolean" default="#{true}" />
+	<composite:attribute name="cabecalho" required="true" />
+	<composite:attribute name="parametroConsulta" required="false" />
+	<composite:attribute name="controller" required="true" />
+	<composite:attribute name="update" />
+	<composite:attribute name="listener" required="false" method-signature="void inputLupaDotacaolistener(java.lang.Object)" default="#{cc.attrs.controller.ajaxMetodoPadrao()}" />
+	<composite:attribute name="widgetVar" required="false" type="java.lang.String" default="inputLupaDotacaoWidgetVar" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<p:outputLabel for="#{cc.id}:#{cc.attrs.identificador}" value="#{cc.attrs.label}" styleClass="label" rendered="#{not empty cc.attrs.label}" />
+	<label class="input">
+		<table style="width:100%">
+			<tr>
+				<td style="width:1%" jsf:rendered="#{not cc.attrs.leitura}">
+		            <p:commandLink immediate="true" styleClass="btn btn-default btn-sm" process="@this" update="#{cc.clientId}:#{cc.id}Popup" action="#{cc.attrs.controller.consultaPorRequisicao(cc.attrs.requisicao)}" 
+		            	oncomplete="javascript: PF('#{cc.attrs.widgetVar}').clearFilters(); PF('#{cc.attrs.widgetVar}').unselectAllRows(); $('##{cc.attrs.nomePopup}Popup').modal('show');">
+		            	<i class="fa fa-search"></i>
+		            	<f:setPropertyActionListener target="#{cc.attrs.controller.exibePopup}" value="#{true}" />
+		            </p:commandLink>
+	            </td>
+	            <td style="width:1%" jsf:rendered="#{not cc.attrs.leitura}">
+					<h:commandLink value="" immediate="true" styleClass="btn btn-info btn-sm">
+		            	<i class="fa fa-eraser" aria-hidden="true"></i>
+		            	<f:setPropertyActionListener target="#{cc.attrs.value}" value="#{null}" />
+		            	<f:ajax execute="@form" render="@form" />
+		            </h:commandLink>
+	            </td>
+	            <td>
+					<p:inputText id="#{cc.id}" value="#{cc.attrs.descricao}" required="#{cc.attrs.required}" readonly="true" />
+				</td>
+			</tr>
+		</table>
+	</label>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="#{cc.attrs.nomePopup}Popup" style="z-index:901" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header" style="padding: 15px;">
+					<button value="" type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						x
+					</button>
+					<h4 class="modal-title"><h:outputText value="#{cc.attrs.cabecalho}" /></h4>
+				</div>
+				<div class="modal-body" style="padding: 25px;">
+					<section>
+						<div class="row">
+							<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<div id="#{cc.attrs.widgetId}" class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false" data-widget-custombutton="false" data-widget-colorbutton="false" data-widget-togglebutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false">
+									<header style="padding: 0;border-bottom: none;background: #4c4f53;color: #FFF;font-size: 13px;margin: 0;">
+										<span class="widget-icon">
+											<i class="fa fa-table"></i>
+										</span>
+										<h2><h:outputText value="#{cc.attrs.cabecalho}" /></h2>
+									</header>
+									<div style="box-sizing: border-box;">
+										<h:panelGroup id="#{cc.id}Popup">
+										<div class="widget-body no-padding">
+											<p:dataTable var="item" value="#{cc.attrs.controller.getLista(cc.attrs.parametroConsulta)}" rowKey="#{item.id}" widgetVar="#{cc.attrs.widgetVar}"
+												rows="10" selectionMode="single" selection="#{cc.attrs.value}" lazy="#{cc.attrs.lazy}"
+												reflow="true" paginator="true" rowsPerPageTemplate="5,10,15,20" emptyMessage="Não constam registros." 
+												tableStyleClass="table table-striped" styleClass="table-reflow-desktop" paginatorPosition="bottom" 
+												paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+												currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+												
+												<p:ajax event="rowSelect" listener="#{cc.attrs.listener}" update="#{cc.clientId}:#{cc.id},#{cc.attrs.update}" 
+													oncomplete="javascript: $('##{cc.attrs.nomePopup}Popup').modal('hide');" />
+												
+												<p:columns value="#{cc.attrs.controller.columns}" var="column" columnIndexVar="colIndex" sortBy="#{item[column.property]}" filterBy="#{item[column.property]}"
+										        	filterMatchMode="contains" style="#{column.style}">
+										            <f:facet name="header">
+										                <h:outputText value="#{column.header}" />
+										            </f:facet>
+										            <h:outputText value="#{cc.attrs.controller.valor(item, column.property)}" title="#{cc.attrs.controller.valor(item, column.title)}" rendered="#{column.tipo == null}" />
+										            <h:outputText value="#{cc.attrs.controller.valor(item, column.property).descricao}" title="#{cc.attrs.controller.valor(item, column.title).descricao}" rendered="#{column.tipo == 'enum'}" />
+										            <h:outputText value="#{cc.attrs.controller.valor(item, column.property)}" title="#{cc.attrs.controller.valor(item, column.title)}" rendered="#{column.tipo == 'date'}">
+										            	<f:convertDateTime pattern="dd/MM/yyyy" />
+										            </h:outputText>
+										        </p:columns>
+										    </p:dataTable>
+										</div>
+										</h:panelGroup>
+									</div>
+								</div>
+							</article>
+						</div>
+					</section>
+				</div>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

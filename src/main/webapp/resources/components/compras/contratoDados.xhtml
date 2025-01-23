@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="contratoSolicitacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numeroProcesso" value="Processo Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numeroProcesso" value="#{cc.attrs.managedBean.contrato.processo.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="anoProcesso" value="Processo Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="anoProcesso" value="#{cc.attrs.managedBean.contrato.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" required="false" style="float:left"
+									value="#{cc.attrs.managedBean.contrato.processo.data}" 
+									pattern="dd/MM/yyyy"
+									readonly="true"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.contrato.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.contrato.processo.modalidade.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numeroLicitacao" value="Modalidade Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numeroLicitacao" value="#{cc.attrs.managedBean.contrato.processo.numeroLicitacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="descricaoObjeto" value="Descrição do Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricaoObjeto" value="#{cc.attrs.managedBean.contrato.processo.descricaoObjeto}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-9">
+					<p:outputLabel for="fornecedorRazaoSocial" value="Fornecedor" styleClass="label" />
+					<label class="input">
+						<p:inputText id="fornecedorRazaoSocial" value="#{cc.attrs.managedBean.contrato.fornecedorRazaoSocial}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="fornecedorNumeroDocumento" value="Fornecedor Documento" styleClass="label" />
+					<label class="input">
+						<p:inputText id="fornecedorNumeroDocumento" value="#{cc.attrs.managedBean.contrato.fornecedorNumeroDocumento}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="naturezaObjeto" value="Natureza Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="naturezaObjeto" value="#{cc.attrs.managedBean.contrato.naturezaObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoGarantia" value="Tipo Garantia" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoGarantia" value="#{cc.attrs.managedBean.contrato.tipoGarantia.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataCadastro" value="Data Cadastro" styleClass="label" />
+					<label class="input">
+						<p:inputText id="dataCadastro" value="#{cc.attrs.managedBean.contrato.dataCadastro}" readonly="true">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="vencimentoGarantia" value="Vencimento Garantia" styleClass="label" />
+					<label class="input">
+						<p:inputText id="vencimentoGarantia" value="#{cc.attrs.managedBean.contrato.vencimentoGarantia}" readonly="true">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.contrato.numero}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.contrato.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valor" label="Valor" value="#{cc.attrs.managedBean.contrato.valor}" readonly="true" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataAssinatura" value="Data Assinatura" styleClass="label" />
+					<label class="input">
+						<p:inputText id="dataAssinatura" value="#{cc.attrs.managedBean.contrato.dataAssinatura}" readonly="true">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="inicioVigencia" value="Início Vigência" styleClass="label" />
+					<label class="input">
+						<p:inputText id="inicioVigencia" value="#{cc.attrs.managedBean.contrato.inicioVigencia}" readonly="true">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="terminoVigencia" value="Término Vigência" styleClass="label" />
+					<label class="input">
+						<p:inputText id="terminoVigencia" value="#{cc.attrs.managedBean.contrato.terminoVigencia}" readonly="true">
+							<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="validadeMeses" value="Validade Meses" styleClass="label" />
+					<label class="input">
+						<p:inputText id="validadeMeses" value="#{cc.attrs.managedBean.contrato.validadeMeses}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="saldoBalanco" label="Saldo Balanço" value="#{cc.attrs.managedBean.contrato.saldoBalanco}" readonly="true" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="situacao" value="Situação" styleClass="label" />
+					<label class="input">
+						<p:inputText id="situacao" value="#{cc.attrs.managedBean.contrato.situacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="prazoNotificacao" value="Prazo Notificação" styleClass="label" />
+					<label class="input">
+						<p:inputText id="prazoNotificacao" value="#{cc.attrs.managedBean.contrato.prazoNotificacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="descritivoClausulaFinanceira" value="Cláusula Financeira" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descritivoClausulaFinanceira" value="#{cc.attrs.managedBean.contrato.descritivoClausulaFinanceira}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="descricaoClausulaPenal" value="Cláusula Penal" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricaoClausulaPenal" value="#{cc.attrs.managedBean.contrato.descricaoClausulaPenal}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:money id="valorGarantia" label="Valor Garantia" value="#{cc.attrs.managedBean.contrato.valorGarantia}" readonly="true" />
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorGarantiaPercentualContrato" label="Valor Garantia Percentual Contrato" value="#{cc.attrs.managedBean.contrato.valorGarantiaPercentualContrato}" readonly="true" />
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="clausulasGarantia" value="Cláusula Garantia" styleClass="label" />
+					<label class="input">
+						<p:inputText id="clausulasGarantia" value="#{cc.attrs.managedBean.contrato.clausulasGarantia}" readonly="true" />
+					</label>
+				</section>
+			</div>
+			<p:panel header="Publicação">
+				<section>
+					<p:dataTable var="item" value="#{cc.attrs.managedBean.contrato.publicacaoList}" emptyMessage="Não constam registros.">
+					    <p:column headerText="Tipo" style="width: 150px;">
+					        <h:outputText value="#{item.tipo.descricao}" />
+					    </p:column>
+					    <p:column headerText="Data" style="width: 150px; text-align: center">
+					        <h:outputText value="#{item.publicacaoData}">
+					        	<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					        </h:outputText>
+					    </p:column>
+					    <p:column headerText="Descrição">
+					        <h:outputText value="#{item.descricao}" />
+					    </p:column>
+					</p:dataTable>
+				</section>
+			</p:panel>
+			<br/>
+			<p:panel header="Empenho">
+				<section>
+					<p:dataTable var="item" value="#{cc.attrs.managedBean.contrato.empenhoList}" emptyMessage="Não constam registros.">
+					    <p:column headerText="Número">
+					        <h:outputText value="#{item.numero}/#{item.ano}" />
+					    </p:column>
+					    <p:column headerText="Data" style="width: 150px; text-align: center">
+					        <h:outputText value="#{item.data}">
+					        	<f:convertDateTime type="date" pattern="dd/MM/yyyy" />
+					        </h:outputText>
+					    </p:column>
+					    <p:column headerText="Valor" style="width: 150px;">
+					    	<mcl:money value="#{item.valor}" modoConsulta="true" />
+					    </p:column>
+					</p:dataTable>
+				</section>
+			</p:panel>
+			<br/>
+			<p:panel header="Gestor">
+				<section>
+					<p:dataTable var="item" value="#{cc.attrs.managedBean.contrato.contratoGestorList}" emptyMessage="Não constam registros.">
+					    <p:column headerText="CPF" style="width: 150px;">
+					        <h:outputText value="#{item.cpf}" />
+					    </p:column>
+					    <p:column headerText="Nome">
+					    	<h:outputText value="#{item.nome}" />
+					    </p:column>
+					</p:dataTable>
+				</section>
+			</p:panel>
+			<br/>
+			<p:panel header="Responsável">
+				<section>
+					<p:dataTable var="item" value="#{cc.attrs.managedBean.contrato.responsavelList}" emptyMessage="Não constam registros.">
+					    <p:column headerText="CPF" style="width: 150px;">
+					        <h:outputText value="#{item.cpf}" />
+					    </p:column>
+					    <p:column headerText="Nome">
+					    	<h:outputText value="#{item.nome}" />
+					    </p:column>
+					</p:dataTable>
+				</section>
+			</p:panel>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

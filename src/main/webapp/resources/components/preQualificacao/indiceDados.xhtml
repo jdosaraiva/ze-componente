@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<p:fieldset legend="Índices Econômicos" class="fieldset-borda" style="margin-top: 100px;">
+		<div class="row">
+			<section class="col col-8">
+				<p:outputLabel for="exigenciaIndiceEconomico" value="Há exigência de índices econômicos mínimos na pré-qualificação?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="exigenciaIndiceEconomico" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</div>
+		<h:panelGroup>
+			<div class="row">
+				<section class="col col-4">
+					<p:outputLabel for="itemEdital" value="Item do edital de pré-qualificação *" styleClass="label" />
+					<label class="input">
+						<p:inputText id="itemEdital" value="#{cc.attrs.managedBean.excluir}" maxlength="20" />
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="indice" value="Índice *" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="indice" value="#{cc.attrs.managedBean.excluir}" styleClass="select-popup">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.indiceEconomico}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-4">
+					<p:outputLabel for="descricao" value="Descrição - Outro *" styleClass="label" />
+					<label class="input">
+						<p:inputText id="descricao" value="#{cc.attrs.managedBean.excluir}" maxlength="200" />
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="valor" value="Valor *" styleClass="label" />
+					<label class="input">
+						<p:inputNumber id="valor" value="#{cc.attrs.managedBean.excluir}" decimalSeparator="," decimalPlaces="2" thousandSeparator="." style="text-align:right" />
+					</label>
+				</section>
+				<section class="col col-1">
+					<p:spacer width="0px" height="80px"/>
+					<h:commandLink id="btnAddIndice" actionListener="#{cc.attrs.managedBean.preQualificacaoController.adicionarIndiceEconomico()}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i>
+					</h:commandLink>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-12">
+					<p:dataTable reflow="true" value="#{cc.attrs.managedBean.excluir}"
+						id="dtIndices" var="item" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+						<p:column headerText="Item do edital">
+							<h:outputText value="#{item.itemEdital}" />
+						</p:column>
+						<p:column headerText="Índice">
+							<h:outputText value="#{item.indice.descricao}" />
+						</p:column>
+						<p:column headerText="Descrição - Outro">
+							<h:outputText value="#{item.descricao}" />
+						</p:column>
+						<p:column headerText="Valor">
+							<mcl:money value="#{item.valor}" modoConsulta="true" />
+						</p:column>
+						<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+							<h:commandLink actionListener="#{cc.attrs.managedBean.preQualificacaoController.removerIndiceEconomico(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+								<i class="fa fa-trash-o"></i>
+							</h:commandLink>
+						</p:column>
+					</p:dataTable>
+				</section>
+			</div>
+		</h:panelGroup>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

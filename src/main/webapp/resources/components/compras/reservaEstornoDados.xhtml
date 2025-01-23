@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="reservaForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:inputLupa 
+						id="reserva" 
+						label="Reserva"  
+						controller="#{reservaColumnsView}"
+						descricao="#{cc.attrs.managedBean.reservaEstorno.reserva.reservaNumero}"
+						value="#{cc.attrs.managedBean.reservaEstorno.reserva}"
+						cabecalho= "Consulta de Reserva" 
+						leitura="#{cc.attrs.readonly}"
+						listener="#{cc.attrs.managedBean.carregaValorSolicitado()}" 
+						update="reservaEstornoDados:reservaForm:reservaPanel"/>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valor" label="Valor Estorno" value="#{cc.attrs.managedBean.reservaEstorno.valor}" required="true" decimalPlaces="4" disabled="#{cc.attrs.readonly}" />
+				</section>
+			</div>
+			<section>
+				<p:panel id="reservaPanel" header="Dados da Reserva">
+					<div class="row">
+						<section class="col col-3">
+							<p:outputLabel for="cnd" value="C.N.D." styleClass="label" />
+							<label class="input">
+								<p:inputText id="cnd" value="#{cc.attrs.managedBean.reservaEstorno.reserva.dotacaoCnd}" disabled="true" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<p:outputLabel for="item" value="Item" styleClass="label" />
+							<label class="input">
+								<p:inputText id="item" value="#{cc.attrs.managedBean.reservaEstorno.reserva.dotacaoItem}" disabled="true" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<p:outputLabel for="subitem" value="Subitem" styleClass="label" />
+							<label class="input">
+								<p:inputText id="subitem" value="#{cc.attrs.managedBean.reservaEstorno.reserva.dotacaoSubitem}" disabled="true" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<p:outputLabel for="orgao" value="Órgão" styleClass="label" />
+							<label class="input">
+								<p:inputText id="orgao" value="#{cc.attrs.managedBean.reservaEstorno.reserva.orgaoSigla} - #{cc.attrs.managedBean.reservaEstorno.reserva.orgaoDescricao}" disabled="true" />
+							</label>
+						</section>
+					</div>
+					<section>
+						<p:outputLabel for="fornecedor" value="Fornecedor" styleClass="label" />
+						<label class="input">
+							<p:inputText id="fornecedor" value="#{cc.attrs.managedBean.reservaEstorno.reserva.itemRequisicaoCompra.objeto.fornecedorRazaoSocial}" disabled="true" />
+						</label>
+					</section>
+					<div class="row">
+						<section class="col col-4">
+							<mcl:money id="valorReserva" label="Valor da Reserva" value="#{cc.attrs.managedBean.reservaEstorno.reserva.valor}" decimalPlaces="4" disabled="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorTotalEmpenhado" label="Valor Total Empenhado" value="#{cc.attrs.managedBean.reservaEstorno.reserva.valorTotalEmpenhado}" decimalPlaces="4" disabled="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorTotalEstornado" label="Valor Total Estornado" value="#{cc.attrs.managedBean.reservaEstorno.reserva.valorTotalEstornado}" decimalPlaces="4" disabled="true" />
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-4">
+							<mcl:money id="valorTotalSolicitado" label="Valor Total Solicitado" value="#{cc.attrs.managedBean.reservaEstorno.reserva.valorTotalSolicitado}" decimalPlaces="4" disabled="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorSolicitar" label="Valor a Solicitar" value="#{cc.attrs.managedBean.reservaEstorno.reserva.valorASolicitar}" decimalPlaces="4" disabled="true" />
+						</section>
+						<section class="col col-4">
+							<mcl:money id="valorEmpenhar" label="Valor a Empenhar" value="#{cc.attrs.managedBean.reservaEstorno.reserva.valorAEmpenhar}" decimalPlaces="4" disabled="true" />
+						</section>
+					</div>
+				</p:panel>
+			</section>
+		</fieldset>
+	
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

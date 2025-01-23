@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+	<composite:attribute name="aditamento" type="java.lang.Boolean" default="false" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="solicitacaoEmpenhoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+		
+			<div class="row">
+			
+				<section class="col col-6" jsf:rendered="#{not cc.attrs.aditamento}">
+						<mcl:inputLupa 
+							id="processo" 
+							label="Processo" 
+							controller="#{processoColumnsView}"
+							descricao="#{cc.attrs.managedBean.processoSelecionado.numero.toString().concat(' / ').concat(cc.attrs.managedBean.processoSelecionado.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.processoSelecionado.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.processoSelecionado.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.processoSelecionado.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.processoSelecionado.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.processoSelecionado.status.descricao)}" 
+							value="#{cc.attrs.managedBean.processoSelecionado}" 
+							required="true" 
+							listener="#{cc.attrs.managedBean.carregaProcesso()}" 
+							update="solicitacaoEmpenhoDados:solicitacaoEmpenhoForm:objetoPanel 
+							solicitacaoEmpenhoDados:solicitacaoEmpenhoForm:tipoObjeto 
+							solicitacaoEmpenhoDados:solicitacaoEmpenhoForm:data 
+							solicitacaoEmpenhoDados:solicitacaoEmpenhoForm:finalidadeObjeto 
+							solicitacaoEmpenhoDados:solicitacaoEmpenhoForm:divisaoObjeto" 
+							cabecalho= "Consulta de Processo" />
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="tipoObjeto" value="Tipo de Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto.descricao}" readonly="true" />
+					</label>
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data Processo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="data" value="#{cc.attrs.managedBean.processo.data}" readonly="true">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+				
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel value="Finalidade do Objeto" styleClass="label" />
+						<label class="input">
+							<p:inputText id="finalidadeObjeto" value="#{cc.attrs.managedBean.processo.finalidadeObjeto.descricao}" readonly="true" />
+						</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Divisão do Objeto" styleClass="label" />
+						<label class="input">
+							<p:inputText id="divisaoObjeto" value="#{cc.attrs.managedBean.processo.divisaoObjeto.descricao}" readonly="true" />
+						</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Registrada por" styleClass="label" />
+						<label class="input">
+							<p:inputText value="#{sessaoMCL.operador.nome}" readonly="true" />
+						</label>
+				</section>
+			</div>
+			
+			<section>
+				<alert dismissible="true" type="info">
+					<div role="alert" class="alert alert-info alert-dismissible ng-star-inserted">  
+	          			<i class="fa-fw fa fa-info-circle"></i>
+	          			<strong>Atenção - Aviso à Contabilidade</strong>:<br/>
+	          			A presente <b>SOLICITAÇÃO DE NOTA DE EMPENHO</b> requer verificação se existem neste Processo, Objetos com caso de 
+	          			<b>CONTRATO DE VIGÊNCIA PLURIANUAL</b>. Assim sendo, a despesa deverá ser apropriada pelo <b>CRONOGRAMA FÍSICO/FINANCEIRO</b>.
+	          			A nota de empenho deverá refletir exclusivamente a despesa do exercício financeiro em curso. O saldo deverá onerar
+	          			dotação do Orçamento seguinte (PRINCÍPIO DO SERVIÇO FEITO).
+         			</div>
+        		</alert>
+			</section>
+			
+			
+		<header>
+			Objetos do Processo
+		</header>
+		<fieldset>
+			<section>
+				<h:panelGroup id="objetoPanel">
+					<p:dataTable id="dtobjeto" var="item" value="#{cc.attrs.managedBean.processo.objetoList}"
+						reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+						styleClass="table-reflow-desktop">
+						<p:column style="width: 16px">
+							<p:rowToggler rendered="#{not empty item.itemRequisicaoCompraList}" />
+						</p:column>
+						
+				        <p:column headerText="Item" sortBy="#{item.item}" style="width: 80px">
+				           	<h:outputText value="#{item.item}" />
+				        </p:column>
+				        <p:column headerText="Fornecedor" sortBy="#{item.fornecedorRazaoSocial}">
+				           	<h:outputText value="#{item.fornecedorRazaoSocial}" />
+				        </p:column>
+				        <p:column headerText="Descrição" sortBy="#{item.descricao}">
+				           	<h:outputText value="#{item.descricao}" />
+				        </p:column>
+				        <p:column headerText="Quantidade" style="width: 100px">
+					    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+					    </p:column>
+				        <p:column headerText="Valor Unitário" sortBy="#{item.valorUnitario}" style="width: 120px">
+				        	<mcl:money value="#{item.valorUnitario}" modoConsulta="true" />
+				        </p:column>
+				        <p:column headerText="Valor Total" sortBy="#{item.valor}" style="width: 120px">
+				        	<mcl:money value="#{item.valor}" modoConsulta="true" />
+				        </p:column>
+				        <p:rowExpansion>
+				        	<p:dataTable var="subitem" value="#{item.itemRequisicaoCompraList}"
+								reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+								styleClass="table-reflow-desktop">
+								<f:facet name="header">Itens de Requisição de Compra deste Objeto</f:facet>
+								<p:column style="width: 16px">
+									<p:rowToggler rendered="#{not empty subitem.reservaList}" />
+								</p:column>
+								
+							    <p:column headerText="Req. Número" style="text-align:center; width: 100px">
+							        <h:outputText value="#{subitem.requisicaoCompra.numero}" />
+							    </p:column>
+							    <p:column headerText="Órgão" style="text-align:center; width: 100px">
+							        <h:outputText value="#{subitem.requisicaoCompra.orgaoSigla}" />
+							    </p:column>
+							    <p:column headerText="Item" style="text-align:center; width: 100px">
+							        <h:outputText value="#{subitem.item}" />
+							    </p:column>
+							    <p:column headerText="Quantidade" style="width: 100px">
+							    	<mcl:money value="#{subitem.quantidadeSolicitada}" modoConsulta="true" />
+							    </p:column>
+							    <p:column headerText="Unitário" style="width: 100px">
+							    	<mcl:money value="#{subitem.valorUnitario}" modoConsulta="true" />
+							    </p:column>
+							    <p:column headerText="Valor Total" style="width: 120px">
+							    	<mcl:money value="#{subitem.valorTotalSolicitado}" modoConsulta="true" />
+							    </p:column>
+							    <p:column headerText="Total Reservado" style="width: 120px">
+							    	<mcl:money value="#{subitem.valorTotalReservado}" modoConsulta="true" />
+							    </p:column>
+							    <p:column headerText="Saldo a Reservar" style="width: 120px">
+							    	<mcl:money value="#{subitem.saldoReservar}" modoConsulta="true" /> 
+							    </p:column>
+						        <p:column headerText="Total Empenhado" sortBy="#{subitem.valorTotalEmpenhado}" style="width: 120px">
+						        	<mcl:money value="#{subitem.valorTotalEmpenhado}" modoConsulta="true" />
+						        </p:column>
+						        <p:column headerText="A Empenhar" sortBy="#{subitem.saldoEmpenhar}" style="width: 120px">
+						        	<mcl:money value="#{subitem.saldoEmpenhar}" modoConsulta="true" />
+						        </p:column>
+							    
+							        <p:rowExpansion>
+							        	<p:dataTable var="subitem2" value="#{subitem.reservaList}"
+											reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+											styleClass="table-reflow-desktop">
+											<f:facet name="header">Reservas deste Item de Requisição de Compra</f:facet>
+												<p:column headerText="Número" sortBy="#{subitem2.reservaNumero}" style="width: 80px">
+										           	<h:outputText value="#{subitem2.reservaNumero}" />
+										        </p:column>
+												<p:column headerText="Data" sortBy="#{subitem2.data}" style="width: 80px">
+										           	<h:outputText value="#{subitem2.data}">
+										           		<f:convertDateTime pattern="dd/MM/yyyy" />
+           											</h:outputText>
+										        </p:column>
+												<p:column headerText="Dotação Nro" sortBy="#{subitem2.dotacaoNumero}" style="width: 80px">
+										           	<h:outputText value="#{subitem2.dotacaoNumero}" />
+										        </p:column>
+												<p:column headerText="Dotação C.N.D." sortBy="#{subitem2.dotacaoCnd}">
+										           	<h:outputText value="#{subitem2.dotacaoCnd} - #{subitem2.dotacaoCndDescricao}" />
+										        </p:column>
+												<p:column headerText="Fonte" sortBy="#{subitem2.dotacaoFonteRecurso}" style="width: 70px">
+										           	<h:outputText value="#{subitem2.dotacaoFonteRecurso}" />
+										        </p:column>
+										        <p:column headerText="Valor" style="width: 120px">
+											    	<mcl:money value="#{subitem2.valor}" modoConsulta="true" />
+											    </p:column>
+										        <p:column headerText="Total Solicitado" style="width: 120px">
+											    	<mcl:money value="#{subitem2.valorTotalSolicitado}" modoConsulta="true" />
+											    </p:column>
+										        <p:column headerText="Valor a Solicitar" style="width: 120px">
+											    	<mcl:money value="#{subitem2.valorASolicitar}" modoConsulta="true" />
+											    </p:column>
+										        <p:column headerText="Valor Empenhado" style="width: 120px">
+											    	<mcl:money value="#{subitem2.valorTotalEmpenhado}" modoConsulta="true" />
+											    </p:column>
+										        <p:column headerText="Vl indicado Solic." style="width: 120px">
+											    	<mcl:money value="#{subitem2.valorIndicadoSolicitarEmpenho}" modoConsulta="#{subitem2.valorASolicitar == 0}" />
+											    </p:column>
+							
+										</p:dataTable>
+							        </p:rowExpansion>
+						        
+							</p:dataTable>
+				        </p:rowExpansion>
+					</p:dataTable>
+				</h:panelGroup>
+			</section>
+		</fieldset>
+
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				title="Realiza Solicitação Empenho das Reservas aptas se o Valor indicado for Maior do que Zero" 
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Solicitar Automático" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

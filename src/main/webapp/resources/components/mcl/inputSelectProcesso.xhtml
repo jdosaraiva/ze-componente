@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="value" required="true" />
+	<composite:attribute name="required" required="false" />
+	<composite:attribute name="readonly" required="false" default="false" />
+	<composite:attribute name="disabled" required="false" default="false" />
+	<composite:attribute name="ajax" default="false" />
+	<composite:attribute name="update" />
+	<composite:attribute name="eventSelect" type="java.lang.Boolean" default="false" />
+	<composite:attribute name="managedBeanEventSelect" />
+	<composite:attribute name="identificador" default="#{cc.id}" />
+	<composite:attribute name="label" required="false" />
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="listener" method-signature="void Listener()" default="#{cc.attrs.managedBean.listener()}" />
+	<composite:attribute name="itemLabel" required="true" />
+	<composite:attribute name="global" type="java.lang.Boolean" default="true" />
+	<composite:attribute name="managedBeanUso" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<mcl:inputSelect2 id="#{cc.id}" label="#{cc.attrs.label}" value="#{cc.attrs.value}" 
+		managedBean="#{cc.attrs.managedBean}" itemLabel="#{cc.attrs.itemLabel}" required="#{cc.attrs.required}" disabled="#{cc.attrs.readonly}"
+		global="#{cc.attrs.global}" ajax="#{cc.attrs.ajax}" listener="#{cc.attrs.listener}" update="#{cc.attrs.update}"
+		eventSelect="#{cc.attrs.eventSelect}" managedBeanEventSelect="#{cc.attrs.managedBeanEventSelect}" managedBeanUso="#{cc.attrs.managedBeanUso}">
+		<p:row>
+			<p:column styleClass="texto-bold" style="width: #{cc.attrs.managedBean.largura}">Número/Ano:</p:column>
+			<p:column styleClass="direita">#{item.numero} / #{item.ano}</p:column>
+		</p:row>
+	</mcl:inputSelect2>
+</composite:implementation>
+
+</html>

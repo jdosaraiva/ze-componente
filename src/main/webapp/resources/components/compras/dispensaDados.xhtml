@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pedidoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputSelectProcesso id="processo" label="Processo" value="#{cc.attrs.managedBean.dispensa.processo}" 
+						managedBean="#{processoAutocomplete}" itemLabel="#{item.numero}" required="true" managedBeanUso="#{dispensaController}" />
+				</section>
+				<section class="col col-6">
+					<mcl:inputSelectFornecedor id="fornecedor" label="Fornecedor" value="#{cc.attrs.managedBean.dispensa.fornecedor}" 
+						managedBean="#{fornecedorAutocomplete}" itemLabel="#{item.razaoSocial}" required="true" managedBeanUso="#{dispensaController}" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:inputSelectCondicaoPagamento id="condicaoPagamento" label="Condição Pagamento" value="#{cc.attrs.managedBean.dispensa.condicaoPagamento}" 
+						managedBean="#{condicaoPagamentoAutocomplete}" itemLabel="#{item.descricao}" required="true" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="validadeProposta" value="Validade Proposta" styleClass="label" />
+					<label class="input">
+						<p:inputText id="validadeProposta" value="#{cc.attrs.managedBean.dispensa.validadeProposta}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="prazoEntrega" value="Prazo Entrega" styleClass="label" />
+					<label class="input">
+						<p:inputText id="prazoEntrega" value="#{cc.attrs.managedBean.dispensa.prazoEntrega}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="garantia" value="Garantia" styleClass="label" />
+					<label class="input">
+						<p:inputText id="garantia" value="#{cc.attrs.managedBean.dispensa.garantia}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="marca" value="Marca" styleClass="label" />
+					<label class="input">
+						<p:inputText id="marca" value="#{cc.attrs.managedBean.dispensa.marca}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataRatificacao" value="Data Ratificação" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataRatificacao" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.dispensa.dataRatificacao}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataPublicacao" value="Data Publicação" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataPublicacao" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.dispensa.dataPublicacao}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+		</fieldset>
+	
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

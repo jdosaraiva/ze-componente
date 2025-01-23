@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 150px" class="row"></div>
+	<h:panelGroup id="panelAtaRecebimentoJulgamento">
+		<p:fieldset legend="Ata de Recebimento e Julgamento das Propostas Técnicas e Comerciais" class="fieldset-borda">
+			<section>
+				<p:outputLabel for="existeAtaAberturaPropostas" value="Há no procedimento ata de abertura das propostas técnicas e comerciais?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="existeAtaAberturaPropostas" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="existeAtaRecebimentoPropostas" value="Há no procedimento ata de recebimento das propostas técnicas e comerciais?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="existeAtaRecebimentoPropostas" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="existeAtaJulgamentoPropostas" value="Há no procedimento ata de julgamento das propostas técnicas e comerciais?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="existeAtaJulgamentoPropostas" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:fieldset legend="Publicações da Ata de Julgamento" class="fieldset-borda">
+					<section>
+						<p:outputLabel for="houvePublicacaoAtaJulgamento" value="Houve publicação da Ata de Julgamento em veículos de comunicação?" styleClass="label" />
+						<label class="input">
+							<p:selectOneMenu id="houvePublicacaoAtaJulgamento" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+								<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+								<f:selectItems value="#{typesController.condicao}" />
+							</p:selectOneMenu>
+						</label>
+					</section>
+					<p:fieldset id="frmVeiculos" legend="Veículos de comunicação" class="fieldset-borda">
+						<div class="row">
+							<section class="col col-5">
+								<p:outputLabel for="ataJulgamentoVeiculo" value="Veículo *" styleClass="label"/>
+								<label class="input">
+									<p:selectOneMenu id="ataJulgamentoVeiculo" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+										<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+										<f:selectItems value="#{typesController.veiculoPublicacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+									</p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-5">
+								<p:outputLabel for="ataJulgamentoDataPublicacao" value="Data da publicação *" styleClass="label"/>
+								<label class="input">
+									<p:calendar id="ataJulgamentoDataPublicacao" value="#{cc.attrs.managedBean.excluir}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt"/>
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-5">
+								<p:outputLabel for="ataJulgamentoDescricaoVeiculo" value="Descrição" styleClass="label"/>
+								<label class="input">
+									<p:inputText id="ataJulgamentoDescricaoVeiculo" value="#{cc.attrs.managedBean.excluir}" maxlength="100" />
+								</label>
+							</section>
+							<section class="col col-5">
+								<p:outputLabel for="ataJulgamentoVeiculoOficialPublicacao" value="Veículo de divulgação de atos oficiais?" styleClass="label"/>
+								<label class="input">
+									<p:selectOneMenu id="ataJulgamentoVeiculoOficialPublicacao" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+										<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+										<f:selectItems value="#{typesController.condicao}" />
+									</p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-1">
+								<p:spacer width="0px" height="80px"/>
+								<h:commandLink id="btnAddVeiculo" actionListener="#{cc.attrs.managedBean.adicionarVeiculoAtaJulgamento()}" immediate="true" styleClass="btn btn-primary btn-sm">
+									<i class="fa fa-plus"></i>
+								</h:commandLink>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-12">
+								<p:dataTable reflow="true" id="dtVeiculos" var="item" value="#{cc.attrs.managedBean.excluir}"
+									emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+									<p:column headerText="Veículo" colspan="2">
+										<h:outputText value="#{item.veiculoPublicacao.descricao}" />
+									</p:column>
+									<p:column headerText="Data da publicação">
+										<h:outputText value="#{item.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText>
+									</p:column>
+									<p:column headerText="Descrição" colspan="2">
+										<h:outputText value="#{item.descricaoVeiculo}" />
+									</p:column>
+									<p:column headerText="Atos oficiais">
+										<h:outputText value="#{item.veiculoOficialPublicacaoDescricao}" />
+									</p:column>
+									<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+										<h:commandLink actionListener="#{cc.attrs.managedBean.removerVeiculoAtaJulgamento(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+											<i class="fa fa-trash-o"></i>
+										</h:commandLink>
+									</p:column>
+								</p:dataTable>
+							</section>
+						</div>
+					</p:fieldset>
+				</p:fieldset>
+			</section>
+		</p:fieldset>
+		<p:fieldset legend="Negociação Final" class="fieldset-borda">
+			<section>
+				<p:outputLabel for="existePropostaComercial" value="Há no procedimento proposta comercial?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="existePropostaComercial" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao2}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="realizadoChamadoNegociacao" value="Foi realizado chamado para negociação?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="realizadoChamadoNegociacao" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao2}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="registradasAtasReunioes" value="Foram registradas as atas das reuniões de negociação?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="registradasAtasReunioes" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao2}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="houvePropostaFinal" value="Houve proposta final?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="houvePropostaFinal" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="existeAtaJulgamentoFinal" value="Há ata de julgamento final?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="existeAtaJulgamentoFinal" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</p:fieldset>
+		<br/>
+		<p:fieldset legend="Quadro Comparativo de Preços das Propostas" class="fieldset-borda">
+			<section>
+				<p:outputLabel for="existeQuadroComparativoPrecos" value="Existe quadro comparativo de preços das propostas?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="existeQuadroComparativoPrecos" value="#{cc.attrs.managedBean.excluir}" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</p:fieldset>
+		<br/>
+		<p:fieldset legend="Recursos" id="panelRecursos" class="fieldset-borda">
+			<section>
+		   		<p:outputLabel for="houveInterposicaoRecurso" value="Houve interposição de recurso?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="houveInterposicaoRecurso" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+		 	</section>
+		 	<section>
+			 	<p:fieldset legend="Interposição de recurso" id="panelInterposicaoRecurso" class="fieldset-borda">
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="tipoDocumento" value="Tipo de documento *" styleClass="label" />
+							<label class="input">
+								<p:selectOneMenu id="tipoDocumento" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.tipoDocumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-6">
+							<p:outputLabel for="documento" value="Número do documento *" styleClass="label" />
+							<label class="input">
+								<p:inputMask id="documento" value="#{cc.attrs.managedBean.excluir}" mask="99.999.999/9999-99" />
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="data" value="Data da impetração do recurso *" styleClass="label" />
+							<label class="input">
+								<p:calendar id="data" value="#{cc.attrs.managedBean.excluir}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />
+							</label>
+						</section>
+						<section class="col col-6">
+							<p:outputLabel for="recursoDentroPrazoLegal" value="Foi respeitado o prazo legal para interposição do recurso?" styleClass="label" />
+							<label class="input">
+								<p:selectOneMenu id="recursoDentroPrazoLegal" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.condicao}" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="resultadoRecurso" value="Resultado do recurso *" styleClass="label" />
+							<label class="input">
+								<p:selectOneMenu id="resultadoRecurso" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.resultadoRecurso}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-4">
+							<p:spacer width="0px" height="80px"/>
+							<h:commandLink id="btnAddRecurso" actionListener="#{cc.attrs.managedBean.adicionarRecurso()}" immediate="true" styleClass="btn btn-primary btn-sm">
+								<i class="fa fa-plus"></i>
+							</h:commandLink>
+						</section>
+					</div>
+					<section>
+						<p:dataTable emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop"
+							reflow="true" id="dtRecursos" var="item" value="#{cc.attrs.managedBean.excluir}">
+							<p:column headerText="Tipo de documento">
+								<h:outputText value="#{item.tipoDocumento.descricao}" />
+							</p:column>
+							<p:column headerText="Número do documento">
+								<h:outputText value="#{item.documento}" />
+							</p:column>
+							<p:column headerText="Data da impetração do recurso">
+								<h:outputText value="#{item.data}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Respeitado o prazo legal">
+								<h:outputText value="#{item.recursoDentroPrazoLegal eq 'S' ? 'Sim' : item.recursoDentroPrazoLegal eq 'N' ? 'Não' : ''}" />
+							</p:column>
+							<p:column headerText="Resultado do recurso">
+								<h:outputText value="#{item.resultadoRecurso.descricao}" />
+							</p:column>
+							<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+								<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerRecurso(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+									<i class="fa fa-trash-o"></i>
+								</h:commandLink>
+							</p:column>
+						</p:dataTable>	
+					</section>
+				</p:fieldset>
+			</section>
+		</p:fieldset>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

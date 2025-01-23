@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="relatorioForm" class="smart-form"
+		acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputLupa id="processo" label="Processo"
+						controller="#{processoColumnsView}"
+						descricao="#{cc.attrs.managedBean.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.processo.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.processo.status.descricao)}"
+						value="#{cc.attrs.managedBean.processo}" required="true"
+						lazy="true" update="@form" cabecalho="Consulta de Processo" />
+				</section>
+				<section class="col col-6">
+					<mcl:inputLupa id="fornecedor" label="Fornecedor"
+						controller="#{fornecedorColumnsView}"
+						descricao="#{cc.attrs.managedBean.fornecedor.razaoSocial}"
+						value="#{cc.attrs.managedBean.fornecedor}" required="false"
+						lazy="true" update="@form" cabecalho="Consulta de Fornecedor" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="dataIniSolicitacao"
+						value="Data Inicial Solicitação" styleClass="label" />
+					<label class="input"> <p:calendar id="dataIniSolicitacao"
+							value="#{cc.attrs.managedBean.dataIniSolicitacao}"
+							pattern="dd/MM/yyyy" mask="true" locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataFimSolicitacao"
+						value="Data Final Solicitação" styleClass="label" />
+					<label class="input"> <p:calendar id="dataFimSolicitacao"
+							value="#{cc.attrs.managedBean.dataFimSolicitacao}"
+							pattern="dd/MM/yyyy" mask="true" locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numeroIniSolicitacao"
+						value="Número Inicial Solicitação" />
+					<label class="input"> <p:inputText
+							id="numeroIniSolicitacao"
+							value="#{cc.attrs.managedBean.numeroIniSolicitacao}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numeroFimSolicitacao"
+						value="Número Final Solicitação" />
+					<label class="input"> <p:inputText
+							id="numeroFimSolicitacao"
+							value="#{cc.attrs.managedBean.numeroFimSolicitacao}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="optionDetail" value="Listar Detalhamento"
+						styleClass="label" />
+					<p:selectOneMenu id="optionDetail"
+						value="#{cc.attrs.managedBean.optionDetail}" styleClass="select">
+						<f:selectItem itemLabel="Não" itemValue="#{false}" />
+						<f:selectItem itemLabel="Sim" itemValue="#{true}" />
+					</p:selectOneMenu>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="optionEmpenho" value="Modo de Exibição"
+						styleClass="label" />
+					<p:selectOneMenu id="optionEmpenho"
+						value="#{cc.attrs.managedBean.optionEmpenho}" styleClass="select">
+						<f:selectItem itemLabel="Todos" itemValue="T" />
+						<f:selectItem itemLabel="Empenhados" itemValue="E" />
+						<f:selectItem itemLabel="Não Empenhados" itemValue="N" />
+					</p:selectOneMenu>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="tipoExportacao" value="Tipo Exportação"
+						styleClass="label" />
+					<p:selectOneMenu id="tipoExportacao"
+						value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+						<f:selectItems value="#{typesController.tipoExportacao}"
+							var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</section>
+			</div>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.gerar()}"
+				styleClass="btn btn-success btn-lg">
+				<i class="fa fa-save"></i>
+				<h:outputText value="  Emitir" />
+			</h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>

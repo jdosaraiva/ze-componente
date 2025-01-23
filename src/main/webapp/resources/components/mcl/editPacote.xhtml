@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditPacote" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:1400px !important;">
+			<div class="modal-content">
+				<h:form id="formPopupEditPacote" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Inclusão de Complemento do Pacote</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.pacote.isTce()}">
+									<p:dataTable id="dtTce" rows="10" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listarTce()}"
+										styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.tceSelecionados}"
+										paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+										reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+										<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.rowUnselect}" global="false" />
+										<p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.toggleSelect}" global="false" />
+										<p:column selectionMode="multiple" style="width:32px;text-align:center"/>
+								        <p:column headerText="Código Licitação" sortBy="#{item.codigoLicitacao}" filterBy="#{item.codigoLicitacao}" style="text-align: center; width: 150px">
+								           	<h:outputText value="#{item.codigoLicitacao}"  />
+								        </p:column>
+										<p:column headerText="Número / Ano" sortBy="#{item.processo.numero}" filterBy="#{item.processo.numero}" style="text-align: center; width: 150px">
+								           	<h:outputText value="#{item.processo.numero} / #{item.processo.ano}"  />
+								        </p:column>
+								        <p:column headerText="Modalidade" sortBy="#{item.processo.modalidade}" filterBy="#{item.processo.modalidade}" style="width: 150px">
+								           	<h:outputText value="#{item.processo.modalidade.descricao}" /> 
+								        </p:column>
+								        <p:column headerText="Número/Ano Licitação" sortBy="#{item.processo.numeroLicitacao}" filterBy="#{item.processo.numeroLicitacao}" style="width: 150px">
+								           	<h:outputText value="#{item.processo.numeroAnoLicitacao}" />
+								        </p:column>
+								        <p:column headerText="Data" sortBy="#{item.processo.data}" filterBy="#{item.processo.data}" style="text-align: center; width: 100px">
+								           	<h:outputText value="#{item.processo.data}" >
+								           		<f:convertDateTime pattern="dd/MM/yyyy" />
+								           	</h:outputText>
+								        </p:column>
+								        <p:column headerText="Status" sortBy="#{item.processo.status}" filterBy="#{item.processo.status}" style="width: 150px">
+								           	<h:outputText value="#{item.processo.status.descricao}" />
+								        </p:column>
+								        <p:column headerText="Objeto" sortBy="#{item.processo.descricaoObjeto}" filterBy="#{item.processo.descricaoObjeto}" >
+								           	<h:outputText value="#{item.processo.descricaoObjeto}" />
+								        </p:column>
+									</p:dataTable>
+								</div>		
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.pacote.isTceAjuste()}">
+									<p:dataTable id="dtTceAjuste" rows="10" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listarAjuste()}"
+										styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.tceAjusteSelecionados}"
+										paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+										reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+										<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.rowUnselect}" global="false" />
+										<p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.toggleSelect}" global="false" />
+										<p:column selectionMode="multiple" style="width:32px;text-align:center"/>
+										
+								        <p:column headerText="Ajuste" sortBy="#{item.codigoAjuste}" filterBy="#{item.codigoAjuste}" style="width: 150px">
+								           	<h:outputText value="#{item.codigoAjuste}" /> 
+								        </p:column>
+								        <p:column headerText="Data" sortBy="#{item.data}" filterBy="#{item.data}" style="text-align: center; width: 100px">
+								           	<h:outputText value="#{item.data}" >
+								           		<f:convertDateTime pattern="dd/MM/yyyy" />
+								           	</h:outputText>
+								        </p:column>
+										<p:column headerText="Contrato" sortBy="#{item.contrato.numero}" filterBy="#{item.contrato.numero}" style="text-align: center; width: 100px">
+								           	<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}"  />
+								        </p:column>
+										<p:column headerText="Empenho" sortBy="#{item.empenho.numero}" filterBy="#{item.empenho.numero}" style="text-align: center; width: 100px">
+								           	<h:outputText value="#{item.empenho.numero} / #{item.empenho.ano}"  />
+								        </p:column>
+										<p:column headerText="Processo" sortBy="#{item.tce.processo.numero}" filterBy="#{item.tce.processo.numero}" style="text-align: center; width: 100px">
+								           	<h:outputText value="#{item.tce.processo.numero} / #{item.tce.processo.ano}"  />
+								        </p:column>
+								        <p:column headerText="Modalidade" sortBy="#{item.tce.processo.modalidade}" filterBy="#{item.tce.processo.numero}" style="width: 150px">
+								           	<h:outputText value="#{item.tce.processo.modalidade.descricao}" /> 
+								        </p:column>
+								        <p:column headerText="Licitação" sortBy="#{item.tce.processo.numeroAnoLicitacao}" filterBy="#{item.tce.processo.numeroLicitacao}" style="width: 100px">
+								           	<h:outputText value="#{item.tce.processo.numeroAnoLicitacao}" />
+								        </p:column>
+								        <p:column headerText="Objeto" sortBy="#{item.tce.processo.descricaoObjeto}" filterBy="#{item.tce.processo.descricaoObjeto}" >
+								           	<h:outputText value="#{item.tce.processo.descricaoObjeto}" />
+								        </p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.pacote.isTceTermoAditivo()}">
+									<p:dataTable id="dtTceTermoAditivo" rows="10" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listarTermoAditivo()}"
+										styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.tceTermoAditivoSelecionados}"
+										paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+										reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+										<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.rowUnselect}" global="false" />
+										<p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.toggleSelect}" global="false" />
+										<p:column selectionMode="multiple" style="width:32px;text-align:center"/>
+										<p:column headerText="Contrato" sortBy="#{item.aditivo.contrato.numero}" filterBy="#{item.aditivo.contrato.numero}" style="text-align: center; width: 150px">
+											<h:outputText value="#{item.aditivo.contrato.numero} / #{item.aditivo.contrato.ano}"  />
+										</p:column>
+										<p:column headerText="Termo Aditivo" sortBy="#{item.numero}" filterBy="#{item.numero}" style="text-align: center; width: 150px">
+								           	<h:outputText value="#{item.numero} / #{item.ano}"  />
+								        </p:column>
+								        <p:column headerText="Modalidade" sortBy="#{item.aditivo.processo.modalidade}" filterBy="#{item.aditivo.processo.modalidade}" style="width: 200px">
+								           	<h:outputText value="#{item.aditivo.processo.modalidade.descricao}" /> 
+								        </p:column>
+								        <p:column headerText="Licitação" sortBy="#{item.aditivo.processo.numeroLicitacao}" filterBy="#{item.aditivo.processo.numeroLicitacao}" style="width: 150px">
+								           	<h:outputText value="#{item.aditivo.processo.numeroAnoLicitacao}" />
+								        </p:column>
+								        <p:column headerText="Data" sortBy="#{item.aditivo.processo.data}" filterBy="#{item.aditivo.processo.data}" style="text-align: center; width: 100px">
+								           	<h:outputText value="#{item.aditivo.processo.data}" >
+								           		<f:convertDateTime pattern="dd/MM/yyyy" />
+								           	</h:outputText>
+								        </p:column>
+								        <p:column headerText="Objeto" sortBy="#{item.objeto}" filterBy="#{item.objeto}" >
+								           	<h:outputText value="#{item.objeto}" />
+								        </p:column>
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group" jsf:rendered="#{cc.attrs.managedBean.pacote.isEmpenho()}">
+									<p:dataTable id="dtTceEmpenho" rows="10" var="item" widgetVar="dtTce" value="#{cc.attrs.managedBean.listarEmpenho()}"
+										styleClass="table-reflow-desktop" paginatorPosition="bottom" lazy="true" selection="#{cc.attrs.managedBean.empenhosSelecionados}"
+										paginator="true" rowsPerPageTemplate="5,10,15,20,100" emptyMessage="Não constam registros de Empenhos." tableStyleClass="table table-striped"
+										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+										reflow="true" currentPageReportTemplate="{startRecord} - {endRecord} de {totalRecords}">
+										<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.rowUnselect}" global="false" />
+										<p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.toggleSelect}" global="false" />
+										<p:column selectionMode="multiple" style="width:32px;text-align:center"/>
+										<p:column headerText="Empenho" sortBy="#{item.numero}" filterBy="#{item.numero}" style="text-align: center; width: 120px">
+								           	<h:outputText value="#{item.numero} / #{item.ano}"  />
+								        </p:column>
+										<p:column headerText="Contrato" sortBy="#{item.contrato.numero}" filterBy="#{item.contrato.numero}" style="text-align: center; width: 120px">
+								           	<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}"  />
+								        </p:column>
+										<p:column headerText="Processo" sortBy="#{item.processo.numero}" filterBy="#{item.processo.numero}" style="text-align: center; width: 120px">
+								           	<h:outputText value="#{item.processo.numero} / #{item.processo.ano}"  />
+								        </p:column>
+								        
+								        <p:column headerText="Modalidade" sortBy="#{item.processo.modalidade}" filterBy="#{item.processo.modalidade}" style="width: 150px">
+								           	<h:outputText value="#{item.processo.modalidade.descricao}" /> 
+								        </p:column>
+								        <p:column headerText="Nro. Licitação" sortBy="#{item.processo.numeroLicitacao}" filterBy="#{item.processo.numeroLicitacao}" style="width: 120px">
+								           	<h:outputText value="#{item.processo.numeroAnoLicitacao}" />
+								        </p:column>
+								        <p:column headerText="Objeto" sortBy="#{item.processo.descricaoObjeto}" filterBy="#{item.processo.descricaoObjeto}">
+								           	<h:outputText value="#{item.processo.descricaoObjeto}" />
+								        </p:column>
+								        
+									</p:dataTable>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarComplemento}" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-save"></i>
+			            	<h:outputText value="  Adicionar" />
+						</h:commandLink>						
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

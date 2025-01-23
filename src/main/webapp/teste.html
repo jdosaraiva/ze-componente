@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head id="j_idt2">
+    <title>Demo - Componente CPF/CNPJ</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <!-- jQuery (necess&aacute;rio para a m&aacute;scara) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-green: #2ecc71;
+            --light-blue: #ecf0f1;
+            --dark-green: #27ae60;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-blue) 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .navbar {
+            background-color: var(--primary-green);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .card-header {
+            background-color: var(--primary-green);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1rem;
+        }
+
+        .form-label {
+            color: var(--dark-green);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-green);
+            border-color: var(--dark-green);
+        }
+
+        .messages {
+            margin-top: 1rem;
+        }
+
+        .message-error {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .result-panel {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-green);
+        }
+    </style><script src="/ze-componente/jakarta.faces.resource/faces.js.xhtml?ln=jakarta.faces"></script></head><body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">MCL - Demo Componente</a>
+        </div>
+    </nav>
+
+    <div class="demo-container">
+<form id="demoForm" name="demoForm" method="post" action="/ze-componente/docto.xhtml" class="card" enctype="application/x-www-form-urlencoded">
+<input type="hidden" name="demoForm" value="demoForm" />
+
+            <div class="card-header">
+                <h4 class="mb-0">Demonstração - Componente CPF/CNPJ</h4>
+            </div>
+            
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">CPF/CNPJ</label>
+                        <div class="document-input-container">
+                        	<input id="demoForm:documentoId" name="demoForm:documentoId" type="text" class="form-control document-input" required="required" />
+<script type="text/javascript">
+jQuery(function($) {
+    var $input = $('[id="demoForm:documentoId"]');
+    var currentMask = '000.000.000-00';
+
+    function updateMask() {
+        // Pega apenas os números do valor atual
+        var numbersOnly = $input.val().replace(/\D/g, '');
+        
+        // console.log('numbersOnly', numbersOnly);
+
+        // Determina qual máscara usar baseado na quantidade de dígitos
+        var newMask = numbersOnly.length >= 12 ? '00.000.000/0000-00' : '000.000.000-00';
+
+        // Só troca a máscara se for diferente da atual
+        if (newMask !== currentMask) {
+            currentMask = newMask;
+            $input.unmask();
+            $input.mask(currentMask);
+        }
+    }
+
+    // Aplica a máscara inicial
+    $input.mask(currentMask);
+
+    // Monitora as mudanças a cada tecla digitada
+    $input.on('input', updateMask);
+    
+
+    // Adicional: Também monitora o evento 'keypress' para atualizar a máscara imediatamente
+    $input.on('keypress', function() {
+        updateMask();
+    });
+});
+</script>
+</div><span id="demoForm:documentoMessage"></span>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col"><input id="demoForm:j_idt8" type="submit" name="demoForm:j_idt8" value="Enviar" class="btn btn-primary" onclick="mojarra.ab(this,event,'action','@form','@form demoForm:resultado');return false" />
+                    </div>
+                </div>
+
+                <!-- Painel de Mensagens -->
+            </div><input type="hidden" name="jakarta.faces.ViewState" id="j_id1:jakarta.faces.ViewState:0" value="-7436165378584309635:7732193261113816514" autocomplete="off" />
+</form>
+
+        <!-- Card de Instru&ccedil;&otilde;es -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Instruções de Uso</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Digite um CPF (XXX.XXX.XXX-XX) ou CNPJ (XX.XXX.XXX/XXXX-XX)</li>
+                    <li>A formatação será aplicada automaticamente</li>
+                    <li>O componente validará o formato do documento</li>
+                    <li>Clique em Enviar para processar o documento</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script></body>
+</html>

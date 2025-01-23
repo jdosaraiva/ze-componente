@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pedidoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+			
+				<section class="col col-6">
+						<mcl:inputLupa 
+							id="processo" 
+							label="Processo" 
+							controller="#{processoColumnsView}"
+							descricao="#{cc.attrs.managedBean.pedido.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.pedido.processo.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.pedido.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.pedido.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.pedido.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.pedido.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.pedido.processo.status.descricao)}" 
+							value="#{cc.attrs.managedBean.pedido.processo}" 
+							required="true" 
+							listener="#{cc.attrs.managedBean.carregarTodosObjetos()}" 
+							update="pedidoDados:pedidoForm:fornecedorPanel" 
+							cabecalho= "Consulta de Processo" />
+				</section>
+				
+				
+				
+				
+				<section class="col col-3">
+					<p:outputLabel for="especifico" value="Fornecedor Específico?" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="especifico" value="#{cc.attrs.managedBean.especifico}" disabled="#{cc.attrs.readonly}" styleClass="select">
+				            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+				            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+				            <p:ajax listener="#{cc.attrs.managedBean.selecionarFornecedor()}" event="change" update=":pedidoDados:pedidoForm:fornecedorPanel" process="@this" global="false" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<mcl:inputSelectCondicaoPagamento id="condicaoPagamento" label="Condição Pagamento" value="#{cc.attrs.managedBean.pedido.condicaoPagamento}" 
+						managedBean="#{condicaoPagamentoAutocomplete}" itemLabel="#{item.descricao}" required="true" disabled="#{cc.attrs.readonly}" />
+				</section>
+				<h:panelGroup id="fornecedorPanel">
+					<section class="col col-6" jsf:rendered="#{cc.attrs.managedBean.especifico}">
+						<p:outputLabel for="fornecedor" value="Fornecedor" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="fornecedor" value="#{cc.attrs.managedBean.pedido.fornecedorCodigo}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{cc.attrs.managedBean.fornecedorList}" var="item" itemLabel="#{item.razaoSocial}" itemValue="#{item.codigo}"/>
+					        	<p:ajax listener="#{cc.attrs.managedBean.selecionarFornecedor()}" event="change" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</h:panelGroup>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.pedido.data}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="observacao" value="Observação" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.pedido.observacao}" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

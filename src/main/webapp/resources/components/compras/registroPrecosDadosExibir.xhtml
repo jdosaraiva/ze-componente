@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="registroPrecoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:inputLupa 
+						id="processo" 
+						label="Processo" 
+						controller="#{processoColumnsView}"
+						descricao="#{cc.attrs.managedBean.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.processo.ano)
+						.concat(' - ').concat(cc.attrs.managedBean.processo.modalidade.descricao)
+						.concat(' ').concat(cc.attrs.managedBean.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.processo.numeroLicitacao)
+						.concat(' / ').concat(cc.attrs.managedBean.processo.anoLicitacao)
+						.concat(' - ').concat(cc.attrs.managedBean.processo.status.descricao)}" 
+						value="#{cc.attrs.managedBean.processo}" 
+						leitura="#{not empty cc.attrs.managedBean.registroPrecos.id}"
+						listener="#{cc.attrs.managedBean.carregarDadosProcesso()}" 
+						update="registroPrecosDadosExibir:registroPrecoForm:fornecedor registroPrecosDadosExibir:registroPrecoForm:dtObjetos" 
+						cabecalho= "Consulta de Processo" />
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.registroPrecos.numero}" disabled="#{not empty cc.attrs.managedBean.registroPrecos.id}"/>
+					</label>
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" value="#{cc.attrs.managedBean.registroPrecos.ano}" disabled="#{not empty cc.attrs.managedBean.registroPrecos.id}"/>
+					</label>
+				</section>
+
+				<section class="col col-3">
+					<p:outputLabel for="pncpDataAssinatura" value="Data de assinatura" styleClass="label" />
+					<label class="input">
+						<p:calendar id="pncpDataAssinatura" style="float:left"
+									value="#{cc.attrs.managedBean.registroPrecos.pncpDataAssinatura}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{not empty cc.attrs.managedBean.registroPrecos.id}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+			
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="dataInicial" value="Data Inicial Vigência" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataInicial" style="float:left"
+									value="#{cc.attrs.managedBean.registroPrecos.dataInicial}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{not empty cc.attrs.managedBean.registroPrecos.id}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<h:panelGroup id="fornecedorPanel">
+					<section class="col col-3">
+						<p:outputLabel for="fornecedor" value="Fornecedor" styleClass="label" />
+						<label class="input">
+							<p:inputText id="fornecedor" value="#{cc.attrs.managedBean.fornecedorSelecionadoDTO.codigo} - #{cc.attrs.managedBean.fornecedorSelecionadoDTO.razaoSocial}" disabled="#{not empty cc.attrs.managedBean.registroPrecos.id}"/>
+						</label>
+					</section>
+				</h:panelGroup>
+				<section class="col col-3">
+					<mcl:inputSelectCondicaoPagamento id="condicaoPagamento" label="Condição de Pagamento" value="#{cc.attrs.managedBean.registroPrecos.condicaoPagamento}" 
+						managedBean="#{condicaoPagamentoAutocomplete}" itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}" readonly="#{cc.attrs.readonly}"/>
+				</section>
+				
+				<section class="col col-3">
+					<p:outputLabel for="dataFinal" value="Data Término Vigência" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataFinal" style="float:left"
+									value="#{cc.attrs.managedBean.registroPrecos.dataFinal}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{not empty cc.attrs.managedBean.registroPrecos.id}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+
+			<section>
+				<p:outputLabel for="observacao" value="Observação" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.registroPrecos.observacao}" disabled="#{cc.attrs.readonly}" 
+									 counter="display" maxlength="1000" counterTemplate="{0} restantes" autoResize="false" />
+					<h:outputText id="display" class="block" />
+				</label>
+			</section>
+
+			<section class="gridsemcor">
+				<p:dataTable id="dtObjetos" var="item" disabledSelection="#{cc.attrs.readonly or not empty cc.attrs.managedBean.registroPrecos.id}"
+					value="#{cc.attrs.managedBean.registroPrecos.itemRegistroPrecosList}"
+					selection="#{cc.attrs.managedBean.objetoListDisponiveisSel}" 
+					reflow="true" 
+					emptyMessage="Não há registros." 
+					tableStyleClass="table table-striped" 
+					rowSelectMode="checkbox" 
+					rowKey="#{item.id}" 
+					styleClass="table-reflow-desktop">
+					
+						<f:facet name="header">Item(ns) do Registro de Preços</f:facet>
+					    <p:ajax event="rowSelectCheckbox" listener="#{cc.attrs.managedBean.onRowSelectDisponiveis}" />
+						<p:ajax event="rowUnselectCheckbox" listener="#{cc.attrs.managedBean.unRowSelectDisponiveis}" />
+						<p:ajax event="toggleSelect" listener="#{cc.attrs.managedBean.onRowSelectAllDisponiveis}" />
+						
+	        			<p:column selectionMode="multiple" style="width:20px;text-align:center" rendered="#{not cc.attrs.readonly}" />
+						<p:column style="width:16px;text-align:center" title="Click para exibir os Órgãos deste Item">
+							<p:rowToggler rendered="#{not empty item.itemRegistroPrecosOrgaoList and not empty item.id}" />
+						</p:column>
+					    <p:column headerText="Descrição" filterBy="#{item.descricao}" filterMatchMode="contains">
+					        <h:outputText value="#{item.descricao}" title="#{item.descricao}"/>
+					    </p:column>
+					    <p:column headerText="Qtde" style="width: 100px">
+					    	<mcl:number value="#{item.quantidade}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Qtde Disp" style="width: 100px">
+					    	<mcl:number value="#{item.quantidadeDisponivel}" modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Vlr Unitário" style="width: 100px">
+					    	<mcl:money value="#{item.valorUnitario}" decimalPlaces="4" modoConsulta="true"  />
+					    </p:column>
+					    <p:column headerText="Vlr Total Disp" style="width: 100px">
+					    	<mcl:money value="#{item.valorTotalDisponivel}"  modoConsulta="true" />
+					    </p:column>
+					    <p:column headerText="Marca" filterBy="#{item.marca}" filterMatchMode="contains">
+					        <h:outputText value="#{item.marca}" />
+					    </p:column>
+					    <p:column headerText="Excl. ME" style="text-align: center; width: 70px">
+					    	<h:outputText value="#{item.objeto.exclusivoMeDescricao}" modoConsulta="true" />
+					    </p:column>
+				        <p:column headerText="Concluído" style="width: 90px;text-align: center">
+				           	<h:outputText value="#{item.concluido ? 'Sim' : 'Não'}" />
+				        </p:column>
+				        <p:column headerText="Aditado" style="width: 90px;text-align: center">
+				           	<h:outputText value="#{item.aditado ? 'Sim' : 'Não'}" />
+				        </p:column>
+					    <p:column headerText="Status" sortBy="#{item.status}" style="text-align:center;width:85px">
+				           	<h:outputText value="#{item.status.descricao}" />
+				        </p:column>
+					    
+					    <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{not cc.attrs.readonly and not empty cc.attrs.managedBean.registroPrecos.id}">
+							<p:commandLink title="Remover este item do Registro de Preços" actionListener="#{cc.attrs.managedBean.excluirItemRP(item)}" update="dtObjetos" styleClass="btn btn-info btn-sm">
+								<p:confirm header="Aviso" message="Confirma a remoção deste item do Registro de Preços?" />
+								<i class="fa fa-trash-o"></i>
+							</p:commandLink>
+						</p:column>
+						
+						<p:rowExpansion>
+							<section>
+								<p:dataTable var="subitem" value="#{item.itemRegistroPrecosOrgaoList}" styleClass="table-reflow-desktop" reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped">
+									<f:facet name="header">Órgão(s) Participante(s) do Item</f:facet>
+								    <p:column headerText="Órgão Sigla" style="width: 90px;text-align: center">
+							           	<h:outputText value="#{subitem.orgaoSigla}" />
+							        </p:column>
+							        <p:column headerText="Órgão Descrição">
+							           	<h:outputText value="#{subitem.orgaoDescricao}" />
+							        </p:column>
+								    <p:column headerText="Qtde" style="width: 100px">
+										<mcl:number value="#{subitem.quantidade}" modoConsulta="true" />
+									</p:column>
+									<p:column headerText="Qtde Disp" style="width: 100px">
+										<mcl:number value="#{subitem.quantidadeDisponivel}" modoConsulta="true" />
+									</p:column>
+									<p:column headerText="Vlr Unit Inicial" style="width: 100px">
+										<mcl:money value="#{subitem.valorUnitarioInicial}" decimalPlaces="4" modoConsulta="true" />
+									</p:column>
+									<p:column headerText="Vlr Unitário" style="width: 100px">
+										<mcl:money value="#{subitem.valorUnitario}" decimalPlaces="4" modoConsulta="true" />
+									</p:column>
+									<p:column headerText="Vlr Total" style="width: 100px">
+										<mcl:money value="#{subitem.valorTotal}" modoConsulta="true" />
+									</p:column>
+									<p:column headerText="Vlr Total Disp" style="width: 100px">
+										<mcl:money value="#{subitem.valorTotalDisponivel}" modoConsulta="true" />
+									</p:column>
+								    <p:column headerText="Concluído" style="width: 90px;text-align: center">
+							           	<h:outputText value="#{subitem.concluido ? 'Sim' : 'Não'}" />
+							        </p:column>
+								</p:dataTable>
+							</section>
+				        </p:rowExpansion>
+				</p:dataTable>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />	
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<p:fieldset legend="Execução Corpo Técnico" id="panelExecucaoCorpoTecnico" class="fieldset-borda">
+		<section>
+			<p:outputLabel for="corpoTecnicoCorrespondente" value="O corpo técnico e os responsáveis pela obra, apresentados pela contratada, correspondem com a relação constante no contrato?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="corpoTecnicoCorrespondente" value="#{cc.attrs.managedBean.tceExecucao.responsavelCorrespondeContrato}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="mantemPreposto" value="A contratada mantém preposto junto à obra para representá-la?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="mantemPreposto" value="#{cc.attrs.managedBean.tceExecucao.contratadaPrepostoObra}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="designouFiscal" value="A administração designou fiscal, credenciado junto ao CREA, para acompanhar a execução da obra (Lei 8.666/93, art 67)?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="designouFiscal" value="#{cc.attrs.managedBean.tceExecucao.fiscalCredenciadoCrea}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="houveTransferenciaServicos" value="Houve transferência de serviços da empresa contratada?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="houveTransferenciaServicos" value="#{cc.attrs.managedBean.tceExecucao.houveTransferencia}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="numeroEmpregadosEstabelecido" value="Em caso de cessão de mão-de-obra, o número de empregados em atividade é aquele estabelecido no edital e contrato?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="numeroEmpregadosEstabelecido" value="#{cc.attrs.managedBean.tceExecucao.numeroEmpregadoEdital}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+		<section>
+			<p:outputLabel for="existeControleReferencia" value="Existe algum tipo de controle com referência ao serviço prestado?" styleClass="label" />
+			<label class="input">
+				<p:selectOneMenu id="existeControleReferencia" value="#{cc.attrs.managedBean.tceExecucao.existeControleServicoPrestado}" disabled="#{cc.attrs.readonly}" styleClass="select">
+					<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+					<f:selectItems value="#{typesController.condicao2}" />
+				</p:selectOneMenu>
+			</label>
+		</section>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

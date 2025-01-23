@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mpc="http://java.sun.com/jsf/composite/components/mpc"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditAdicaoRequisicaoProcesso" style="z-index:800" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<h:form id="formPopupAdicaoRequisicaoProcesso" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Selecione a Requisição para adicionar ao Processo</strong></h4>
+					</div>
+					
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						
+						<h:panelGroup id="pnlReq">
+							<p:fieldset legend="Filtro" class="fieldset-borda">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<mcl:inputLupa 
+												id="orgao" 
+												label="Órgão" 
+												controller="#{orgaoColumnsView}"
+												descricao="#{cc.attrs.managedBean.orgaoDTO.descricaoCompleta }"
+												value="#{cc.attrs.managedBean.orgaoDTO}"
+												required="false" 
+												lazy="true"
+												listener="#{cc.attrs.managedBean.atualizaRequisicaoCompra()}"
+												update=":editAdicaoRequisicaoProcesso:formPopupAdicaoRequisicaoProcesso:requisicaoCompra:requisicaoCompra"
+												cabecalho= "Consulta de Órgão" />
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<mcl:inputLupa 
+												id="almoxarifado" 
+												label="Almoxarifado" 
+												controller="#{almoxarifadoColumnsView}"
+												descricao="#{cc.attrs.managedBean.almoxarifado.nome}"
+												value="#{cc.attrs.managedBean.almoxarifado}"
+												listener="#{cc.attrs.managedBean.atualizaRequisicaoCompra()}"
+												update=":editAdicaoRequisicaoProcesso:formPopupAdicaoRequisicaoProcesso:requisicaoCompra:requisicaoCompra"
+												cabecalho= "Consulta de Almoxarifado" />
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<mcl:inputLupa 
+												id="destino" 
+												label="Destino" 
+												controller="#{destinoColumnsView}"
+												descricao="#{cc.attrs.managedBean.destino.nome}"
+												value="#{cc.attrs.managedBean.destino}"
+												listener="#{cc.attrs.managedBean.atualizaRequisicaoCompra()}"
+												update=":editAdicaoRequisicaoProcesso:formPopupAdicaoRequisicaoProcesso:requisicaoCompra:requisicaoCompra"
+												cabecalho= "Consulta de Destino" />
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<p:outputLabel for="data" value="Data" />
+											<p:calendar id="data" style="float:left"
+												value="#{cc.attrs.managedBean.data}" 
+												pattern="dd/MM/yyyy"
+												mask="true"
+												locale="pt" />
+										</div>
+									</div>
+								</div>
+							</p:fieldset>
+							<p:fieldset legend="Selecione a Requisição" class="fieldset-borda">
+								<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<mcl:inputLupa 
+													id="requisicaoCompra" 
+													label="Requisição Compra" 
+													controller="#{requisicaoCompraColumnsView}"
+													descricao="#{cc.attrs.managedBean.requisicaoCompra.numero}"
+													value="#{cc.attrs.managedBean.requisicaoCompra}"
+													required="true"
+													cabecalho= "Consulta de Requisição Compra" />
+											</div>
+										</div>
+								</div>
+							</p:fieldset>
+						</h:panelGroup>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="Adicionar"  
+							actionListener="#{cc.attrs.managedBean.adicionarRequisicaoAProcesso()}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) {$('#popupEditAdicaoRequisicaoProcesso').modal('hide');$('#popupEditAdicaoRequisicaoProcesso').attr('style', 'display:none');}" />
+			            </h:commandLink>
+			            
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

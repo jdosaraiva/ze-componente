@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mpc="http://java.sun.com/jsf/composite/components/mpc">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditFornecedorOcorrencia" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditFornecedorOcorrencia" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Manutenção de Ocorrência</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="numero" value="Número" />
+									<p:inputText id="numero" value="#{cc.attrs.managedBean.fornecedorOcorrencia.numero}" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="numeroProcessoAdministrativo" value="Processo Administrativo" />
+									<p:inputText id="numeroProcessoAdministrativo" value="#{cc.attrs.managedBean.fornecedorOcorrencia.numeroProcessoAdministrativo}" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="data" value="Data" />
+  									<p:calendar id="data" value="#{cc.attrs.managedBean.fornecedorOcorrencia.data}" required="true" disabled="#{cc.attrs.readonly}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />					
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+							        <p:outputLabel for="pontuacao" value="Pontuação" />
+							        <p:selectOneMenu id="pontuacao" value="#{cc.attrs.managedBean.fornecedorOcorrencia.pontuacao}" disabled="#{cc.attrs.readonly}" styleClass="select-popup">
+							            <f:selectItem itemLabel="Selecione" itemValue="" />
+							            <f:selectItems value="#{typesController.pontuacaoOcorrencia}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<p:outputLabel for="descricao" value="Descrição" />
+									<p:inputTextarea id="descricao" value="#{cc.attrs.managedBean.fornecedorOcorrencia.descricao}" required="true" rows="10" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarOcorrencia}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditFornecedorOcorrencia').modal('hide')" />
+			            	<h:outputText value="  Salvar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

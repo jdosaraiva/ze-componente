@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<h:panelGroup id="panelDadosFisicos">
+		<p:fieldset legend="Ajuste da Licitação" class="fieldset-borda">
+			<section>
+				<p:outputLabel value="Códigos de Ajuste" styleClass="label" />
+				<label class="input">
+					<p:inputText value="#{cc.attrs.managedBean.numeroAjuste}" readonly="true" />
+				</label>
+			</section>
+		</p:fieldset>
+		<br />
+		<p:fieldset legend="Dados da Execução" class="fieldset-borda">
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="situacaoAjuste" value="Situação do ajuste" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="situacaoAjuste" value="#{cc.attrs.managedBean.tceExecucao.situacaoAjuste}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.situacaoAjuste}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="dataInicio" value="Data de entrega do material ou início da execução de serviço/obra" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataInicio" value="#{cc.attrs.managedBean.tceExecucao.data}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="regimeExecucao" value="Qual o regime de execução ou a forma de fornecimento do objeto contratual?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="regimeExecucao" value="#{cc.attrs.managedBean.tceExecucao.execucaoFornecimentoObjeto}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.regimeExecucao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="decorrenteImportacao" value="Trata-se de objeto decorrente de importação?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="decorrenteImportacao" value="#{cc.attrs.managedBean.tceExecucao.objetoDecorrenteImportacao}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+		</p:fieldset>
+		<br />
+		<p:fieldset legend="Cronograma" class="fieldset-borda">
+			<section>
+				<p:outputLabel for="execucaoConformeCronograma" value="A execução do contrato está de acordo com o cronograma físico-financeiro ou prazo de entrega pactuado ?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="execucaoConformeCronograma" value="#{cc.attrs.managedBean.tceExecucao.acordoCronograma}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section>
+				<p:outputLabel for="motivoNegativoParalisacao" value="Caso negativo, qual o motivo?" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="motivoNegativoParalisacao" maxlength="100" value="#{cc.attrs.managedBean.tceExecucao.acordoCronogramaMotivo}" disabled="#{cc.attrs.managedBean.tceExecucao.acordoCronograma eq 'sim'}" />
+				</label>
+			</section>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="obraParalisada" value="Em caso de obra pública, ela está paralisada? *" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="obraParalisada" value="#{cc.attrs.managedBean.tceExecucao.paralisada}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.obraParalisada}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="motivoAceitoAdm" value="O motivo foi aceito pela administração?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="motivoAceitoAdm" value="#{cc.attrs.managedBean.tceExecucao.motivoAceitoAdministracao}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="motivoParalisacao" value="Motivo da paralisação" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="motivoParalisacao" maxlength="1000" value="#{cc.attrs.managedBean.tceExecucao.motivoParalisacao}" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</p:fieldset>
+		<br />
+		<p:fieldset legend="Forma de Recebimento" class="fieldset-borda">
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="formaRecebimento" value="Forma de recebimento" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="formaRecebimento" value="#{cc.attrs.managedBean.tceExecucao.formaRecebimento}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.formaRecebimento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="existeTermoCircunstanciado" value="Existe termo circunstanciado assinado pelas partes?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="existeTermoCircunstanciado" value="#{cc.attrs.managedBean.tceExecucao.existeTermoAssinado}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="existeVistoria" value="Existe vistoria que comprove a adequação do objeto aos termos contratuais?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="existeVistoria" value="#{cc.attrs.managedBean.tceExecucao.existeVistoriaAdequacao}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+		</p:fieldset>
+		<br />
+		<p:fieldset legend="Inexecução do Contrato" class="fieldset-borda">
+			<div class="row">
+				<section class="col col-4">
+					<p:outputLabel for="houveInexecucaoContrato" value="Houve inexecução do contrato?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="houveInexecucaoContrato" value="#{cc.attrs.managedBean.tceExecucao.inexecucaoContrato}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.inexecucaoContrato}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-5">
+					<p:outputLabel for="dataAberturaProcAdm" value="Data de abertura do procedimento administrativo" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataAberturaProcAdm" value="#{cc.attrs.managedBean.tceExecucao.dataAberturaProcedimentoAdm}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="houveAplicacaoSansao" value="Houve aplicação de sanções?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="houveAplicacaoSansao" value="#{cc.attrs.managedBean.tceExecucao.existeAplicacaoSancoes}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="motivoInexecucao" value="Motivo da inexecução do contrato" styleClass="label" />
+				<label class="input">
+					<p:inputText id="motivoInexecucao" maxlength="500" value="#{cc.attrs.managedBean.tceExecucao.inexecucaoMotivo}" required="true" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</p:fieldset>
+		<br />
+		<p:fieldset legend="Responsável pelo Recebimento" class="fieldset-borda">
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="cpf" value="CPF do servidor responsável" styleClass="label" />
+					<label class="input">
+						<p:inputMask id="cpf" mask="999.999.999-99" value="#{cc.attrs.managedBean.recebimento.cpf}">
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:inputMask>
+				 	</label>
+			 	</section>
+			 	<section class="col col-6">
+					<p:outputLabel for="nome" value="Nome" styleClass="label" />
+					<label class="input">
+						<p:inputText id="nome" maxlength="100" value="#{cc.attrs.managedBean.recebimento.nome}">
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="cargo" value="Cargo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="cargo" maxlength="100" value="#{cc.attrs.managedBean.recebimento.cargo}">
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="areaTi" value="O responsável é da área de TI?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="areaTi" value="#{cc.attrs.managedBean.recebimento.responsavelTi}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:spacer width="0px" height="80px"/>
+					<h:commandLink actionListener="#{cc.attrs.managedBean.adicionarRecebimento()}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i>
+					</h:commandLink>
+				</section>
+			</div>
+			<section>
+				<p:dataTable var="item" id="dtResp" tableStyleClass="table table-striped" styleClass="table-reflow-desktop"
+					emptyMessage="Não constam registros." reflow="true" value="#{cc.attrs.managedBean.recebimentoList}">
+					<p:column headerText="CPF do servidor responsável">
+						<h:outputText value="#{item.cpf}" />
+					</p:column>
+					<p:column headerText="Nome">
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+					<p:column headerText="Cargo">
+						<h:outputText value="#{item.cargo}" />
+					</p:column>
+					<p:column headerText="O responsável é da área de TI?">
+						<h:outputText value="#{item.responsavelTi == null ? '' : item.responsavelTi ? 'Sim' : 'Não'}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.removerRecebimento(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</p:fieldset>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

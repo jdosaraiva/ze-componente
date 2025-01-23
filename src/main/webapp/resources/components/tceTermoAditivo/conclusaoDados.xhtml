@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<p:fieldset legend="Responsável pelo Termo Aditivo - parte Contratante" class="fieldset-borda">
+		<h:panelGroup id="contratanteDados">
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-3">
+					<p:outputLabel for="cpf" value="CPF *" styleClass="label" />
+					<label class="input">
+						<p:inputMask id="cpf" mask="999.999.999-99" value="#{cc.attrs.managedBean.contratante.cpf}">
+							<p:ajax process="@this" global="false" />
+						</p:inputMask>
+					</label>
+				</section>
+				<section class="col col-9">
+					<p:outputLabel for="nome" value="Nome *" styleClass="label" />
+					<label class="input">
+						<p:inputText id="nome" maxlength="100" value="#{cc.attrs.managedBean.contratante.nome}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="emailProfissional" value="E-mail profissional" styleClass="label" />
+					<label class="input">
+						<p:inputText id="emailProfissional" maxlength="100" value="#{cc.attrs.managedBean.contratante.emailProfissional}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="emailPessoal" value="E-mail pessoal" styleClass="label" />
+					<label class="input">
+						<p:inputText id="emailPessoal" maxlength="100" value="#{cc.attrs.managedBean.contratante.emailPessoal}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-3">
+					<p:outputLabel for="assinouContrato" value="Assinou o contrato?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="assinouContrato" value="#{cc.attrs.managedBean.contratante.assinouContrato}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax event="change" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:spacer width="0px" height="80px"/>
+					<h:commandLink id="btnAddContratante" actionListener="#{cc.attrs.managedBean.adicionarContratante()}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i>
+					</h:commandLink>
+				</section>
+			</div>
+			<section>
+				<p:dataTable reflow="true" id="dtContratantes" var="item" value="#{cc.attrs.managedBean.contratanteList}"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="CPF">
+						<h:outputText value="#{item.cpf}" />
+					</p:column>
+					<p:column headerText="Nome">
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+					<p:column headerText="E-mail profissional">
+						<h:outputText value="#{item.emailProfissional}" />
+					</p:column>
+					<p:column headerText="E-mail pessoal">
+						<h:outputText value="#{item.emailPessoal}" />
+					</p:column>
+					<p:column headerText="Assinou o contrato?">
+						<h:outputText value="#{item.assinouContrato == null ? '' : item.assinouContrato ? 'Sim' : 'Não'}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.removerContratante(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</h:panelGroup>
+	</p:fieldset>
+	<br />
+	<p:fieldset legend="Responsável pelo Termo Aditivo - parte Contratada" class="fieldset-borda">
+		<h:panelGroup id="contratadaDados">
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-3">
+					<p:outputLabel for="cpf2" value="CPF *" styleClass="label" />
+					<label class="input">
+						<p:inputMask id="cpf2" mask="999.999.999-99" value="#{cc.attrs.managedBean.contratada.cpf}">
+							<p:ajax process="@this" global="false" />
+						</p:inputMask>
+					</label>
+				</section>
+				<section class="col col-9">
+					<p:outputLabel for="nome2" value="Nome *" styleClass="label" />
+					<label class="input">
+						<p:inputText id="nome2" maxlength="100" value="#{cc.attrs.managedBean.contratada.nome}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="emailProfissional2" value="E-mail profissional" styleClass="label" />
+					<label class="input">
+						<p:inputText id="emailProfissional2" maxlength="100" value="#{cc.attrs.managedBean.contratada.emailProfissional}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="emailPessoal2" value="E-mail pessoal" styleClass="label" />
+					<label class="input">
+						<p:inputText id="emailPessoal2" maxlength="100" value="#{cc.attrs.managedBean.contratada.emailPessoal}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-3">
+					<p:outputLabel for="assinouContrato2" value="Assinou o contrato?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="assinouContrato2" value="#{cc.attrs.managedBean.contratada.assinouContrato}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax event="change" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:spacer width="0px" height="80px"/>
+					<h:commandLink id="btnAddContratada" actionListener="#{cc.attrs.managedBean.adicionarContratada()}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i>
+					</h:commandLink>
+				</section>
+			</div>
+			<section>
+				<p:dataTable reflow="true" id="dtContratadas" var="item" value="#{cc.attrs.managedBean.contratadaList}"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="CPF">
+						<h:outputText value="#{item.cpf}" />
+					</p:column>
+					<p:column headerText="Nome">
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+					<p:column headerText="E-mail profissional">
+						<h:outputText value="#{item.emailProfissional}" />
+					</p:column>
+					<p:column headerText="E-mail pessoal">
+						<h:outputText value="#{item.emailPessoal}" />
+					</p:column>
+					<p:column headerText="Assinou o contrato?">
+						<h:outputText value="#{item.assinouContrato == null ? '' : item.assinouContrato ? 'Sim' : 'Não'}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:cedar;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.removerContratada(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</h:panelGroup>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

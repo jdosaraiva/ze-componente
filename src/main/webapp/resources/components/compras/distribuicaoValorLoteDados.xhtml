@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:cadastro="http://java.sun.com/jsf/composite/components/cadastro">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="distribuicaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<p:accordionPanel id="objetoPanel" tabindex="0" activeIndex="null">
+					<p:tab title="Clique aqui para visualizar todos os dados do processo">
+						<div class="row">	
+							<section class="col col-3">
+								<p:outputLabel for="numero" value="Número" styleClass="label" />
+								<label class="input">
+									<p:inputText id="numero"  required="true" value="#{cc.attrs.managedBean.processo.numero}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<mcl:number id="ano" required="true" label="Ano" maxValue="9999" value="#{cc.attrs.managedBean.processo.ano}" disabled="true" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="data" value="Data" styleClass="label" />
+								<label class="input">
+									<p:calendar id="data" required="true" style="float:left"
+												value="#{cc.attrs.managedBean.processo.data}" 
+												pattern="dd/MM/yyyy"
+												disabled="true"
+												mask="true"
+												locale="pt" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<mcl:money id="valor" label="Valor" required="true" value="#{cc.attrs.managedBean.processo.valor}" disabled="true" />
+							</section>
+						</div>
+						<div class="row">	
+							<section class="col col-3">
+								<p:outputLabel for="protocoloNumero" value="Número Protocolo" styleClass="label" />
+								<label class="input">
+									<mcl:number id="protocoloNumero"  value="#{cc.attrs.managedBean.processo.protocoloNumero}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<mcl:number id="protocoloAno" label="Ano Protocolo" maxValue="9999" value="#{cc.attrs.managedBean.processo.protocoloAno}" disabled="true"/>
+							</section>
+							<section class="col col-3">
+								<mcl:number id="processoAdministrativo" label="Número Processo Adm." value="#{cc.attrs.managedBean.processo.processoAdministrativo}" disabled="true" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="processoAdministrativoData" value="Data Processo Administrativo" styleClass="label" />
+								<label class="input">
+									<p:calendar id="processoAdministrativoData" style="float:left"
+												value="#{cc.attrs.managedBean.processo.processoAdministrativoData}" 
+												pattern="dd/MM/yyyy"
+												disabled="true"
+												mask="true"
+												locale="pt" />
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="editalNumero" value="Número Edital" styleClass="label" />
+								<label class="input">
+									<mcl:number id="editalNumero" value="#{cc.attrs.managedBean.processo.editalNumero}" disabled="true" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<label class="input">
+									<mcl:number id="editalAno" label="Ano Edital" maxValue="9999" value="#{cc.attrs.managedBean.processo.editalAno}" disabled="true" />
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="naturezaLicitacao" value="Natureza da Licitação" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="naturezaLicitacao" value="#{cc.attrs.managedBean.processo.naturezaLicitacao}"  required="true" disabled="true" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.naturezaLicitacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="tipoObjeto" value="Tipo de Objeto" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="tipoObjeto" value="#{cc.attrs.managedBean.processo.tipoObjeto}" required="true" disabled="true" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.tipoObjeto}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							            <p:ajax event="change" update="objetoLicitacao" process="@this" />
+							        </p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-6">
+								<p:outputLabel value="Objeto da Licitação *" styleClass="label" />
+								<h:panelGroup id="objetoLicitacao">
+									<label class="input">
+								        <p:selectOneMenu id="objetoLicitacao1" label="Objeto da Licitação" value="#{cc.attrs.managedBean.processo.objetoLicitacao}" required="true" rendered="#{cc.attrs.managedBean.processo.tipoObjeto eq null}" disabled="true" styleClass="select" >
+								            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            </p:selectOneMenu>
+								        <p:selectOneMenu id="objetoLicitacao2" label="Objeto da Licitação" value="#{cc.attrs.managedBean.processo.objetoLicitacao}" required="true" rendered="#{cc.attrs.managedBean.processo.tipoObjeto eq 'COMPRAS_SERVICOS'}" disabled="true" styleClass="select" >
+								            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+								            <f:selectItems value="#{typesController.objetoLicitacaoCP}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+								        </p:selectOneMenu>
+								        <p:selectOneMenu id="objetoLicitacao3" label="Objeto da Licitação" value="#{cc.attrs.managedBean.processo.objetoLicitacao}" required="true" rendered="#{cc.attrs.managedBean.processo.tipoObjeto eq 'COMPRAS_SERVICOS_TI'}" disabled="true" styleClass="select" >
+								            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+								            <f:selectItems value="#{typesController.objetoLicitacaoTI}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+								        </p:selectOneMenu>
+								        <p:selectOneMenu id="objetoLicitacao4" label="Objeto da Licitação" value="#{cc.attrs.managedBean.processo.objetoLicitacao}" required="true" rendered="#{cc.attrs.managedBean.processo.tipoObjeto eq 'OBRAS_SERVICOS_ENGENHARIA'}" disabled="true" styleClass="select" >
+								            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+								            <f:selectItems value="#{typesController.objetoLicitacaoENG}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+								        </p:selectOneMenu>
+									</label>
+								</h:panelGroup>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-9">
+						      	<mcl:inputSelectFinalidadeObjeto id="finalidadeObjeto" label="Finalidade do Objeto" required="true" value="#{cc.attrs.managedBean.processo.finalidadeObjeto}" 
+									managedBean="#{finalidadeObjetoAutocomplete}" itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}" readonly="true" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="divisaoObjeto" value="Divisão do Objeto" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="divisaoObjeto" value="#{cc.attrs.managedBean.processo.divisaoObjeto}" required="true" disabled="true" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.divisaoObjeto}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+						</div>
+						<section>
+							<p:outputLabel for="descricaoObjeto" value="Descrição do Objeto" styleClass="label" />
+							<label class="input">
+								<p:inputTextarea rows="6" cols="50" id="descricaoObjeto" required="true" value="#{cc.attrs.managedBean.processo.descricaoObjeto}" disabled="true" />
+							</label>
+						</section>
+						<section>
+							<p:outputLabel for="justificativa" value="Justificativa para Contratação" styleClass="label" />
+							<label class="input">
+								<p:inputText id="justificativa" required="true" value="#{cc.attrs.managedBean.processo.justificativa}" disabled="true" />
+							</label>
+						</section>
+						<div class="row">
+							<section class="col col-9">
+								<p:outputLabel for="criterioJulgamento" value="Critério de Julgamento" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="criterioJulgamento" value="#{cc.attrs.managedBean.processo.criterioJulgamento}" disabled="true" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.criterioJulgamento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-3">
+								<mcl:inputSelectIndiceReajuste id="indiceReajuste" label="Índice de Reajuste" value="#{cc.attrs.managedBean.processo.indiceReajuste}" 
+									managedBean="#{indiceReajusteAutocomplete}" itemLabel="#{item.nome}" ajax="true" readonly="true" />
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-9">
+								<mcl:inputSelectCondicaoPagamento id="condicaoPagamento" label="Condição de Pagamento" value="#{cc.attrs.managedBean.processo.condicaoPagamento}" 
+									managedBean="#{condicaoPagamentoAutocomplete}" itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}" readonly="true" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="validadeProposta" value="Validade da Proposta" styleClass="label" />
+								<label class="input">
+									<p:inputText id="validadeProposta" value="#{cc.attrs.managedBean.processo.validadeProposta}" disabled="true" />
+								</label>
+							</section>
+							
+						</div>
+						<div class="row">
+							<section class="col col-3">
+							   <mcl:number id="prazoEntrega" label="Prazo de Entrega" maxValue="999" value="#{cc.attrs.managedBean.processo.prazoEntrega}" required="true" disabled="true" />
+							</section>
+							<section class="col col-9">
+								<p:outputLabel for="garantia" value="Garantia" styleClass="label" />
+								<label class="input">
+									<p:inputText id="garantia" value="#{cc.attrs.managedBean.processo.garantia}"  disabled="true"/>
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="leiRegencia" value="Lei de Regência?" styleClass="label" />
+								<p:inputSwitch id="leiRegencia" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.leiRegencia}" disabled="true" />
+							</section>
+							<section class="col col-6">
+									<mcl:inputSelectLei id="lei" label="Artigo da Lei" value="#{cc.attrs.managedBean.processo.lei}" 
+									managedBean="#{leiAutocomplete}" itemLabel="#{item.texto}" ajax="true" readonly="true" />
+								</section>
+							<section class="col col-3">
+								<p:outputLabel for="exclusivoMe" value="Exclusivo M.E.?" styleClass="label" />
+								<p:inputSwitch id="exclusivoMe" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.exclusivoMe}" disabled="true" />
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="chamadaPublica" value="Chamada Pública ?" styleClass="label" />
+								<p:inputSwitch id="chamadaPublica" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.chamadaPublica}" disabled="true" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="formalizarContrato" value="Formalizar Contrato ?" styleClass="label" />
+								<p:inputSwitch id="formalizarContrato" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.formalizarContrato}" disabled="true" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="recursoBid" value="Há Recurso do BID envolvido ?" styleClass="label" />
+								<p:inputSwitch id="recursoBid" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.recursoBid}" disabled="true" />
+							</section>
+						</div>
+					</p:tab>
+				</p:accordionPanel>
+			</section>
+		</fieldset>
+		<header>
+			Lotes
+		</header>
+		<fieldset>
+			<section>
+				<p:dataTable id="dtLote" var="item" value="#{cc.attrs.managedBean.loteList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+				    <p:column headerText="Item" style="text-align:right;width: 60px;">
+				        <h:outputText value="#{item.item}" />
+				    </p:column>
+				    <p:column headerText="Número" style="text-align:right;width: 60px;">
+				        <h:outputText value="#{item.numero}" />
+				    </p:column>
+				    <p:column headerText="Descrição">
+				        <h:outputText value="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Valor Julgado" style="width: 100px;" rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+				        <mcl:money value="#{item.valorJulgado}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor" style="width: 100px;" rendered="#{not cc.attrs.managedBean.processo.maiorDesconto}">
+				        <mcl:money value="#{item.valor}" modoConsulta="true" />
+				    </p:column>
+				    
+				    <p:column headerText="% Julgado" style="width: 100px;" rendered="#{cc.attrs.managedBean.processo.maiorDesconto}">
+				        <mcl:money value="#{item.percentualDesconto}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Status" style="width: 120px;">
+				        <h:outputText value="#{item.status.descricao}" />
+				    </p:column>
+				    <p:column headerText="Fornecedor Vencedor" >
+				        <h:outputText value="#{item.fornecedorRazaoSocial}" />
+				    </p:column>
+				    <p:column headerText="Distribuir" style="vertical-align:middle;text-align:center;width: 90px;">
+			            <h:commandLink title="Distribuir" action="#{cc.attrs.managedBean.distribuir(item)}" 
+			            	styleClass="btn btn-info btn-sm" rendered="#{not empty item.fornecedorCodigo and !item.distribuicaoValor}">
+			            	<i class="fa fa-share-alt"></i>
+			            </h:commandLink>
+			        </p:column>
+			        <p:column headerText="Excluir" style="vertical-align:middle;text-align:center;width: 90px;">
+			            <p:commandLink title="Excluir" action="#{cc.attrs.managedBean.excluirLote(item)}" update="dtLote" styleClass="btn btn-info btn-sm" rendered="#{item.distribuicaoValor}">
+			            	<p:confirm header="Aviso" message="Confirma a exclusão?" />
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			        </p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+		</footer>
+		
+		<p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+            <p:commandLink value="Sim" title="Sim"
+                styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+            </p:commandLink>
+            &#160;&#160;&#160;
+            <p:commandLink value="Não" title="Não"
+                styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+            </p:commandLink>
+        </p:confirmDialog>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

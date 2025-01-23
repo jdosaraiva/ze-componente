@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:tceTermoAditivo="http://java.sun.com/jsf/composite/components/tceTermoAditivo">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="tceTermoAditivoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<p:tabView id="tabTceTermoAditivo">
+				<!-- 1 - Identificação do Termo Aditivo -->
+				<p:tab title="Identificação do Termo Aditivo">
+					<tceTermoAditivo:identificacaoDados id="identificacaoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 2 - Vigência -->
+				<p:tab title="Vigência">
+					<tceTermoAditivo:vigenciaDados id="vigenciaDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 4 - Exigências e Cláusulas -->
+				<p:tab title="Exigências e Cláusulas">
+					<tceTermoAditivo:exigenciaClasulaDados id="exigenciaClasulaDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 5 - Publicações -->
+				<p:tab title="Publicações">
+					<tceTermoAditivo:publicacoesDados id="publicacoesDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 6 - Conclusão -->
+				<p:tab title="Conclusão">
+					<tceTermoAditivo:conclusaoDados id="conclusaoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+			</p:tabView>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left" immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}"
+				onclick="$('.btn-success').attr('disabled', true);">
+				<i class="fa fa-save"></i>
+				<h:outputText value="  Salvar" />
+			</h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

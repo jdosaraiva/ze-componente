@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 45px" class="row"></div>
+	<section jsf:rendered="#{!cc.attrs.readonly}">
+		<h:commandLink value="" onclick="javascript: $('#popupEditFornecedorContato').modal('show');" styleClass="btn btn-primary btn-sm">
+           	<p:ajax listener="#{cc.attrs.managedBean.novaContato}" update=":editFornecedorContato:formPopupEditFornecedorContato" />
+           	<i class="fa fa-plus"></i>
+           	<h:outputText value="  Adicionar Contato" />
+        </h:commandLink>
+	</section>
+	<section>
+		<p:dataTable id="listaContato" var="item" value="#{cc.attrs.managedBean.fornecedor.fornecedorContatoList}"
+			reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+			styleClass="table-reflow-desktop">
+			<p:column headerText="Nome">
+		        <h:outputText value="#{item.nome}" />
+		    </p:column>
+		    <p:column headerText="Documento">
+		        <h:outputText value="#{item.numeroDocumento}" />
+		    </p:column>
+		    <p:column headerText="Celular">
+		        <h:outputText value="#{item.celular}" />
+		    </p:column>
+		    <p:column headerText="Email">
+		        <h:outputText value="#{item.email}" />
+		    </p:column>
+		    <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+	            <h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditFornecedorContato').modal('show');">
+	        		<f:setPropertyActionListener target="#{cc.attrs.managedBean.fornecedorContato}" value="#{item}" />
+	        		<p:ajax update=":editFornecedorContato:formPopupEditFornecedorContato" />
+	            	<i class="fa fa-edit"></i>
+	            </h:commandLink>
+	            &#160;
+	            <h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerContato(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+	            	<p:ajax update=":fornecedorDados:fornecedorForm:tabFornecedor:fornecedorAbaDadosContato:listaContato" />
+	            	<i class="fa fa-trash-o"></i>
+	            </h:commandLink>
+	        </p:column>
+		</p:dataTable>	
+	</section>
+</composite:implementation>
+
+</html>	

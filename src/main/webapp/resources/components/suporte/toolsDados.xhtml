@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="toolsForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+
+				<header>
+					Ferramentas
+				</header>
+			</div>
+			<div class="row">
+			
+					<section class="col col-3">
+						<p:outputLabel for="repararAjuste" value=" " styleClass="label" />
+						
+				        <p:commandLink  id="repararAjuste" action="#{cc.attrs.managedBean.repararAjuste()}" styleClass="btn btn-success btn-lg" title="Reparar TCE Ajuste" >
+							<p:confirm header="Aviso" message="Confirma a reparação de TCE Ajuste ?" />
+			            	<i class="fa fa-cog"></i>
+			            	<h:outputText value="    Reparar TCE Ajuste" />
+			            </p:commandLink>
+			            
+			            
+			             <p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+							<p:commandLink value="Sim" title="Sim"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+				            </p:commandLink>
+				            &#160;&#160;&#160;
+				            <p:commandLink value="Não" title="Não"
+								styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+				            </p:commandLink>
+					    </p:confirmDialog>
+					
+					</section>
+			
+			
+			</div>			
+			
+			<div class="row">
+					<section class="col col-3">
+						<p:outputLabel for="repararInformeLiquidacao" value=" " styleClass="label" />
+				        <p:commandLink  id="repararInformeLiquidacao" action="#{cc.attrs.managedBean.repararInformeLiquidacao()}" styleClass="btn btn-success btn-lg" title="Reparar Informe Liquidação" >
+							<p:confirm header="Aviso" message="Confirma a reparação de Informe Liquidação ?" />
+			            	<i class="fa fa-cog"></i>
+			            	<h:outputText value="    Reparar Informe Liquidação" />
+			            </p:commandLink>
+					</section>
+			</div>			
+			
+			<div class="row">
+					<section class="col col-3">
+						<p:outputLabel for="repararMedicao" value=" " styleClass="label" />
+				        <p:commandLink  id="repararMedicao" action="#{cc.attrs.managedBean.repararMedicao()}" styleClass="btn btn-success btn-lg" title="Reparar Medição Faltante" >
+							<p:confirm header="Aviso" message="Confirma a reparação de Medição faltante ?" />
+			            	<i class="fa fa-cog"></i>
+			            	<h:outputText value="    Reparar Medição" />
+			            </p:commandLink>
+					</section>
+			</div>			
+			
+			<div class="row">
+					<section class="col col-3">
+						<p:outputLabel for="pncpUsuario" value=" " styleClass="label" />
+				        <p:commandLink  id="pncpUsuario" action="#{cc.attrs.managedBean.atualizarUsuarioPncp()}" styleClass="btn btn-success btn-lg" title="Atualizar Usuário Conam no PNCP" >
+							<p:confirm header="Aviso" message="Confirma Atualização do Usuário Conam no  PNCP ?" />
+			            	<i class="fa fa-cog"></i>
+			            	<h:outputText value="    Atualizar Usuário Conam no PNCP" />
+			            </p:commandLink>
+					</section>
+			</div>			
+			
+			
+			<div class="row">
+					<section class="col col-3">
+						<p:outputLabel for="pncp" value=" " styleClass="label" />
+				        <p:commandLink  id="pncp" action="#{cc.attrs.managedBean.testarPncp()}" styleClass="btn btn-success btn-lg" title="Teste PNCP" >
+							<p:confirm header="Aviso" message="Confirma teste PNCP ?" />
+			            	<i class="fa fa-cog"></i>
+			            	<h:outputText value="    Texxxte PNCP" />
+			            </p:commandLink>
+					</section>
+			</div>			
+			
+			
+			<div class="row">
+					<section class="col col-3">
+						<p:outputLabel for="estoqueDuplicado" value=" " styleClass="label" />
+				        <p:commandLink  id="estoqueDuplicado" action="#{cc.attrs.managedBean.repararEstoqueDuplicado()}" styleClass="btn btn-success btn-lg" title="Teste PNCP" >
+							<p:confirm header="Aviso" message="Confirma reparar Estoque Duplicado ?" />
+			            	<i class="fa fa-cog"></i>
+			            	<h:outputText value="    Estoque Duplicado" />
+			            </p:commandLink>
+					</section>
+			</div>			
+			
+			
+			
+			
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg" >
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

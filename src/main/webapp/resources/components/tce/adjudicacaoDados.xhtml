@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 150px" class="row"></div>
+	<p:fieldset legend="Adjudicação" id="pnlAdjudicacao" class="fieldset-borda">
+		<div class="row">
+			<section class="col col-9">
+				<p:outputLabel for="publicacaoAdjudicacao" value="Há no procedimento comprovação da publicação da adjudicação?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu value="#{cc.attrs.managedBean.tce.processo.publicacaoAdjudicacao}"
+						id="publicacaoAdjudicacao" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataAdjudicacao" value="Data da publicação" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataAdjudicacao" value="#{cc.attrs.managedBean.tce.processo.dataAdjudicacao}" required="true"
+						pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</div>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

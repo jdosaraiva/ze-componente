@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="recebimentoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<mcl:inputLupa 
+					id="fornecedor" 
+					label="Fornecedor" 
+					controller="#{fornecedorColumnsView}"
+					descricao="#{cc.attrs.managedBean.fornecedorSelecionado.codigo.toString()
+						.concat(' - ').concat(cc.attrs.managedBean.fornecedorSelecionado.razaoSocial)
+						.concat(' - Documento : ').concat(cc.attrs.managedBean.fornecedorSelecionado.tipoDocumento) 
+						.concat(' -  ').concat(cc.attrs.managedBean.fornecedorSelecionado.numeroDocumento) 
+						}" 
+					value="#{cc.attrs.managedBean.fornecedorSelecionado}" 
+					required="true"  
+					ajax="true"  
+					listener="#{cc.attrs.managedBean.carregaItens()}"  
+					update=":recebimentoDados:recebimentoForm:dtItem"
+					oncomplete="PF('widgetDatatableItens').filter()" 
+					cabecalho= "Consulta de Fornecedor" />
+			</section>
+			
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="tipoDocumentoFiscal" value="Tipo do Documento Fiscal" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="tipoDocumentoFiscal" value="#{cc.attrs.managedBean.tipoDocumentoFiscal}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.tipoDocumentoFiscal}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:number id="numeroDocumento" label="Número Documento Fiscal"  maxValue="9999999999" value="#{cc.attrs.managedBean.movimentoEstoque.documentoFiscal.numeroDocumento}" required="true" disabled="#{cc.attrs.readonly}" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ufDocumento" value="UF" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="ufDocumento" value="#{cc.attrs.managedBean.movimentoEstoque.documentoFiscal.ufDocumento}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItem itemLabel="AC" itemValue="AC" />
+							<f:selectItem itemLabel="AL" itemValue="AL" />
+							<f:selectItem itemLabel="AP" itemValue="AP" />
+							<f:selectItem itemLabel="AM" itemValue="AM" />
+							<f:selectItem itemLabel="BA" itemValue="BA" />
+							<f:selectItem itemLabel="CE" itemValue="CE" />
+							<f:selectItem itemLabel="DF" itemValue="DF" />
+							<f:selectItem itemLabel="ES" itemValue="ES" />
+							<f:selectItem itemLabel="GO" itemValue="GO" />
+							<f:selectItem itemLabel="MA" itemValue="MA" />
+							<f:selectItem itemLabel="MT" itemValue="MT" />
+							<f:selectItem itemLabel="MS" itemValue="MS" />
+							<f:selectItem itemLabel="MG" itemValue="MG" />
+							<f:selectItem itemLabel="PA" itemValue="PA" />
+							<f:selectItem itemLabel="PB" itemValue="PB" />
+							<f:selectItem itemLabel="PR" itemValue="PR" />
+							<f:selectItem itemLabel="PE" itemValue="PE" />
+							<f:selectItem itemLabel="PI" itemValue="PI" />
+							<f:selectItem itemLabel="RJ" itemValue="RJ" />
+							<f:selectItem itemLabel="RN" itemValue="RN" />
+							<f:selectItem itemLabel="RS" itemValue="RS" />
+							<f:selectItem itemLabel="RO" itemValue="RO" />
+							<f:selectItem itemLabel="RR" itemValue="RR" />
+							<f:selectItem itemLabel="SC" itemValue="SC" />
+							<f:selectItem itemLabel="SP" itemValue="SP" />
+							<f:selectItem itemLabel="SE" itemValue="SE" />
+							<f:selectItem itemLabel="TO" itemValue="TO" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorTotalDocumento" label="Valor Total Documento" value="#{cc.attrs.managedBean.movimentoEstoque.documentoFiscal.valorTotalDocumento}" decimalPlaces="2" required="true" disabled="#{cc.attrs.readonly}" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="dataEmissaoDocumento" value="Data Emissão Documento" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataEmissaoDocumento" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.movimentoEstoque.documentoFiscal.dataEmissaoDocumento}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataEntrada" value="Data Entrada" styleClass="label" />
+					<label class="input">
+						<p:calendar id="dataEntrada" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.movimentoEstoque.documentoFiscal.dataEntrada}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+				<section class="col col-3">
+				<p:outputLabel value="Registrada por" styleClass="label" />
+					<label class="input">
+						<p:inputText value="#{sessaoMCL.operador.nome}" readonly="true" />
+					</label>
+				</section>
+				<h:panelGroup id="panelExigencia">
+					<section class="col col-3">
+						<p:outputLabel value="Retirada de itens automaticamente ?" styleClass="label" />
+						<p:selectBooleanCheckbox value="#{cc.attrs.managedBean.retiradaItensAutomaticamente}" disabled="#{cc.attrs.readonly}" itemLabel="Sim" />
+					</section>
+				</h:panelGroup>
+			</div>
+			<section>
+				<p:dataTable id="dtItem" var="item" widgetVar="widgetDatatableItens" value="#{cc.attrs.managedBean.itens}" filteredValue="#{cc.attrs.managedBean.itensFiltrados}"
+					reflow="true" emptyMessage="Não constam registros." rowStyleClass="" tableStyleClass="table table-striped" styleClass="table-reflow-desktop" 
+					rowIndexVar="index">
+				    <f:facet name="header">Itens de Autorização de Fornecimento</f:facet>
+				    <p:column style="width:16px">
+			            <p:rowToggler rendered="#{item.precisaDistribuir}" />
+			        </p:column>
+				    <p:column headerText="Número" style="width: 80px; text-align: center" filterBy="#{item.af.numero}">
+				    	<mcl:number value="#{item.af.numero} / #{item.af.ano}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Data A.F." style="width: 70px; text-align: center">
+				        <h:outputText value="#{item.af.data}">
+				        	<f:convertDateTime pattern="dd/MM/yyyy" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column headerText="Item" style="width: 30px">
+				    	<mcl:number value="#{item.item}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Objeto Descrição" filterBy="#{item.objetoDescricao}" filterMatchMode="contains">
+				        <h:outputText value="#{item.objetoDescricao}" title="#{item.objetoDescricao}" />
+				    </p:column>
+				    <p:column headerText="Quantidade Solicitada" style="width: 80px">
+				    	<mcl:money value="#{item.quantidadeSolicitada}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor Total Solicitado" style="width: 90px">
+				    	<mcl:money value="#{item.valorTotalSolicitado}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Quantidade a Receber" style="width: 90px">
+				    	<mcl:money value="#{item.quantidadeReceber}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Valor Unitário" style="width: 90px">
+				    	<mcl:money value="#{item.valorUnitario}" modoConsulta="true" decimalPlaces="4" />
+				    </p:column>
+				    <p:column headerText="Valor a Receber" style="width: 90px">
+				    	<mcl:money value="#{item.saldoReceber}" modoConsulta="true" />
+				    </p:column>
+					<p:column headerText="Requer Indicação?" style="text-align: center; width: 70px">
+			           	<h:outputText value="#{item.precisaDistribuir ? 'Sim' : 'Não'}"/>
+			        </p:column>
+				    <p:column headerText="Quantidade Desejada" style="width: 90px">
+				    	<mcl:money value="#{item.quantidadeAReceber}" modoConsulta="#{item.controlePorValor}" decimalPlaces="4" ajax="true" listener="#{cc.attrs.managedBean.populaValores(item)}" update=":recebimentoDados:recebimentoForm:dtItem:@row(#{index}), :recebimentoDados:recebimentoForm:dtItem:@row(#{index})" />
+				    </p:column>
+				    <p:column headerText="Valor TOTAL do Item" style="width: 90px">
+				    	<mcl:money value="#{item.valorAReceber}" modoConsulta="false" decimalPlaces="2" ajax="true" listener="#{cc.attrs.managedBean.populaValores(item)}" update=":recebimentoDados:recebimentoForm:dtItem:@row(#{index}), :recebimentoDados:recebimentoForm:dtItem:@row(#{index})" />
+				    </p:column>
+				        <p:rowExpansion >
+				        	<p:dataTable id="subitem" var="subitem" rendered="true"  value="#{item.afItemRequisicaoCompraList}"
+								reflow="true" emptyMessage="Não constam Itens de Requisição Compra neste Item A.F." tableStyleClass="table table-striped"
+								rowKey="#{subitem.id}" rowSelectMode="checkbox" styleClass="table-reflow-desktop" >
+								<f:facet name="header">
+			         			   Itens de Requisição de Compra contidos neste Item A.F. ( Quantitativos )
+			       				</f:facet>
+							    <p:column headerText="Requisição" style="text-align: right; width: 80px">
+							        <h:outputText value="#{subitem.itemRequisicaoCompra.requisicaoCompra.numero} / #{subitem.itemRequisicaoCompra.requisicaoCompra.ano}" />
+							    </p:column>
+							    <p:column headerText="Órgão">
+							        <h:outputText value="#{subitem.itemRequisicaoCompra.requisicaoCompra.orgaoSigla}" />
+							    </p:column>
+							    <p:column headerText="Almoxarifado">
+							        <h:outputText value="#{subitem.itemRequisicaoCompra.requisicaoCompra.almoxarifado.nome}" />
+							    </p:column>
+			        			<p:column headerText="Qt. Receber">
+							    	<mcl:money value="#{subitem.quantidadeReceber}" modoConsulta="true" />
+							    </p:column>
+							    <p:column headerText="Unidade" style="width: 140px">
+							        <h:outputText value="#{subitem.itemRequisicaoCompra.material != null ? subitem.itemRequisicaoCompra.material.unidade.nome : ''}" />
+							    </p:column>
+							    <p:column headerText="Valor Unitário">
+							    	<mcl:money value="#{subitem.itemRequisicaoCompra.valorUnitario}" modoConsulta="true" decimalPlaces="4" />
+							    </p:column>
+							    <p:column headerText="Quantidade Desejada">
+							    	<mcl:money value="#{subitem.quantidadeDesejada}" modoConsulta="#{item.controlePorValor}" decimalPlaces="4" />
+							    </p:column>
+							    <p:column headerText="Valor Desejado">
+							    	<mcl:money value="#{subitem.itemRequisicaoCompra.valorDesejado}" modoConsulta="#{!item.controlePorValor}" decimalPlaces="4" />
+							    </p:column>
+							</p:dataTable>
+				        	<p:dataTable id="subitem2" var="subitem2" value="#{item.afEmpenhoList}"
+								reflow="true" emptyMessage="Não constam registros de Empenhos neste Item A.F." tableStyleClass="table table-striped"
+								rowKey="#{subitem2.id}" rowSelectMode="checkbox" styleClass="table-reflow-desktop">
+								<f:facet name="header">
+			         			   Empenhos relacionados neste Item A.F. ( Financeiro )
+			       				</f:facet>
+			        			<p:column headerText="Requisição" style="text-align: right; width: 80px">
+							    	<h:outputText value="#{subitem2.itemRequisicaoCompra.requisicaoCompra.numero} / #{subitem2.itemRequisicaoCompra.requisicaoCompra.ano}" modoConsulta="true" />
+							    </p:column>
+							    <p:column headerText="Empenho" style="text-align: right; width: 80px">
+							    	<h:outputText value="#{subitem2.empenho.numero} / #{subitem2.empenho.ano}" modoConsulta="true" />
+							    </p:column>
+			        			<p:column headerText="Vl Estornado">
+							    	<mcl:money value="#{subitem2.valorEstornado}" modoConsulta="true" />
+							    </p:column>
+			        			<p:column headerText="Vl Liquidado">
+							    	<mcl:money value="#{subitem2.valorLiquidado}" modoConsulta="true" />
+							    </p:column>
+			        			<p:column headerText="Vl a Liquidar">
+							    	<mcl:money value="#{subitem2.valorALiquidar}" modoConsulta="true" />
+							    </p:column>
+							    <p:column headerText="Valor Desejado">
+							    	<mcl:money value="#{subitem2.valorDesejado}" modoConsulta="#{subitem2.valorALiquidar le 0}"  decimalPlaces="2" />
+							    </p:column>
+							</p:dataTable>
+				        </p:rowExpansion>
+				</p:dataTable>
+			</section>
+		</fieldset>
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.receberTotal()}" styleClass="btn btn-danger btn-lg"
+				title="Realiza o Recebimento de TODAS A.Fs. com Saldo a Receber. Caso o filtro seja aplicado, recebe apenas itens exibidos !" 
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-danger').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Receber Total" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				title="Realiza o Recebimento das A.Fs. com Quantidade / Saldo indicado a Receber." 
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Receber Parcial" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

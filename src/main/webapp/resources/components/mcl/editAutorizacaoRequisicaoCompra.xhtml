@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mpc="http://java.sun.com/jsf/composite/components/mpc">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditAutorizacaoRequisicaoCompra" style="z-index:1000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" >
+			<div class="modal-content">
+				<h:form id="formPopupAutorizacaoRequisicaoCompra" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Autorização de Item de Requisição de Compra</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-5">
+								<div class="form-group">
+									<p:outputLabel for="codigo" value="Código:" /><p:spacer width="10"/>
+									<h:outputText id="codigo" value="#{cc.attrs.managedBean.itemRequisicaoCompra.id}"/>
+								</div>
+								<div class="form-group">
+									<p:outputLabel value="Material" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL'}" /><p:spacer width="10"/>
+									<h:outputText rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'MATERIAL'}" 
+										value="#{cc.attrs.managedBean.itemRequisicaoCompra.material.descricao}" />
+										
+									<p:outputLabel value="Serviço" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO'}" /><p:spacer width="10"/>
+									<h:outputText rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'SERVICO'}" 
+										value="#{cc.attrs.managedBean.itemRequisicaoCompra.servico.descricao}" />
+										
+									<p:outputLabel value="Catálogo" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO'}" /><p:spacer width="10"/>
+									<h:outputText rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo eq 'CATALOGO'}" 
+										value="#{cc.attrs.managedBean.itemRequisicaoCompra.catalogoMateriais.descricao}" />
+								</div>
+								<div class="form-group">
+									<p:outputLabel value="Unidade:" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}"/><p:spacer width="10"/>
+									<h:outputText value="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo == 'MATERIAL' ? 
+										cc.attrs.managedBean.itemRequisicaoCompra.material.unidade.nome : cc.attrs.managedBean.itemRequisicaoCompra.servico.unidade.nome}" 
+										rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}" />
+								</div>
+								<div class="form-group">
+									<p:outputLabel for="valorUnitario" value="Valor Unitário:" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}" /><p:spacer width="10"/>
+									<h:outputText id="valorUnitario" value="#{cc.attrs.managedBean.itemRequisicaoCompra.valorUnitario}" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}"/>
+								</div>
+								<div class="form-group">
+									<p:outputLabel for="valorTotalSolicitado" value="Valor Total:" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}"/><p:spacer width="10"/>
+									<h:outputText id="valorTotalSolicitado" value="#{cc.attrs.managedBean.itemRequisicaoCompra.valorTotalSolicitado}" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}"/>
+								</div>
+								<div class="form-group">
+									<p:outputLabel for="quantidadeSolicitada" value="Quantidade Solicitada:" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}"/><p:spacer width="10"/>
+									<h:outputText id="quantidadeSolicitada" value="#{cc.attrs.managedBean.itemRequisicaoCompra.quantidadeSolicitada}" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.tipo ne 'CATALOGO'}" >
+							           	<f:convertNumber minFractionDigits="0" />
+						           	</h:outputText>
+								</div>
+								<div class="form-group">
+									<p:outputLabel for="quantidadeAprovada" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.habilitaEdicao}" value="Quantidade Aprovada:" />
+									<p:inputText id="quantidadeAprovada" rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.habilitaEdicao}" value="#{cc.attrs.managedBean.itemRequisicaoCompra.quantidadeAprovada}" required="true" >
+							           	<f:convertNumber minFractionDigits="0" />
+							           	<p:ajax update="@form" process="@this" global="false" />
+						           	</p:inputText>
+						           	<p:outputLabel for="quantidadeAprovadaOut" value="Quantidade Aprovada:" rendered="#{!cc.attrs.managedBean.itemRequisicaoCompra.habilitaEdicao}" />
+						           	<p:spacer width="10" rendered="#{!cc.attrs.managedBean.itemRequisicaoCompra.habilitaEdicao}"/>
+						           	<h:outputText id="quantidadeAprovadaOut" value="#{cc.attrs.managedBean.itemRequisicaoCompra.quantidadeAprovada}" rendered="#{!cc.attrs.managedBean.itemRequisicaoCompra.habilitaEdicao}"  >
+							           	<f:convertNumber minFractionDigits="0" />
+						           	</h:outputText>
+						           	
+								</div>
+								
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" disabled="#{!cc.attrs.managedBean.itemRequisicaoCompra.habilitaEdicao}" 
+							actionListener="#{cc.attrs.managedBean.aprovarItemRequisicao()}" styleClass="btn btn-primary btn-sm"
+							rendered="#{cc.attrs.managedBean.itemRequisicaoCompra.habilitaEdicao}">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditAutorizacaoRequisicaoCompra').modal('hide')" />
+			            	<h:outputText value="  Aprovar item" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

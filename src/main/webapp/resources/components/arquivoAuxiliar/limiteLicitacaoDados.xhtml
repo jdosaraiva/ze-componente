@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="limiteLicitacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="modalidade" value="#{cc.attrs.managedBean.limiteLicitacao.modalidade}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.getModalidadeLicitacao()}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="atoTipo" value="Ato Tipo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="atoTipo" value="#{cc.attrs.managedBean.limiteLicitacao.atoTipo}" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="atoNumero" value="Ato Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="atoNumero" value="#{cc.attrs.managedBean.limiteLicitacao.atoNumero}" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" required="true" style="float:left"
+									value="#{cc.attrs.managedBean.limiteLicitacao.data}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:money id="valorMaterial" label="Valor Material" value="#{cc.attrs.managedBean.limiteLicitacao.valorMaterial}" required="true" disabled="#{cc.attrs.readonly}" />
+				</section>
+				<section class="col col-3">
+					<mcl:money id="valorObra" label="Valor Obra" value="#{cc.attrs.managedBean.limiteLicitacao.valorObra}" required="true" disabled="#{cc.attrs.readonly}" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="validade" value="Validade" styleClass="label" />
+					<label class="input">
+						<p:calendar id="validade" style="float:left"
+									value="#{cc.attrs.managedBean.limiteLicitacao.validade}" 
+									pattern="dd/MM/yyyy"
+									disabled="#{cc.attrs.readonly}"
+									mask="true"
+									locale="pt" />
+					</label>
+				</section>
+			</div>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

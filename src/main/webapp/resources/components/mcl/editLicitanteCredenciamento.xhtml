@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditLicitanteCredenciamento" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditLicitanteCredenciamento" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Seleção de Fornecedor</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									<mcl:inputLupa
+										id="fornecedorSelecionado" 
+										label="Fornecedor" 
+										controller="#{fornecedorColumnsView}"
+										descricao="#{cc.attrs.managedBean.fornecedorSelecionadoDTO.codigo.toString().concat(' - ').concat(cc.attrs.managedBean.fornecedorSelecionadoDTO.razaoSocial)
+										.concat(' - Doc. ').concat(cc.attrs.managedBean.fornecedorSelecionadoDTO.numeroDocumento)
+										.concat(' - Autorizado = ').concat(cc.attrs.managedBean.fornecedorSelecionadoDTO.movimentoAutorizado ? 'Sim' : 'Não') }" 
+										value="#{cc.attrs.managedBean.fornecedorSelecionadoDTO}"
+										leitura="#{cc.attrs.managedBean.licitante.id gt 0}" 
+										required="true" 
+										lazy="true"
+										cabecalho= "Consulta de Fornecedor" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<p:outputLabel for="status" value="Situação" />
+							        <p:selectOneMenu id="status" value="#{cc.attrs.managedBean.licitante.status}" required="false" styleClass="select-popup">
+							            <f:selectItem itemLabel=".: Selecione :." />
+							            <f:selectItems value="#{typesController.getStatusLicitanteCredenciamento()}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							            <p:ajax event="change" update="editLicitanteCredenciamento:formPopupEditLicitanteCredenciamento:panelJustificativa" />
+							        </p:selectOneMenu>
+								</div>
+							</div>
+							<div class="col-sm-6" jsf:rendered="#{cc.attrs.managedBean.processo.modalidade == 'CONVITE'}">
+								<div class="form-group">
+									<p:outputLabel for="condicaoParticipacao" value="Condição de Participação" />
+							        <p:selectOneMenu id="condicaoParticipacao" value="#{cc.attrs.managedBean.licitante.condicaoParticipacao}" required="#{cc.attrs.managedBean.processo.modalidade eq 'CONVITE'}" styleClass="select-popup">
+							        	<f:selectItem itemLabel=".: Selecione :." />
+							            <f:selectItems value="#{typesController.condicaoParticipacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<h:panelGroup id="panelJustificativa">
+						
+								<div class="col-sm-12"  jsf:rendered="#{cc.attrs.managedBean.licitante.status == 'INABILITADO'}">
+									<div class="form-group">
+										<p:outputLabel for="justificativa" value="Justificativa" />
+										<p:inputTextarea id="justificativa" rows="5" counter="display" maxlength="1000" counterTemplate="{0} restantes." autoResize="false" value="#{cc.attrs.managedBean.licitante.justificativa}" >
+											<f:validateLength minimum="3"/>
+										</p:inputTextarea>
+										<h:outputText id="display" />
+									</div>
+								</div>
+							</h:panelGroup>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarLicitante}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) { $('#popupEditLicitanteCredenciamento .close').click();} " />
+			            	<h:outputText value="  Relacionar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>

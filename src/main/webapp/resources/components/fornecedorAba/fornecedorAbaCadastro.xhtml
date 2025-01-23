@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<section style="margin-top: 35px">
+		<p:outputLabel for="razaoSocial" value="Razão Social" styleClass="label" />
+		<label class="input">
+			<p:focus for="razaoSocial" />
+			<p:inputText id="razaoSocial" value="#{cc.attrs.managedBean.fornecedor.razaoSocial}" required="true" disabled="#{cc.attrs.readonly}" />
+		</label>
+	</section>
+	<section>
+		<p:outputLabel for="nomeFantasia" value="Nome Fantasia" styleClass="label" />
+		<label class="input">
+			<p:inputText id="nomeFantasia" value="#{cc.attrs.managedBean.fornecedor.nomeFantasia}" required="true" disabled="#{cc.attrs.readonly}" />
+		</label>
+	</section>
+	<section>
+		<h:outputLabel for="ramoAtividade" value="Ramo de Atividade" />
+        <p:selectCheckboxMenu id="ramoAtividade" value="#{cc.attrs.managedBean.ramoAtividadeSelecionado}" label="Ramo de Atividade" multiple="true"
+                              filter="true" filterMatchMode="startsWith" style="" styleClass="select" disabled="#{cc.attrs.readonly}" >
+            <f:selectItems value="#{cc.attrs.managedBean.ramosAtividade}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+        </p:selectCheckboxMenu>
+	</section>
+	<div class="row">
+		<section class="col col-3">
+	        <p:outputLabel for="tipoDocumento" value="Tipo de Documento" styleClass="label" />
+			<label class="input">
+		        <p:selectOneMenu id="tipoDocumento" value="#{cc.attrs.managedBean.fornecedor.tipoDocumento}" disabled="#{cc.attrs.readonly}" style=""  styleClass="select" >
+		            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+		            <f:selectItems value="#{typesController.tipoDocumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+						<p:ajax event="change" update="cpfCnpj, cpfCnpjLabel"/>
+		        </p:selectOneMenu>
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel id="cpfCnpjLabel" for="cpfCnpj" value="#{cc.attrs.managedBean.fornecedor.tipoDocumento == 'CNPJ'? 'CNPJ' : 'CPF'}" styleClass="label" />
+			<label class="input">
+				 <p:inputMask 	id="cpfCnpj" value="#{cc.attrs.managedBean.fornecedor.numeroDocumento}" 
+				 				required="true" 
+				 				disabled="#{cc.attrs.readonly}" 
+				 				RequiredMessage="Informe o CPF/CNPJ." 
+				 				size="24" 
+				 				immediate="true" 
+				 				mask="#{cc.attrs.managedBean.fornecedor.tipoDocumento == 'CNPJ'? '99.999.999/9999-99' : '999.999.999-99'}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="inscricaoEstadual" value="Inscrição Estadual" styleClass="label" />
+			<label class="input">
+				<p:inputText id="inscricaoEstadual" value="#{cc.attrs.managedBean.fornecedor.inscricaoEstadual}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="pis" value="P.I.S" styleClass="label" />
+			<label class="input">
+				 <p:inputText id="pis" value="#{cc.attrs.managedBean.fornecedor.pis}" required="true" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+				<p:outputLabel for="conselhoRegional" value="Conselho Regional" styleClass="label" />
+			<label class="input">
+				 <p:inputText id="conselhoRegional" value="#{cc.attrs.managedBean.fornecedor.conselhoRegional}" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="conselhoRegionalNumero" value="Conselho Regional Número" styleClass="label" />
+			<label class="input">
+				<p:inputText id="conselhoRegionalNumero" value="#{cc.attrs.managedBean.fornecedor.conselhoRegionalNumero}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+	        <p:outputLabel for="tipoEmpresa" value="Tipo de Empresa" styleClass="label" />
+			<label class="input">
+		        <p:selectOneMenu id="tipoEmpresa" value="#{cc.attrs.managedBean.fornecedor.tipoEmpresa}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+		            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+		            <f:selectItems value="#{typesController.tipoEmpresa}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+		        </p:selectOneMenu>
+			</label>
+		</section>
+		<section class="col col-3">
+			<label class="input">
+				<mcl:inputSelectTipoFornecimento id="tipoFornecimento" 
+					label="Tipo de Fornecimento" 
+					value="#{cc.attrs.managedBean.fornecedor.tipoFornecimento}" 
+					managedBean="#{tipoFornecimentoAutocomplete}" 
+					itemLabel="#{item.descricao}" 
+					required="true" 
+				/>
+			</label>
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+			<p:outputLabel for="dataCadastro" value="Data de Cadastro" styleClass="label" />
+			<label class="input">
+				<p:calendar id="dataCadastro" value="#{cc.attrs.managedBean.fornecedor.dataCadastro}" required="true" disabled="#{cc.attrs.readonly}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />					
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="validadeCadastro" value="Validade de Cadastro" styleClass="label" />
+			<label class="input">
+				<p:calendar id="validadeCadastro" value="#{cc.attrs.managedBean.fornecedor.validadeCadastro}" required="true" disabled="#{cc.attrs.readonly}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />					
+			</label>
+		</section>
+		<section class="col col-3">
+	        <p:outputLabel for="status" value="Status" styleClass="label" />
+			<label class="input">
+		        <p:selectOneMenu id="status" value="#{cc.attrs.managedBean.fornecedor.status}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+		            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+		            <f:selectItems value="#{typesController.statusFornecedor}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+		        </p:selectOneMenu>
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="microempresa" value="Micro Empresa" styleClass="label" />
+			<label class="input">
+				<p:inputSwitch id="microempresa" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.fornecedor.microempresa}" required="true" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+			<p:outputLabel for="cep" value="CEP" styleClass="label" />
+			<label class="input">
+				<p:inputMask id="cep" value="#{cc.attrs.managedBean.fornecedor.cep}" required="false" disabled="#{cc.attrs.readonly}" mask="99999-999">
+					<p:ajax event="blur" listener="#{cc.attrs.managedBean.buscaCep()}" update="endereco,bairro,cidade,uf" />
+				</p:inputMask>
+			</label>
+		</section>
+		<section class="col col-9">
+			<p:outputLabel for="endereco" value="Endereço" styleClass="label" />
+			<label class="input">
+				<p:inputText id="endereco" value="#{cc.attrs.managedBean.fornecedor.endereco}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+			<p:outputLabel for="bairro" value="Bairro" styleClass="label" />
+			<label class="input">
+				<p:inputText id="bairro" value="#{cc.attrs.managedBean.fornecedor.bairro}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="cidade" value="Cidade" styleClass="label" />
+			<label class="input">
+				<p:inputText id="cidade" value="#{cc.attrs.managedBean.fornecedor.cidade}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="numero" value="Número" styleClass="label" />
+			<label class="input">
+				<p:inputText id="numero" value="#{cc.attrs.managedBean.fornecedor.numero}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="complemento" value="Complemento" styleClass="label" />
+			<label class="input">
+				<p:inputText id="complemento" value="#{cc.attrs.managedBean.fornecedor.complemento}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+			<p:outputLabel for="uf" value="U.F." styleClass="label" />
+			<label class="input">
+				<p:inputText id="uf" value="#{cc.attrs.managedBean.fornecedor.uf}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="pais" value="País" styleClass="label" />
+			<label class="input">
+				<p:inputText id="pais" value="#{cc.attrs.managedBean.fornecedor.pais}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="localidadeLatitude" value="Latitude" styleClass="label" />
+			<label class="input">
+				<p:inputText id="localidadeLatitude" value="#{cc.attrs.managedBean.fornecedor.localidadeLatitude}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="localidadeLongitude" value="Longitude" styleClass="label" />
+			<label class="input">
+				<p:inputText id="localidadeLongitude" value="#{cc.attrs.managedBean.fornecedor.localidadeLongitude}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+			<p:outputLabel for="telefoneNumero" value="Telefone" styleClass="label" />
+			<label class="input">
+            	<p:inputMask id="telefoneNumero" value="#{cc.attrs.managedBean.fornecedor.telefoneNumero}" required="false" disabled="#{cc.attrs.readonly}" mask="(99) 9999-9999"/>
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="celularNumero" value="Celular" styleClass="label" />
+			<label class="input">
+            	<p:inputMask id="celularNumero" value="#{cc.attrs.managedBean.fornecedor.celularNumero}" required="false" disabled="#{cc.attrs.readonly}" mask="(99) 99999-9999"/>
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="site" value="Site" styleClass="label" />
+			<label class="input">
+				<p:inputText id="site" value="#{cc.attrs.managedBean.fornecedor.site}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="email" value="Email" styleClass="label" />
+			<label class="input">
+				<p:inputText id="email" value="#{cc.attrs.managedBean.fornecedor.email}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</div>
+</composite:implementation>
+
+</html>	

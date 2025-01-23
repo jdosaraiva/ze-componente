@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="pacoteForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="createdAt" value="Data de Criação" styleClass="label" />
+					<label class="input">
+						<p:calendar
+							id="createdAt" required="true" style="float:left"
+							value="#{cc.attrs.managedBean.pacote.createdAt}"
+							pattern="dd/MM/yyyy"
+							mask="true" locale="pt" 
+							disabled="true"/>
+					</label>
+				</section>
+				<section class="col col-3">
+			        <p:outputLabel for="status" value="Status" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="status" value="#{cc.attrs.managedBean.pacote.status}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.statusPacote}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				            <p:ajax event="change" listener="#{cc.attrs.managedBean.onChangeStatus()}" update="@form" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			
+			<div class="row">
+				<section class="col col-3">
+			        <p:outputLabel for="funcionalidade" value="Funcionalidade" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="funcionalidade" value="#{cc.attrs.managedBean.pacote.funcionalidade}" required="true" 
+				        	disabled="#{cc.attrs.readonly || cc.attrs.managedBean.pacote.enviado}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.funcionalidadeFase4}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				            <p:ajax event="change" listener="#{cc.attrs.managedBean.onChangeFuncionalidade()}" update="@form" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<p:outputPanel layout="block" id="instrumentoPanel" rendered="#{cc.attrs.managedBean.pacote.funcionalidade=='AJUSTE'}">
+					<section class="col col-3">
+				        <p:outputLabel for="instrumento" value="Instrumento" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="instrumento" value="#{cc.attrs.managedBean.pacote.instrumento}" required="true" 
+					        	disabled="#{cc.attrs.readonly || cc.attrs.managedBean.pacote.enviado}" styleClass="select" >
+					            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+					            <f:selectItems value="#{typesController.instrumentoPacote}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				            	<p:ajax event="change" listener="#{cc.attrs.managedBean.onChangeInstrumento()}" update="@form" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</p:outputPanel>
+				<section class="col col-3">
+					<p:outputLabel id="labelIdentificacaoTce" for="identificacaoTce" value="No. Pacote AUDESP" styleClass="label" />
+					<label class="input">
+						<p:inputNumber id="identificacaoTce" value="#{cc.attrs.managedBean.pacote.identificacaoTce}" 
+							decimalPlaces="0" thousandSeparator=""
+							required="#{cc.attrs.managedBean.pacote.enviado}" disabled="#{cc.attrs.readonly}" />								 
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="dataRecepcaoTce" value="Data de Recepção" styleClass="label" />
+					<label class="input">
+						<p:calendar
+							id="dataRecepcaoTce" style="float:left"
+							value="#{cc.attrs.managedBean.pacote.dataRecepcaoTce}"
+							pattern="dd/MM/yyyy"
+							mask="true" locale="pt" 
+							required="#{cc.attrs.managedBean.pacote.enviado}" 
+							disabled="#{cc.attrs.readonly}"/>
+					</label>
+				</section>
+			</div>
+			
+			<section>
+				<p:outputLabel for="observacao" value="Observações" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="observacao" value="#{cc.attrs.managedBean.pacote.observacao}" 
+						disabled="#{cc.attrs.readonly || cc.attrs.managedBean.pacote.enviado}" />
+				</label>
+			</section>
+			
+			<header>Complementos vinculados ao Pacote</header>
+			<br/>
+			<section jsf:rendered="#{!cc.attrs.readonly and !cc.attrs.managedBean.pacote.enviado}">
+				<h:commandLink value="" styleClass="btn btn-primary btn-sm">
+		           	<p:ajax listener="#{cc.attrs.managedBean.abrirPopupComplemento}" update=":editPacote:formPopupEditPacote" />
+		           	<i class="fa fa-plus"></i>
+		           	<h:outputText value="  Adicionar" />
+		        </h:commandLink>
+			</section>
+			
+			<section jsf:rendered="#{cc.attrs.managedBean.pacote.isTce()}">
+				<p:dataTable id="dtPacoteTce" var="item" value="#{cc.attrs.managedBean.tceSelecionados}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">Tce Selecionados</f:facet>
+					<p:column headerText="Código Licitação" sortBy="#{item.codigoLicitacao}" style="text-align: center; width: 150px">
+			           	<h:outputText value="#{item.codigoLicitacao}"  />
+			        </p:column>
+					<p:column headerText="Processo" sortBy="#{item.processo.numero}/{item.processo.ano}" style="text-align: center; width: 150px">
+						<h:outputText value="#{item.processo.numero} / #{item.processo.ano}"  />
+					</p:column>
+					<p:column headerText="Modalidade" sortBy="#{item.processo.modalidade.descricao}" style="width: 150px">
+						<h:outputText value="#{item.processo.modalidade.descricao}" /> 
+					</p:column>
+					<p:column headerText="Número/Ano Licitação" sortBy="#{item.processo.numeroAnoLicitacao}" style="width: 150px">
+						<h:outputText value="#{item.processo.numeroAnoLicitacao}" />
+					</p:column>
+					<p:column headerText="Objeto" sortBy="#{item.processo.descricaoObjeto}">
+						<h:outputText value="#{item.processo.descricaoObjeto}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly and !cc.attrs.managedBean.pacote.enviado}">
+						<p:commandLink title="Excluir" ajax="true" update="dtPacoteTce" styleClass="btn btn-info btn-sm"
+							action="#{cc.attrs.managedBean.removerComplemento(item)}">
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			         </p:column>
+				</p:dataTable>
+			</section>				
+			
+			<section jsf:rendered="#{cc.attrs.managedBean.pacote.isTceAjuste()}">
+				<p:dataTable id="dtPacoteTceAjuste" var="item" value="#{cc.attrs.managedBean.tceAjusteSelecionados}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">Tce Ajustes Selecionados</f:facet>
+					<p:column headerText="Código de Ajuste" sortBy="#{item.codigoAjuste}" style="width: 100px">
+						<h:outputText value="#{item.codigoAjuste}" /> 
+					</p:column>
+					<p:column headerText="Contrato" sortBy="#{item.contrato.numero}/{item.contrato.ano}" style="text-align: center; width: 100px">
+						<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}"  />
+					</p:column>
+					<p:column headerText="Empenho" sortBy="#{item.empenho.numero}/{item.empenho.ano}" style="text-align: center; width: 100px">
+						<h:outputText value="#{item.empenho.numero} / #{item.empenho.ano}"  />
+					</p:column>
+					<p:column headerText="Processo" sortBy="#{item.processo.numero}/{item.processo.ano}" style="text-align: center; width: 100px">
+						<h:outputText value="#{item.processo.numero} / #{item.processo.ano}"  />
+					</p:column>
+					<p:column headerText="Modalidade" sortBy="#{item.processo.modalidade}" style="width: 150px">
+						<h:outputText value="#{item.processo.modalidade.descricao}" /> 
+					</p:column>
+					<p:column headerText="Licitação" sortBy="#{item.processo.numeroAnoLicitacao}" style="width: 100px">
+						<h:outputText value="#{item.processo.numeroAnoLicitacao}" />
+					</p:column>
+					<p:column headerText="Objeto" sortBy="#{item.processo.descricaoObjeto}">
+						<h:outputText value="#{item.processo.descricaoObjeto}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly and !cc.attrs.managedBean.pacote.enviado}">
+						<p:commandLink title="Excluir" ajax="true" update="dtPacoteTceAjuste" styleClass="btn btn-info btn-sm"
+							action="#{cc.attrs.managedBean.removerComplemento(item)}">
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			         </p:column>
+				</p:dataTable>
+			</section>			
+			
+			<section jsf:rendered="#{cc.attrs.managedBean.pacote.isTceTermoAditivo()}">
+				<p:dataTable id="dtPacoteTceTermoAditivo" var="item" value="#{cc.attrs.managedBean.tceTermoAditivoSelecionados}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+					<f:facet name="header">Aditivos Selecionados</f:facet>
+					<p:column headerText="Código Ajuste" sortBy="#{item.codigoAjuste}" style="text-align: center; width: 120px">
+						<h:outputText value="#{item.tceAjuste.codigoAjuste}"  />
+					</p:column>
+					<p:column headerText="Termo Aditivo" sortBy="#{item.numero}" style="text-align: center; width: 150px">
+						<h:outputText value="#{item.numero} / #{item.ano}"  />
+					</p:column>
+					<p:column headerText="Contrato" sortBy="#{item.aditivo.contrato.numero}" style="text-align: center; width: 150px">
+						<h:outputText value="#{item.aditivo.contrato.numero} / #{item.aditivo.contrato.ano}"  />
+					</p:column>
+					<p:column headerText="Modalidade" sortBy="#{item.aditivo.processo.modalidade.descricao}" style="width: 150px">
+						<h:outputText value="#{item.aditivo.processo.modalidade.descricao}" /> 
+					</p:column>
+					<p:column headerText="Licitação" sortBy="#{item.aditivo.processo.numeroAnoLicitacao}" style="text-align: center; width: 150px">
+						<h:outputText value="#{item.aditivo.processo.numeroAnoLicitacao}" />
+					</p:column>
+					<p:column headerText="Objeto" sortBy="#{item.objeto}">
+						<h:outputText value="#{item.objeto}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly and !cc.attrs.managedBean.pacote.enviado}">
+						<p:commandLink title="Excluir" ajax="true" update="dtPacoteTceTermoAditivo" styleClass="btn btn-info btn-sm"
+							action="#{cc.attrs.managedBean.removerComplemento(item)}">
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			         </p:column>
+				</p:dataTable>
+			</section>		
+						
+			<section jsf:rendered="#{cc.attrs.managedBean.pacote.isEmpenho()}">
+				<p:dataTable id="dtPacoteEmpenho" var="item" value="#{cc.attrs.managedBean.empenhosSelecionados}"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<f:facet name="header">Empenhos Selecionados</f:facet>
+					<p:column headerText="Código Ajuste" sortBy="#{item.tceAjuste.codigoAjuste}" style="text-align: center; width: 150px">
+			           	<h:outputText value="#{item.tceAjuste.codigoAjuste}"  />
+			        </p:column>
+					<p:column headerText="Empenho" sortBy="#{item.numero}" style="text-align: center; width: 80px">
+			           	<h:outputText value="#{item.numero} / #{item.ano}"  />
+			        </p:column>
+					<p:column headerText="Contrato" sortBy="#{item.contrato.numero}" style="text-align: center; width: 120px">
+			           	<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}"  />
+			        </p:column>
+					<p:column headerText="Processo" sortBy="#{item.processo.numero}" style="text-align: center; width: 120px">
+			           	<h:outputText value="#{item.processo.numero} / #{item.processo.ano}"  />
+			        </p:column>
+			        <p:column headerText="Modalidade" sortBy="#{item.processo.modalidade}" style="width: 150px">
+			           	<h:outputText value="#{item.processo.modalidade.descricao}" /> 
+			        </p:column>
+			        <p:column headerText="Nro. Licitação" sortBy="#{item.processo.numeroAnoLicitacao}" style="width: 120px">
+			           	<h:outputText value="#{item.processo.numeroAnoLicitacao}" />
+			        </p:column>
+			        <p:column headerText="Objeto" sortBy="#{item.processo.descricaoObjeto}">
+			           	<h:outputText value="#{item.processo.descricaoObjeto}" />
+			        </p:column>
+		         	<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly and !cc.attrs.managedBean.pacote.enviado}">
+						<p:commandLink title="Excluir" ajax="true" update="dtPacoteEmpenho" styleClass="btn btn-info btn-sm"
+							action="#{cc.attrs.managedBean.removerComplemento(item)}">
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			         </p:column>
+				</p:dataTable>	
+			</section>	
+
+		</fieldset>
+		
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

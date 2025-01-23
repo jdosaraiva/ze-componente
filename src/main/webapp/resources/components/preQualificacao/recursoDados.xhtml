@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mitc="http://java.sun.com/jsf/composite/components/mitc">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<p:fieldset legend="Recurso" class="fieldset-borda" style="margin-top: 100px;">
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="recurso" value="Houve interposição de recurso na pré-qualificação?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="recurso" value="#{cc.attrs.managedBean.excluir}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-5">
+				<p:outputLabel for="tipoDocumento" value="Tipo de documento *" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="tipoDocumento" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.tipoDocumento}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="documento" value="Nº do documento *" styleClass="label" />
+				<label class="input">
+					<p:inputMask id="documento" value="#{cc.attrs.managedBean.excluir}" mask="#{'99.999.999/9999-99'}" />
+				</label>
+			</section>
+			<section class="col col-5">
+				<p:outputLabel for="data" value="Data da impetração do recurso *" styleClass="label" />
+				<label class="input">
+					<p:calendar id="data" value="#{cc.attrs.managedBean.excluir}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-6">
+				<p:outputLabel for="respeitadoPrazoLegal" value="Foi respeitado o prazo legal para interposição do recurso?" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="respeitadoPrazoLegal" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.condicao}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-5">
+				<p:outputLabel for="resultadoRecurso" value="Resultado do recurso *" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="resultadoRecurso" value="#{cc.attrs.managedBean.excluir}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.resultadoRecurso}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-1">
+				<p:spacer width="0px" height="80px"/>
+				<h:commandLink id="btnAddRecurso" actionListener="#{cc.attrs.managedBean.preQualificacaoController.adicionarRecurso()}" immediate="true" styleClass="btn btn-primary btn-sm">
+					<i class="fa fa-plus"></i>
+				</h:commandLink>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-12">
+				<p:dataTable reflow="true" value="#{cc.attrs.managedBean.excluir}"
+					id="dtRecursos" var="item" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Tipo de documento">
+						<h:outputText value="#{item.tipoDocumento.descricao}" />
+					</p:column>
+					<p:column headerText="Nº do documento">
+						<h:outputText value="#{item.documento}" />
+					</p:column>
+					<p:column headerText="Data da impetração do recurso">
+						<h:outputText value="#{item.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Respeitado o prazo legal">
+						<h:outputText value="#{item.respeitadoPrazoLegal eq 'S' ? 'Sim' : item.respeitadoPrazoLegal eq 'N' ? 'Não' : ''}" />
+					</p:column>
+					<p:column headerText="Resultado do recurso">
+						<h:outputText value="#{item.resultadoRecurso.descricao}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.preQualificacaoController.removerRecurso(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</div>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

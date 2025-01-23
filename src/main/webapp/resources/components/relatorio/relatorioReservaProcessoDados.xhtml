@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:relatorio="http://java.sun.com/jsf/composite/components/relatorio"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:facet name="customButtons" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<fieldset>
+		<div class="row">
+			<section class="col col-3">
+				<mcl:number id="numeroInicialRequisicao" label="Número Inicial Requisição" value="#{cc.attrs.managedBean.numeroInicialRequisicao}" />
+			</section>
+			<section class="col col-3">
+				<mcl:number id="numeroFinalRequisicao" label="Número Final Requisição" value="#{cc.attrs.managedBean.numeroFinalRequisicao}" />
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataInicialRequisicao" value="Data Inicial Requisição" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataInicialRequisicao" style="float:left"
+						value="#{cc.attrs.managedBean.dataInicialRequisicao}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						locale="pt" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataFinalRequisicao" value="Data Final Requisição" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataFinalRequisicao" style="float:left"
+						value="#{cc.attrs.managedBean.dataFinalRequisicao}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						locale="pt" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-3">
+				<mcl:number id="numeroInicialProcesso" label="Número Inicial Processo" value="#{cc.attrs.managedBean.numeroInicialProcesso}" />
+			</section>
+			<section class="col col-3">
+				<mcl:number id="numeroFinalProcesso" label="Número Final Processo" value="#{cc.attrs.managedBean.numeroFinalProcesso}" />
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataInicialProcesso" value="Data Inicial Processo" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataInicialProcesso" style="float:left"
+						value="#{cc.attrs.managedBean.dataInicialProcesso}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						locale="pt" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="" value="Data Final Processo" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataFinalProcesso" style="float:left"
+						value="#{cc.attrs.managedBean.dataFinalProcesso}" 
+						pattern="dd/MM/yyyy"
+						mask="true"
+						locale="pt" />
+				</label>
+			</section>
+		</div>
+	</fieldset>
+	<fieldset>
+		<div class="row">
+			<section class="col col-3">
+				<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+				<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+					<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+				</p:selectOneMenu>
+			</section>
+		</div>
+	</fieldset>
+
+	<footer>
+		<h:commandLink value="" action="#{cc.attrs.managedBean.gerarAnalitico()}" styleClass="btn btn-success btn-lg"
+			rendered="#{not cc.attrs.readonly}">
+           	<i class="fa fa-save"></i>
+           	<h:outputText value="  Analitico" />
+        </h:commandLink>
+		<h:commandLink value="" action="#{cc.attrs.managedBean.gerar()}" styleClass="btn btn-success btn-lg"
+			rendered="#{not cc.attrs.readonly}">
+           	<i class="fa fa-save"></i>
+           	<h:outputText value="  Sintético" />
+        </h:commandLink>
+	</footer>
+
+</composite:implementation>
+
+</html>	

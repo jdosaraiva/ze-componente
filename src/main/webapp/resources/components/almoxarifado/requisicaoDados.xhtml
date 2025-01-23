@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="requisicaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.requisicao.numero}" disabled="true" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="data" value="Data" styleClass="label" />
+					<label class="input">
+						<p:calendar id="data" style="float:left"
+							value="#{cc.attrs.managedBean.requisicao.data}" 
+							pattern="dd/MM/yyyy"
+							mask="true"
+							disabled="true"
+							locale="pt" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputPanel layout="block" id="orgaoOutputPanel">
+						<mcl:inputLupa 
+							id="orgao" 
+							label="Órgão" 
+							controller="#{orgaoColumnsView}"
+							descricao="#{cc.attrs.managedBean.orgaoDTO.codigoCompleto.toString()
+							.concat(' - ').concat(cc.attrs.managedBean.orgaoDTO.descricao) }"
+							value="#{cc.attrs.managedBean.orgaoDTO}"
+							leitura="#{not empty cc.attrs.managedBean.requisicao.itemRequisicaoList}"
+							required="true" 
+							lazy="true"
+							listener="#{cc.attrs.managedBean.filtraEstoques()}"
+							update="requisicaoDados:requisicaoForm:dtItemRequisicao" 
+							cabecalho= "Consulta de Órgão" />
+					</p:outputPanel>
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputPanel layout="block" id="almoxarifadoOutputPanel">
+						<mcl:inputLupa 
+							id="almoxarifado" 
+							label="Almoxarifado" 
+							controller="#{almoxarifadoColumnsView}"
+							descricao="#{cc.attrs.managedBean.requisicao.almoxarifado.nome}"
+							value="#{cc.attrs.managedBean.requisicao.almoxarifado}"
+							cabecalho= "Consulta de Almoxarifado" 
+							required="true" 
+							leitura="#{not empty cc.attrs.managedBean.requisicao.itemRequisicaoList}"/>
+					</p:outputPanel>
+				</section>
+				<section class="col col-6">
+					<mcl:inputLupa 
+						id="destino" 
+						label="Destino" 
+						controller="#{destinoColumnsView}"
+						descricao="#{cc.attrs.managedBean.requisicao.destino.nome}"
+						value="#{cc.attrs.managedBean.requisicao.destino}"
+						cabecalho= "Consulta de Destino" 
+						required="true" 
+						disabled="#{cc.attrs.readonly}" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-6">
+					<p:outputLabel for="servidor" value="Requisitante"  styleClass="label" />
+					<label class="input">
+						<p:inputText id="servidor" value="#{cc.attrs.managedBean.requisicao.nomeRequisitante}" maxlength="255" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+			</div>
+		</fieldset>
+		<header>
+			Itens de Requisição de Retirada
+		</header>
+		<fieldset>
+			<section jsf:rendered="#{!cc.attrs.readonly}">
+				<h:commandLink value="" styleClass="btn btn-primary btn-sm">
+		           	<p:ajax listener="#{cc.attrs.managedBean.novoItemRequisicao}" update=":editItemRequisicao:formPopupEditItemRequisicaoRetirada" />
+		           	<i class="fa fa-plus"></i>
+		           	<h:outputText value="  Adicionar Item" />
+		        </h:commandLink>
+			</section>
+			<section>
+				<p:dataTable id="dtItemRequisicao" var="item" value="#{cc.attrs.managedBean.requisicao.itemRequisicaoList}"
+					reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+					styleClass="table-reflow-desktop">
+			        <p:column headerText="Item" style="width: 70px;text-align: center">
+			           	<h:outputText value="#{item.item}" />
+			        </p:column>
+				    <p:column headerText="Código" style="text-align:right;width: 100px">
+				        <h:outputText value="#{item.estoque.material.codigo}" title="#{item.estoque.material.codigo}" rendered="#{item.estoque.material != null}" />
+				    </p:column>
+				    <p:column headerText="Material" style="text-align:left">
+				        <h:outputText value="#{item.estoque.material.descricao}" title="#{item.estoque.material.descricao}" rendered="#{item.estoque.material != null}" />
+				    </p:column>
+				    <p:column headerText="Unidade" style="width: 100px">
+				        <h:outputText value="#{item.estoque.material != null ? item.estoque.material.unidade.nome : ''}" />
+				    </p:column>
+				    <p:column headerText="Quant. Solicitada" style="width: 120px">
+				    	<mcl:money value="#{item.quantidadeSolicitada}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Quant. Aprovada" style="width: 120px">
+				    	<mcl:money value="#{item.quantidadeAprovada}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Quant. Entregue" style="width: 120px">
+				    	<mcl:money value="#{item.quantidadeEntregue}" modoConsulta="true" />
+				    </p:column>
+			        <p:column headerText="Status" style="width: 90px;text-align: center">
+			           	<h:outputText value="#{item.status.descricao}" />
+			        </p:column>
+				    <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+			            <h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditItemRequisicaoRetirada').modal('show');"
+			            	rendered="#{item.status eq 'SOLICITADO'}">
+			        		<p:ajax listener="#{cc.attrs.managedBean.editarItemRequisicao(item)}" update=":editItemRequisicao:formPopupEditItemRequisicaoRetirada" />
+			            	<i class="fa fa-edit"></i>
+			            </h:commandLink>
+			            &#160;
+			            <p:commandLink action="#{cc.attrs.managedBean.removerItemRequisicao(item)}" immediate="true" styleClass="btn btn-primary btn-sm"
+			            	update=":requisicaoDados:requisicaoForm:dtItemRequisicao :requisicaoDados:requisicaoForm:almoxarifadoOutputPanel :requisicaoDados:requisicaoForm:orgaoOutputPanel"
+			            	rendered="#{item.status eq 'SOLICITADO'}">
+			            	<p:confirm header="Atenção" message="Confirma a exclusão deste Item da Requisição ?" />
+			            	<i class="fa fa-trash-o"></i>
+			            </p:commandLink>
+			        </p:column>
+				</p:dataTable>	
+			</section>
+			<ui:fragment rendered="#{cc.attrs.managedBean.possuiItensEntregues()}">
+				<p:commandLink value="Gerar Recibo de Entrega" actionListener="#{cc.attrs.managedBean.gerar}" styleClass="btn btn-success btn-lg" ajax="false" />
+			</ui:fragment>
+		</fieldset>
+
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

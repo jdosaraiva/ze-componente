@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="grupoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<section>
+				<p:outputLabel for="nome" value="Nome do Grupo" styleClass="label" />
+				<label class="input">
+					<p:inputText id="nome" label="nome" value="#{cc.attrs.managedBean.grupo.nome}" required="true" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</fieldset>
+		<header>
+			Lista de Credenciais
+		</header>
+		<fieldset>
+			<section>
+				<p:pickList id="credenciais" value="#{cc.attrs.managedBean.credencialList}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" 
+							showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="pickListCredencialConverter"
+							disabled="#{cc.attrs.readonly}">
+					<f:facet name="sourceCaption">Não Vinculadas</f:facet>
+			 		<f:facet name="targetCaption">Vinculadas</f:facet>
+				</p:pickList>
+			</section>
+		</fieldset>
+		<header>
+			Lista de Operadores
+		</header>
+		<fieldset>
+			<section>
+				<p:pickList id="operadores" value="#{cc.attrs.managedBean.operadorList}" var="item" itemLabel="#{item.nome}" itemValue="#{item}" 
+							showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="pickListOperadorConverter"
+							disabled="#{cc.attrs.readonly}">
+					<f:facet name="sourceCaption">Não Vinculados</f:facet>
+			 		<f:facet name="targetCaption">Vinculados</f:facet>
+				</p:pickList>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

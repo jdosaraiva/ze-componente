@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 150px" class="row"></div>
+	<p:fieldset legend="Lotes/Itens" class="fieldset-borda">
+		<section>
+			<h:commandLink onclick="javascript: $('#popupEditLicitacaoLote').modal('show');" styleClass="btn btn-primary btn-sm">
+	           	<i class="fa fa-plus"></i>
+	           	<h:outputText value="  Adicionar Lote/Item" />
+	        </h:commandLink>
+		</section>
+		<section>
+			<p:dataTable id="dtLotes" var="item" value="#{cc.attrs.managedBean.excluir}"
+				reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+				styleClass="table-reflow-desktop">
+			    <p:column headerText="Lote/Item">
+			    	<h:outputText value="#{item.numeroLote}" />
+			    </p:column>
+			    <p:column headerText="Objeto do lote" colspan="3">
+			    	<h:outputText value="#{item.descricaoLote}" />
+			    </p:column>
+			    <p:column headerText="Quantidade">
+			    	<h:outputText value="#{item.quantidade}">
+			    		<f:convertNumber pattern="#,##0.00" locale="pt_BR" />
+			    	</h:outputText>
+			    </p:column>
+			    <p:column headerText="Unidade de medida">
+			    	<h:outputText value="#{item.unidadeMedida}" />
+			    </p:column>
+			    <p:column headerText="Possui orçamento">
+			    	<h:outputText value="#{item.possuiOrcamento eq 'S' ? 'Sim' : item.possuiOrcamento eq 'N' ? 'Não' : ''}" />
+			    </p:column>
+			    <p:column headerText="Possui itens">
+			    	<h:outputText value="#{item.possuiItens eq 'S' ? 'Sim' : item.possuiItens eq 'N' ? 'Não' : ''}" />
+			    </p:column>
+			    <p:column headerText="Ação" style="text-align:center;width:80px">
+		            <h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditLicitacaoLote').modal('show');">
+		        		<f:setPropertyActionListener target="#{cc.attrs.managedBean.lote}" value="#{item}" />
+		        		<i class="fa fa-edit"></i>
+		            </h:commandLink>
+		            &#160;
+		            <h:commandLink actionListener="#{cc.attrs.managedBean.removerLote(item)}" immediate="true" styleClass="btn btn-primary btn-sm" rendered="#{!cc.attrs.readonly and cc.attrs.managedBean.licitacao.unica eq 'DIVIDIDA'}">
+		            	<i class="fa fa-trash-o"></i>
+		            </h:commandLink>
+		        </p:column>
+			</p:dataTable>
+		</section>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

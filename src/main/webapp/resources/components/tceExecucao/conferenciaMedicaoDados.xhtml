@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<h:panelGroup id="panelConferenciaMedicao">
+		<p:fieldset legend="Conferência/Medição" class="fieldset-borda">
+			<div class="row">
+				<section class="col col-4">
+					<p:outputLabel for="houveSupressaoObra" value="Houve supressão de obra, bens ou serviços?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="houveSupressaoObra" value="#{cc.attrs.managedBean.tceExecucao.houveSupressaoObraBensServico}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao2}" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+		</p:fieldset>
+		<br />
+		<p:fieldset legend="Responsável pela Medição" class="fieldset-borda">
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="cpf" value="CPF do servidor responsável" styleClass="label" />
+					<label class="input">
+						<p:inputMask id="cpf" mask="999.999.999-99" value="#{cc.attrs.managedBean.medicao.cpf}">
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:inputMask>
+				 	</label>
+			 	</section>
+			 	<section class="col col-6">
+					<p:outputLabel for="nome" value="Nome" styleClass="label" />
+					<label class="input">
+						<p:inputText id="nome" maxlength="100" value="#{cc.attrs.managedBean.medicao.nome}">
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+				<section class="col col-6">
+					<p:outputLabel for="cargo" value="Cargo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="cargo" maxlength="100" value="#{cc.attrs.managedBean.medicao.cargo}">
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="areaTi" value="O responsável é da área de TI?" styleClass="label" />
+					<label class="input">
+						<p:selectOneMenu id="areaTi" value="#{cc.attrs.managedBean.medicao.responsavelTi}" disabled="#{cc.attrs.readonly}" styleClass="select">
+							<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+							<f:selectItems value="#{typesController.condicao}" />
+							<p:ajax event="blur" process="@this" global="false" />
+						</p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:spacer width="0px" height="80px"/>
+					<h:commandLink actionListener="#{cc.attrs.managedBean.adicionarMedicao()}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i>
+					</h:commandLink>
+				</section>
+			</div>
+			<section>
+				<p:dataTable var="item" id="dtResp" tableStyleClass="table table-striped" styleClass="table-reflow-desktop"
+					emptyMessage="Não constam registros." reflow="true" value="#{cc.attrs.managedBean.medicaoList}">
+					<p:column headerText="CPF do servidor responsável">
+						<h:outputText value="#{item.cpf}" />
+					</p:column>
+					<p:column headerText="Nome">
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+					<p:column headerText="Cargo">
+						<h:outputText value="#{item.cargo}" />
+					</p:column>
+					<p:column headerText="O responsável é da área de TI?">
+						<h:outputText value="#{item.responsavelTi == null ? '' : item.responsavelTi ? 'Sim' : 'Não'}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink actionListener="#{cc.attrs.managedBean.removerMedicao(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</p:fieldset>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

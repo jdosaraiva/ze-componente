@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<section style="margin-top: 35px">
+		<p:outputLabel for="denominacaoSocial" value="Denominação Social" styleClass="label" />
+		<label class="input">
+			<p:inputText id="denominacaoSocial" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.denominacaoSocial}" disabled="#{cc.attrs.readonly}" />
+		</label>
+	</section>
+	<div class="row">
+		<section class="col col-3">
+			<label class="input">
+				<mcl:inputSelectSindicato id="sindicato" label="Sindicato" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.sindicato}" 
+					managedBean="#{sindicatoAutocomplete}" itemLabel="#{item.nome}" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-6">
+			<p:outputLabel for="area" value="Área" styleClass="label" />
+			<label class="input">
+				<p:inputNumber id="area" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.area}" decimalSeparator="," thousandSeparator="." required="false" disabled="#{cc.attrs.readonly}" />								 
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="predioProprio" value="Prédio Próprio" styleClass="label" />
+			<label class="input">
+				<p:inputSwitch id="predioProprio" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.predioProprio}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+	</div>
+	<section>
+		<p:outputLabel for="sucessora" value="Sucessora" styleClass="label" />
+		<label class="input">
+			<p:inputText id="sucessora" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.sucessora}" required="false" disabled="#{cc.attrs.readonly}" />
+		</label>
+	</section>
+	<div class="row">
+		<section class="col col-3">
+			<p:outputLabel for="dataConstituicao" value="Data Constituição" styleClass="label" />
+			<label class="input">
+				<p:calendar id="dataConstituicao" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.dataConstituicao}" required="false" disabled="#{cc.attrs.readonly}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />					
+			</label>
+		</section>
+		<section class="col col-3">
+			<p:outputLabel for="juntaComercial" value="Junta Comercial" styleClass="label" />
+			<label class="input">
+				<p:inputText id="juntaComercial" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.juntaComercial}" required="false" disabled="#{cc.attrs.readonly}" />
+			</label>
+		</section>
+		<section class="col col-3">
+			<mcl:money id="capitalRegistrado" label="Capital Registrado" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.capitalRegistrado}" disabled="#{cc.attrs.readonly}" />
+		</section>
+		<section class="col col-3">
+			<mcl:money id="capitalIntegralizado" label="Capital Integralizado" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.capitalIntegralizado}" disabled="#{cc.attrs.readonly}" />
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+			<mcl:money id="vendasExercicioAnterior" label="Vendas Exercicío Anterior" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.vendasExercicioAnterior}" disabled="#{cc.attrs.readonly}" />
+		</section>
+		<section class="col col-3">
+			<mcl:money id="faturamentoMedio" label="Faturamento Médio" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.faturamentoMedio}" disabled="#{cc.attrs.readonly}" />
+		</section>
+		<section class="col col-3">
+			<mcl:number id="bensInstalacoes" label="Bens e Instalações" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.bensInstalacoes}" disabled="#{cc.attrs.readonly}" />
+		</section>
+		<section class="col col-3">
+			<mcl:number id="quantidadeFuncionarios" label="Quantidade de Funcionários" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.quantidadeFuncionarios}" disabled="#{cc.attrs.readonly}" />
+		</section>
+	</div>
+	<div class="row">
+		<section class="col col-3">
+			<mcl:number id="quantidadeFuncionariosAdministrativa" label="Quantidade de Funcionários Administrativo" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.quantidadeFuncionariosAdministrativa}" disabled="#{cc.attrs.readonly}" />
+		</section>
+		<section class="col col-3">
+			<mcl:number id="quantidadeFuncionariosIndustrial" label="Quantidade de Funcionários Industrial" value="#{cc.attrs.managedBean.fornecedor.fornecedorOficial.quantidadeFuncionariosIndustrial}" disabled="#{cc.attrs.readonly}" />
+		</section>
+	</div>
+</composite:implementation>
+
+</html>	

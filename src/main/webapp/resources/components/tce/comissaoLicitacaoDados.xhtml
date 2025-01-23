@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 150px" class="row"></div>
+	<p:fieldset legend="Comissão de Licitação" class="fieldset-borda">
+		<h:panelGroup id="panelIdentificacao">
+			<section>
+				<p:fieldset legend="Identificação dos Membros da Comissão de Licitação" class="fieldset-borda processIdentificacaoMembrosComissaoLicitacao">
+					<h:panelGroup id="processIdentificacaoMembrosComissaoLicitacao">
+						<div class="row">
+							<section class="col col-8">
+								<p:outputLabel for="nomeIntegrante" value="Nome do integrante" styleClass="label" />
+								<label class="input">
+									<p:inputText id="nomeIntegrante" value="#{cc.attrs.managedBean.comissaoMembro.nomeIntegrante}" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+								</label>
+							</section>
+							<section class="col col-4">
+								<p:outputLabel for="cpfIntegrante" value="CPF do integrante" styleClass="label" />
+								<label class="input">
+									<p:inputMask id="cpfIntegrante" value="#{cc.attrs.managedBean.comissaoMembro.cpfIntegrante}" mask="999.999.999-99" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-8">
+								<p:outputLabel for="atribuicaoIntegrante" value="Atribuição do membro" styleClass="label" />
+								<label class="input">
+									<p:selectOneMenu id="atribuicaoIntegrante" value="#{cc.attrs.managedBean.comissaoMembro.atribuicaoIntegrante}" 
+										required="#{param['tceDados:tceForm:btnSalvar']==null}" styleClass="select-popup">
+										<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+										<f:selectItems value="#{typesController.atribuicaoIntegrante}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+									</p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-4">
+								<p:outputLabel for="cargoIntegrante" value="Cargo ocupado no órgão/entidade" styleClass="label" />
+								<label class="input">
+									<p:inputText id="cargoIntegrante" value="#{cc.attrs.managedBean.comissaoMembro.cargoOcupadoIntegrante}" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+								</label>
+							</section>
+						</div>
+						<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+							<section class="col col-8">
+								<p:outputLabel for="naturezaCargo" value="Natureza do cargo ocupado" styleClass="label" />
+								<label class="input">
+									<p:selectOneMenu id="naturezaCargo" value="#{cc.attrs.managedBean.comissaoMembro.naturezaCargoOcupado}" 
+										required="#{param['tceDados:tceForm:btnSalvar']==null}" styleClass="select-popup">
+										<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+										<f:selectItems value="#{typesController.naturezaCargo}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+									</p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-4">
+								<p:spacer width="0px" height="80px"/>
+								<p:commandLink id="btnAddComissao" actionListener="#{cc.attrs.managedBean.adicionarComissaoMembro()}" process="@(.processIdentificacaoMembrosComissaoLicitacao)" 
+									update="processIdentificacaoMembrosComissaoLicitacao,dtComissao" styleClass="btn btn-primary btn-sm">
+									<i class="fa fa-plus"></i>
+								</p:commandLink>
+							</section>
+						</div>
+					</h:panelGroup>
+					<section>
+						<p:dataTable reflow="true" id="dtComissao" var="item" value="#{cc.attrs.managedBean.tce.comissao.comissaoMembroList}"
+							emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+							<p:column headerText="Nome">
+								<h:outputText value="#{item.nomeIntegrante}" />
+							</p:column>
+							<p:column headerText="CPF">
+								<h:outputText value="#{item.cpfIntegrante}" />
+							</p:column>
+							<p:column headerText="Atribuição">
+								<h:outputText value="#{item.atribuicaoIntegrante.descricao}" />
+							</p:column>
+							<p:column headerText="Cargo">
+								<h:outputText value="#{item.cargoOcupadoIntegrante}" />
+							</p:column>
+							<p:column headerText="Natureza do cargo">
+								<h:outputText value="#{item.naturezaCargoOcupado.descricao}" />
+							</p:column>
+							<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+								<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerComissaoMembro(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+									<i class="fa fa-trash-o"></i>
+								</h:commandLink>
+							</p:column>
+						</p:dataTable>	
+					</section>
+				</p:fieldset>
+				<p:fieldset legend="Tipo de Comissão" class="fieldset-borda">
+					<section>
+						<p:outputLabel for="tipoComissao" value="Tipo de Comissão" styleClass="label" />
+						<label class="input">
+							<p:selectOneMenu id="tipoComissao" value="#{cc.attrs.managedBean.tce.comissao.tipoComissaoLicitacao}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+								<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+								<f:selectItems value="#{typesController.tipoComissao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+							</p:selectOneMenu>
+						</label>
+					</section>
+				</p:fieldset>
+				<p:fieldset legend="Designação da Comissão" class="fieldset-borda processDesignacaoComissao">
+					<h:panelGroup id="processDesignacaoComissao">
+						<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+							<section class="col col-4">
+								<p:outputLabel for="numeroAtoDesignacaoComissao" value="Nº do ato de designação" styleClass="label" />
+								<label class="input">
+									<p:inputText id="numeroAtoDesignacaoComissao" value="#{cc.attrs.managedBean.comissao.numAtoDesignacao}" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+								</label>
+							</section>
+							<section class="col col-4">
+								<mcl:number id="anoAtoDesignacao" label="Ano do ato de designação" value="#{cc.attrs.managedBean.comissao.anoAtoDesignacao}" maxValue="9999" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+							</section>
+							
+						</div>
+					</h:panelGroup>
+					<section>
+					
+					</section>
+				</p:fieldset>
+				<p:fieldset legend="Data de Publicação do Ato de Designação da Comissão de Licitação" class="fieldset-borda">
+					<div class="row">
+						<h:panelGroup id="panelDataPublicacao">
+							<section class="col col-3">
+								<p:outputLabel for="dataPublicacaoAto" value="Data da publicação" styleClass="label" />
+								<label class="input">
+									<p:calendar id="dataPublicacaoAto" value="#{cc.attrs.managedBean.tce.comissao.atoDesignacaoComissaoData}" pattern="dd/MM/yyyy" required="true" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+								</label>
+							</section>
+						</h:panelGroup>
+					</div>
+				</p:fieldset>
+				<p:fieldset legend="Vigência do Ato de Designação da Comissão de Licitação" class="fieldset-borda">
+					<div class="row">
+						<section class="col col-3">
+							<p:outputLabel for="vigenciaAto" value="Data de início da vigência" styleClass="label" />
+							<label class="input">
+								<p:calendar id="vigenciaAto" value="#{cc.attrs.managedBean.tce.comissao.atoDesignacaoComissaoInicio}" required="true" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+						<section class="col col-3">
+							<p:outputLabel for="fimVigenciaAto" value="Data final da vigência" styleClass="label" />
+							<label class="input">
+								<p:calendar id="fimVigenciaAto" value="#{cc.attrs.managedBean.tce.comissao.atoDesignacaoComissaoFim}" required="true" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" disabled="#{cc.attrs.readonly}" />
+							</label>
+						</section>
+					</div>
+				</p:fieldset>
+			</section>
+		</h:panelGroup>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

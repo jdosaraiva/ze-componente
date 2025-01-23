@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<p:fieldset legend="Licença Ambiental" id="panelLicenca" class="fieldset-borda">
+		<div class="row">
+			<section class="col col-4">
+				<p:outputLabel for="tipoLicenciamento" value="Identifique a(s) licença(s) expedida(s) *" styleClass="label" />
+				<label class="input">
+					<p:selectOneMenu id="tipoLicenciamento" value="#{cc.attrs.managedBean.licencaAmbiental.tipoLicenciamento}" styleClass="select">
+						<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+						<f:selectItems value="#{typesController.tipoLicencaAmbiental}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+					</p:selectOneMenu>
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="numeroLicenca" value="Número da licença *" styleClass="label" />
+				<label class="input">
+					<p:inputText id="numeroLicenca" maxlength="20" value="#{cc.attrs.managedBean.licencaAmbiental.numeroLicenca}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="dataLicenca" value="Data da licença *" styleClass="label" />
+				<label class="input">
+					<p:calendar id="dataLicenca" value="#{cc.attrs.managedBean.licencaAmbiental.dataLicenca}" pattern="dd/MM/yyyy" style="float:left" mask="true" locale="pt" />
+				</label>
+			</section>
+			<section class="col col-2">
+				<p:spacer width="0px" height="80px"/>
+				<h:commandLink id="btnAddLicenca" actionListener="#{cc.attrs.managedBean.adicionarLicencaAmbiental()}" immediate="true" styleClass="btn btn-primary btn-sm">
+					<i class="fa fa-plus"></i>
+				</h:commandLink>
+			</section>
+		</div>
+		<section>
+			<p:dataTable reflow="true" id="dtLicenca" value="#{cc.attrs.managedBean.tceExigenciaObras.tceAjuste.tce.processo.licencaAmbientalList}"
+				var="item" emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+				<p:column headerText="Licença expedida">
+					<h:outputText value="#{item.tipoLicenciamento.descricao}" />
+				</p:column>
+				<p:column headerText="Número da licença">
+					<h:outputText value="#{item.numeroLicenca}" />
+				</p:column>
+				<p:column headerText="Data da licença" style="text-align: center">
+					<h:outputText value="#{item.dataLicenca}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+					<h:commandLink actionListener="#{cc.attrs.managedBean.removerLicencaAmbiental(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+						<i class="fa fa-trash-o"></i>
+					</h:commandLink>
+				</p:column>
+			</p:dataTable>
+		</section>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

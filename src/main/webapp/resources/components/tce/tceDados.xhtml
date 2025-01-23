@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:tce="http://java.sun.com/jsf/composite/components/tce">
+
+<h:head>
+    <style>
+        .custom-tabview .ui-tabs-header .ui-state-active a {
+            font-weight: bold; /* Deixa o texto em negrito */
+            color: blue; /* Altera a cor do texto para azul */
+        }
+    </style>
+</h:head>
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="tceForm" styleClass="smart-form formProcess" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<p:tabView id="tabLicitacao" styleClass="custom-tabview">
+				<!-- 1 - Dados Iniciais -->
+				<p:tab id="tabDadosIniciais" title="Dados Iniciais">
+					<tce:dadosIniciaisDados id="dadosIniciaisDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 2 - Dados Adicionais -->
+			   	<p:tab id="tabDadosAdicionais" title="Dados Adicionais">
+					<tce:dadosAdicionaisDados id="dadosAdicionaisDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 3 - Declaração de Existência de Recursos -->
+			   	<p:tab id="tabDeclaracaoExistenciaRecursos" title="Declaração de Existência de Recursos">
+					<tce:declaracaoExistenciaRecursoDados id="declaracaoExistenciaRecursoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 4 - LRF -->
+				<p:tab id="tabLRF" title="LRF">
+					<tce:lrfDados id="lrfDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 5 - Parecer Técnico-jurídico/Audiência -->
+				<p:tab id="tabParecerTecnicoJuridicoAudiencia" title="Parecer Técnico-jurídico/Audiência">
+					<tce:parecerTecnicoDados id="parecerTecnicoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 6 - Edital -->
+				<p:tab id="tabEdital" title="Edital" rendered="#{cc.attrs.managedBean.tce.processo.modalidade != 'DISPENSA' and cc.attrs.managedBean.tce.processo.modalidade != 'INEXIGIBILIDADE'}">
+					<tce:editalDados id="editalDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 7 - Atestados de Desempenho -->
+				<p:tab id="tabAtestadosDesempenho" title="Atestados de Desempenho" rendered="#{cc.attrs.managedBean.tce.processo.modalidade != 'DISPENSA' and cc.attrs.managedBean.tce.processo.modalidade != 'INEXIGIBILIDADE'}">
+					<tce:atestadoDesempenhoDados id="atestadoDesempenhoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 8 - Índices Econômicos -->
+				<p:tab id="tabIndicesEconomicos" title="Índices Econômicos" rendered="#{cc.attrs.managedBean.tce.processo.modalidade != 'DISPENSA' and cc.attrs.managedBean.tce.processo.modalidade != 'INEXIGIBILIDADE'}">
+					<tce:indiceEconomicoDados id="indiceEconomicoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 9 - Amostras -->
+				<p:tab id="tabAmostras" title="Amostras" rendered="#{cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_EQUIPAMENTOS' || cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_MATERIAL_EXPEDIENTE' || cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_GENEROS_ALIMENTICIOS' || cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_COMBUSTIVEIS_LUBRIFICANTES' || cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_MATERIAL_HOSPITALAR' || cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_MEDICAMENTOS' || cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_OUTROS_MATERIAS_CONSUMO' || cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'CP_MATERIAL_ESCOLAR'}">
+					<tce:amostraDados id="amostraDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 10 - Visita Técnica -->
+				<p:tab id="tabVisitaTecnica" title="Visita Técnica" rendered="#{cc.attrs.managedBean.tce.processo.objetoLicitacao eq 'ENG_OBRAS'}">
+					<tce:visitaTecnicaDados id="visitaTecnicaDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 11 - Tributos -->
+				<p:tab id="tabTributos" title="Tributos" rendered="#{cc.attrs.managedBean.tce.processo.modalidade != 'DISPENSA' and cc.attrs.managedBean.tce.processo.modalidade != 'INEXIGIBILIDADE'}">
+					<tce:tributoDados id="tributoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 12 - Julgamento/Recursos -->
+				<p:tab id="tabJulgamentoRecursos" title="Julgamento/Recursos" rendered="#{cc.attrs.managedBean.tce.processo.modalidade != 'DISPENSA' and cc.attrs.managedBean.tce.processo.modalidade != 'INEXIGIBILIDADE'}">
+					<tce:julgamentoRecursoDados id="julgamentoRecursoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 13 - Contratacao Direta -->
+				<p:tab id="tabContratacaoDireta" title="Contratação Direta" rendered="#{cc.attrs.managedBean.tce.processo.modalidade eq 'DISPENSA' || cc.attrs.managedBean.tce.processo.modalidade eq 'INEXIGIBILIDADE'}">
+					<tce:contratacaoDiretaDados id="contratacaoDiretaDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+				<!-- 14 - Autorização -->
+				<p:tab id="tabAutorizacao" title="Autorização">
+					<tce:autorizacaoDados id="autorizacaoDados" managedBean="#{cc.attrs.managedBean}" readonly="#{cc.attrs.readonly}" />
+				</p:tab>
+			</p:tabView>
+		</fieldset>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left" immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<p:commandButton id="btnSalvar" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}"
+				icon="fa fa-save" value="Salvar" process="@(.formProcess :not(.noProcess))" />
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>

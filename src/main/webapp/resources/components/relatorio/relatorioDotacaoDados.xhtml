@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:relatorio="http://java.sun.com/jsf/composite/components/relatorio"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:facet name="customButtons" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<fieldset>
+		<div class="row">
+			<section class="col col-3">
+				<p:outputLabel for="orgaoInicial" value="Órgão Inicial" styleClass="label" />
+				<label class="input">
+					<p:inputText id="orgaoInicial" value="#{relatorioDotacaoController.orgaoInicial}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="orgaoFinal" value="Órgão Final" styleClass="label" />
+				<label class="input">
+					<p:inputText id="orgaoFinal" value="#{relatorioDotacaoController.orgaoFinal}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="codigoFonteInicial" value="Código Fonte Inicial" styleClass="label" />
+				<label class="input">
+					<p:inputText id="codigoFonteInicial" value="#{relatorioDotacaoController.codigoFonteInicial}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="codigoFonteFinal" value="Código Fonte Final" styleClass="label" />
+				<label class="input">
+					<p:inputText id="codigoFonteFinal" value="#{relatorioDotacaoController.codigoFonteFinal}" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-3">
+				<p:outputLabel for="codigoAplicacaoInicial" value="Código Aplicação Inicial" styleClass="label" />
+				<label class="input">
+					<p:inputText id="codigoAplicacaoInicial" value="#{relatorioDotacaoController.codigoAplicacaoInicial}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="codigoAplicacaoFinal" value="Código Aplicação Final" styleClass="label" />
+				<label class="input">
+					<p:inputText id="codigoAplicacaoFinal" value="#{relatorioDotacaoController.codigoAplicacaoFinal}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="despesaInicial" value="Despesa Inicial" styleClass="label" />
+				<label class="input">
+					<p:inputText id="despesaInicial" value="#{relatorioDotacaoController.despesaInicial}" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="despesaFinal" value="Despesa Final" styleClass="label" />
+				<label class="input">
+					<p:inputText id="despesaFinal" value="#{relatorioDotacaoController.despesaFinal}" />
+				</label>
+			</section>
+		</div>
+		<div class="row">
+			<section class="col col-3">
+				<p:outputLabel for="tipoExportacao" value="Tipo Exportação" styleClass="label" />
+				<p:selectOneMenu id="tipoExportacao" value="#{cc.attrs.managedBean.tipoExportacao}" styleClass="select">
+					<f:selectItems value="#{typesController.tipoExportacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+				</p:selectOneMenu>
+			</section>
+		</div>
+	</fieldset>
+
+	<footer>
+		<h:commandLink value="" action="#{cc.attrs.managedBean.gerar()}" styleClass="btn btn-success btn-lg"
+			rendered="#{not cc.attrs.readonly}">
+           	<i class="fa fa-save"></i>
+           	<h:outputText value="  Gerar" />
+        </h:commandLink>
+	</footer>
+
+</composite:implementation>
+
+</html>	

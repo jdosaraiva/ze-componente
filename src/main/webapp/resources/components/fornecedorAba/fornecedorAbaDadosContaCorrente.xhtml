@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 45px" class="row"></div>
+	<section jsf:rendered="#{!cc.attrs.readonly}">
+		<h:commandLink value="" onclick="javascript: $('#popupEditFornecedorContaCorrente').modal('show');" styleClass="btn btn-primary btn-sm">
+           	<p:ajax listener="#{cc.attrs.managedBean.novaContaCorrente}" update=":editFornecedorContaCorrente:formPopupEditFornecedorContaCorrente" />
+           	<i class="fa fa-plus"></i>
+           	<h:outputText value="  Adicionar Conta Corrente" />
+        </h:commandLink>
+	</section>
+	<section>
+		<p:dataTable id="listaContaCorrente" var="item" value="#{cc.attrs.managedBean.fornecedor.fornecedorContaCorrenteList}"
+			reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped"
+			styleClass="table-reflow-desktop">
+			<p:column headerText="Nome">
+		        <h:outputText value="#{item.nome}" />
+		    </p:column>
+		    <p:column headerText="Banco">
+		        <h:outputText value="#{item.banco.codigo}" />
+		    </p:column>
+		    <p:column headerText="Agencia">
+		        <h:outputText value="#{item.agencia}" />
+		    </p:column>
+		    <p:column headerText="Conta Corrente">
+		        <h:outputText value="#{item.numero}" />
+		    </p:column>
+		    <p:column headerText="Situação">
+		        <h:outputText value="#{item.situacao.descricao}" />
+		    </p:column>
+		    <p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+	            <h:commandLink value="" styleClass="btn btn-primary btn-sm" onclick="javascript: $('#popupEditFornecedorContaCorrente').modal('show');">
+	        		<f:setPropertyActionListener target="#{cc.attrs.managedBean.fornecedorContaCorrente}" value="#{item}" />
+	        		<p:ajax update=":editFornecedorContaCorrente:formPopupEditFornecedorContaCorrente" />
+	            	<i class="fa fa-edit"></i>
+	            </h:commandLink>
+	            &#160;
+	            <h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerContaCorrente(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+	            	<p:ajax update=":fornecedorDados:fornecedorForm:tabFornecedor:fornecedorAbaDadosContaCorrente:listaContaCorrente" />
+	            	<i class="fa fa-trash-o"></i>
+	            </h:commandLink>
+	        </p:column>
+		</p:dataTable>	
+	</section>
+</composite:implementation>
+
+</html>	

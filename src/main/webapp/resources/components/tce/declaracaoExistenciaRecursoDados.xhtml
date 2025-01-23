@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 100px" class="row"></div>
+	<h:panelGroup id="pnlDER">
+		<p:fieldset legend="Outras Fontes" class="fieldset-borda">
+			<section>
+				<p:outputLabel for="outrasFontes" value="Descreva" styleClass="label" />
+				<label class="input">
+					<p:inputText id="outrasFontes" value="#{cc.attrs.managedBean.tce.outrasFontes}" >
+						<f:validateLength minimum="3" maximum="100" />
+					</p:inputText>
+				</label>
+			</section>
+		</p:fieldset>
+		<p:fieldset legend="Convênio Estadual" class="fieldset-borda processConvenioEstadual">
+			<h:panelGroup id="processConvenioEstadual">
+				<div class="row" jsf:rendered="#{!cc.attrs.readonly}">
+					<section class="col col-5">
+						<p:outputLabel for="numero1" value="Nº do convênio/legislação" styleClass="label" />
+						<label class="input">
+							<p:inputText id="numero1" maxlength="12" required="#{param['tceDados:tceForm:btnSalvar']==null}" value="#{cc.attrs.managedBean.fonteRecursoEstadual.numero}" />
+						</label>
+					</section>
+					<section class="col col-5">
+						<mcl:numberValidationRange id="ano1" label="Ano do convênio/legislação" required="#{param['tceDados:tceForm:btnSalvar']==null}" 
+							value="#{cc.attrs.managedBean.fonteRecursoEstadual.contratoFinanciamentoAno}" 
+							minValue="1900" maxValue="2050" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-5">
+						<mcl:moneyValidationRange id="valorRepasse1" label="Valor do repasse do convênio estadual" required="#{param['tceDados:tceForm:btnSalvar']==null}" 
+							value="#{cc.attrs.managedBean.fonteRecursoEstadual.repasseValor}"
+							minValue="0.02" maxValue="9999999999999.99"/>
+					</section>
+					<section class="col col-5">
+						<mcl:moneyValidationRange id="valorContrapartida1" label="Valor da contrapartida do convênio estadual" required="#{param['tceDados:tceForm:btnSalvar']==null}" value="#{cc.attrs.managedBean.fonteRecursoEstadual.contrapartidaValor}" 
+							maxValue="9999999999999.99" />
+					</section>
+					<section class="col col-1">
+						<p:spacer width="0px" height="80px" />
+						<p:commandLink id="btnAddConvenioEstadual" actionListener="#{cc.attrs.managedBean.adicionarConvenioEstadual()}" process="@(.processConvenioEstadual)" 
+							update="processConvenioEstadual,dtConvenioEstadual" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-plus"></i>
+						</p:commandLink>
+					</section>
+				</div>
+			</h:panelGroup>
+			<section>
+				<p:dataTable id="dtConvenioEstadual" var="item" value="#{cc.attrs.managedBean.fonteRecursoEstadualList}" reflow="true"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Número">
+						<h:outputText value="#{item.numero}" />
+					</p:column>
+					<p:column headerText="Ano">
+						<mcl:number value="#{item.contratoFinanciamentoAno}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Repasse">
+						<mcl:money value="#{item.repasseValor}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Contrapartida">
+						<mcl:money value="#{item.contrapartidaValor}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerConvenioEstadual(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</p:fieldset>
+		<p:fieldset legend="Convênio Federal" class="fieldset-borda processConvenioFederal">
+			<h:panelGroup id="processConvenioFederal">
+				<div class="row">
+					<section class="col col-5">
+						<p:outputLabel for="numero2" value="Nº do convênio/legislação" styleClass="label" />
+						<label class="input">
+							<p:inputText id="numero2" maxlength="12" required="#{param['tceDados:tceForm:btnSalvar']==null}" 
+								value="#{cc.attrs.managedBean.fonteRecursoFederal.numero}" />
+						</label>
+					</section>
+					<section class="col col-5">
+						<mcl:numberValidationRange id="ano2" label="Ano do convênio/legislação" 
+							value="#{cc.attrs.managedBean.fonteRecursoFederal.contratoFinanciamentoAno}" 
+							minValue="1900" maxValue="2050" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-5">
+						<mcl:moneyValidationRange id="valorRepasse2" label="Valor do repasse do convênio federal" value="#{cc.attrs.managedBean.fonteRecursoFederal.repasseValor}" 
+							required="#{param['tceDados:tceForm:btnSalvar']==null}" 
+							minValue="0.01" maxValue="9999999999999.99" />
+					</section>
+					<section class="col col-5">
+						<mcl:moneyValidationRange id="valorContrapartida2" label="Valor da contrapartida do convênio federal" value="#{cc.attrs.managedBean.fonteRecursoFederal.contrapartidaValor}" 
+							required="#{param['tceDados:tceForm:btnSalvar']==null}"
+							maxValue="9999999999999.99" />
+					</section>
+					<section class="col col-1">
+						<p:spacer width="0px" height="80px" />
+						<p:commandLink id="btnAddConvenioFederal" actionListener="#{cc.attrs.managedBean.adicionarConvenioFederal()}" process="@(.processConvenioFederal)" 
+							update="processConvenioFederal,dtConvenioFederal" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-plus"></i>
+						</p:commandLink>
+					</section>
+				</div>
+			</h:panelGroup>
+			<section>
+				<p:dataTable id="dtConvenioFederal" var="item" value="#{cc.attrs.managedBean.fonteRecursoFederalList}" reflow="true"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Número">
+						<h:outputText value="#{item.numero}" />
+					</p:column>
+					<p:column headerText="Ano">
+						<mcl:number value="#{item.contratoFinanciamentoAno}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Repasse">
+						<mcl:money value="#{item.repasseValor}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Contrapartida">
+						<mcl:money value="#{item.contrapartidaValor}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerConvenioFederal(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>	
+			</section>
+		</p:fieldset>
+		<p:fieldset legend="Financiamento" class="fieldset-borda processFinanciamento">
+			<h:panelGroup id="processFinanciamento">
+				<div class="row">
+					<section class="col col-5">
+						<p:outputLabel for="agenteFinanceiro3" value="Qual o agente financeiro?" styleClass="label" />
+						<label class="input">
+							<p:inputText id="agenteFinanceiro3" maxlength="50" required="#{param['tceDados:tceForm:btnSalvar']==null}" value="#{cc.attrs.managedBean.fonteRecursoFinanciamento.agenteFinanceiro}" />
+						</label>
+					</section>
+					<section class="col col-5">
+						<p:outputLabel for="numeroContrato3" value="Nº do contrato de financiamento" styleClass="label" />
+						<label class="input">
+							<p:inputText id="numeroContrato3" maxlength="20" required="#{param['tceDados:tceForm:btnSalvar']==null}" value="#{cc.attrs.managedBean.fonteRecursoFinanciamento.numero}" />
+						</label>
+					</section>
+				</div>
+				<div class="row">
+					<section class="col col-5">
+						<mcl:numberValidationRange id="ano3" label="Ano do contrato de financiamento" value="#{cc.attrs.managedBean.fonteRecursoFinanciamento.contratoFinanciamentoAno}" 
+							minValue="1900" maxValue="2050" required="#{param['tceDados:tceForm:btnSalvar']==null}" />
+					</section>
+					<section class="col col-5">
+						<mcl:moneyValidationRange id="valorRepasse3" label="Valor do repasse - R$" value="#{cc.attrs.managedBean.fonteRecursoFinanciamento.repasseValor}" 
+							required="#{param['tceDados:tceForm:btnSalvar']==null}" 
+							minValue="0.01" maxValue="999999999999999.99" />
+					</section>
+					<section class="col col-1">
+						<p:spacer width="0px" height="80px" />
+						<p:commandLink id="btnAddFinanciamento" actionListener="#{cc.attrs.managedBean.adicionarFinanciamento()}" process="@(.processFinanciamento)" 
+							update="processFinanciamento,dtFinanciamento" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-plus"></i>
+						</p:commandLink>
+					</section>
+				</div>
+			</h:panelGroup>
+			<section>
+				<p:dataTable id="dtFinanciamento" var="item" value="#{cc.attrs.managedBean.fonteRecursoFinanciamentoList}" reflow="true"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Agente">
+						<h:outputText value="#{item.agenteFinanceiro}" />
+					</p:column>
+					<p:column headerText="Nº do contrato">
+						<h:outputText value="#{item.numero}" />
+					</p:column>
+					<p:column headerText="Ano do contrato">
+						<mcl:number value="#{item.contratoFinanciamentoAno}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Valor do repasse">
+						<mcl:money value="#{item.repasseValor}" modoConsulta="true" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerFinanciamento(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</p:fieldset>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

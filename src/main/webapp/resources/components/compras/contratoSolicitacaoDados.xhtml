@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="contratoSolicitacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+			
+				<section class="col col-6">
+						<mcl:inputLupa 
+							id="processo" 
+							label="Processo" 
+							controller="#{processoColumnsView}"
+							descricao="#{cc.attrs.managedBean.contratoSolicitacao.processo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.contratoSolicitacao.processo.ano)
+							.concat(' - ').concat(cc.attrs.managedBean.contratoSolicitacao.processo.modalidade.descricao)
+							.concat(' ').concat(cc.attrs.managedBean.contratoSolicitacao.processo.numeroLicitacao == null ? 'Modalidade não classificada' : cc.attrs.managedBean.contratoSolicitacao.processo.numeroLicitacao)
+							.concat(' / ').concat(cc.attrs.managedBean.contratoSolicitacao.processo.anoLicitacao)
+							.concat(' - ').concat(cc.attrs.managedBean.contratoSolicitacao.processo.status.descricao)}" 
+							value="#{cc.attrs.managedBean.contratoSolicitacao.processo}" 
+							required="true" 
+							listener="#{cc.attrs.managedBean.carregarDadosEditar()}" 
+							update="contratoSolicitacaoDados:contratoSolicitacaoForm:divFornecedor" 
+							cabecalho= "Consulta de Processo" />
+				</section>
+				
+			
+			
+			
+			</div>
+			<p:outputPanel id="divFornecedor">
+				<div class="row">
+					<section class="col col-6">
+						<p:outputLabel for="fornecedor" value="Selecione um Fornecedor caso deseje solicitar Contrato específico" styleClass="label" />
+						<label class="input">
+					        <p:selectOneMenu id="fornecedor" value="#{cc.attrs.managedBean.fornecedorSelecionadoDTO}" required="false" 
+					        	 styleClass="select" filter="true" filterMatchMode="contains">
+					            <f:selectItem itemLabel=".: Selecione um Fornecedor Vencedor:." itemValue="" />
+					            <f:selectItems value="#{cc.attrs.managedBean.vencedorList}" var="item" itemLabel="#{item.razaoSocial}" itemValue="#{item}"/>
+					        	<p:ajax listener="#{cc.attrs.managedBean.selecionarFornecedor()}" update="dtObjetos, divFornecedor" event="change" />
+					        </p:selectOneMenu>
+						</label>
+					</section>
+				</div>
+			</p:outputPanel>
+			
+			
+			
+			<section>
+				<p:dataTable id="dtObjetos" var="item" value="#{cc.attrs.managedBean.objetosFornecedorList}" selection="#{cc.attrs.managedBean.objetosSelecionadosList}" rowKey="#{item}" emptyMessage="Não constam registros. Selecione um Fornecedor."  >
+				    <f:facet name="header">
+				        Objetos do Processo 
+				    </f:facet>
+				    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+				    <p:column headerText="Item" style="width: 50px;text-align: center">
+				        <h:outputText value="#{item.item}" />
+				    </p:column>
+				   	<p:column headerText="Descrição" filterBy="#{item.material.descricao}" filterMatchMode="contains">
+				        <h:outputText value="#{item.descricao}" />
+				    </p:column>
+				    <p:column headerText="Quantidade" style="width: 100px">
+				    	<mcl:money value="#{item.quantidade}" modoConsulta="true" />
+				    </p:column>
+				    <p:column headerText="Un." style="width: 100px;text-align: center">
+				        <h:outputText value="#{item.unidade}" />
+				    </p:column>
+				    <p:column headerText="Valor Unitário" style="width: 100px">
+				    	<mcl:money value="#{item.valorUnitario}" modoConsulta="true"  />
+				    </p:column>
+				    <p:column headerText="Valor" style="width: 100px">
+				    	<mcl:money value="#{item.valor}" modoConsulta="true"  />
+				    </p:column>
+				    <p:column headerText="Percentual" style="width: 100px">
+				    	<mcl:money value="#{item.percentualDesconto}" modoConsulta="true"  />
+				    </p:column>
+				    <p:column headerText="Exclusivo ME" style="width: 100px">
+				    	<mcl:money value="#{item.exclusivoMeDescricao}" modoConsulta="true" />
+				    </p:column>
+			        <p:column headerText="Contrato" sortBy="#{item.contrato.numero}/{item.contrato.ano}" style="text-align: center; width: 120px">
+			           	<h:outputText value="#{item.contrato.numero} / #{item.contrato.ano}"  />
+			        </p:column>
+				    
+				    
+				</p:dataTable>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            
+			<h:commandLink value="" action="#{cc.attrs.managedBean.solicitarTotal()}" styleClass="btn btn-danger btn-lg"
+				title="Total - Solicita Contrato(s) de todos Objetos válidos do Processo, de todos Vencedores !" 
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-danger').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Solicitar todos Objetos de TODOS Vencedores " />
+            </h:commandLink>
+            
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				title="Parcial - Solicita Contrato para um Fornecedor, apenas da Lista de Objetos selecionados." 
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Solicitar Parcial só selecionados" />
+            </h:commandLink>
+            
+            
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

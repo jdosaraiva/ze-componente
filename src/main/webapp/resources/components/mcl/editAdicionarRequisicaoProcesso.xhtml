@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditAdicionarRequisicao" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditAdicionarRequisicao" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Selecione a Requisição para adicionar ao Processo</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages showDetail="false" autoUpdate="true" closable="true" />
+						
+						
+						<div class="row">
+							<div class="col-sm-6">
+								<p:outputLabel for="orgao" value="Órgão" />
+						        <p:selectOneMenu id="orgao" value="" styleClass="select-popup"></p:selectOneMenu>
+							</div>
+							<div class="col-sm-6">
+								<p:outputLabel for="almoxarifado" value="Almoxarifado" />
+						        <p:selectOneMenu id="almoxarifado" value="" styleClass="select-popup"></p:selectOneMenu>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-6">
+								<p:outputLabel for="destino" value="Destino" />
+						        <p:selectOneMenu id="destino" value="" styleClass="select-popup"></p:selectOneMenu>
+							</div>
+							<div class="col-sm-6">
+								<p:outputLabel for="requisitante" value="Requisitante" />
+						        <p:selectOneMenu id="requisitante" value="" styleClass="select-popup"></p:selectOneMenu>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-6" >
+								<div class="form-group">
+									<p:outputLabel for="data" value="Data" />
+									<p:inputText id="data" value=""  />
+								</div>
+							</div>
+							<div class="col-sm-6" >
+								<div class="form-group">
+									<p:outputLabel for="agrupar" value="Agrupar Itens idênticos ?" styleClass="label" />
+									<label class="input">
+										<p:inputSwitch id="agrupar" onLabel="Sim" offLabel="Não" value="" required="true" style="width: 39px;" />
+									</label>
+								</div>
+							</div>
+							
+						</div>
+						<div>
+							<div class="form-group">
+								<p:outputLabel for="requisicao" value="Requisição" />
+						        <p:selectOneMenu id="requisicao" value="" required="true" styleClass="select-popup"></p:selectOneMenu>
+							</div>
+						</div>
+						
+						
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarItemRequisicao}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditAdicionarRequisicao').modal('hide')" />
+			            	<h:outputText value="  Adicionar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

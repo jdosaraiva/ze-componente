@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<p:fieldset legend="Vigência" class="fieldset-borda">
+		<div class="row">
+			<section class="col col-4">
+				<p:outputLabel for="dataInicio" value="Data do início da vigência do termo aditivo" styleClass="label" />
+				<label class="input">
+					<p:calendar value="#{cc.attrs.managedBean.tceTermoAditivo.dataInicioVigencia}" pattern="dd/MM/yyyy"
+						id="dataInicio" style="float:left" mask="true" locale="pt" required="true" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+			<section class="col col-4">
+				<p:outputLabel for="dataFim" value="Data do término da vigência do termo aditivo" styleClass="label" />
+				<label class="input">
+					<p:calendar value="#{cc.attrs.managedBean.tceTermoAditivo.dataFimVigencia}" pattern="dd/MM/yyyy"
+						id="dataFim" style="float:left" mask="true" locale="pt" required="true" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+			<section class="col col-4">
+				<p:outputLabel for="dataAssinatura" value="Data da assinatura do termo aditivo *" styleClass="label" />
+				<label class="input">
+					<p:calendar value="#{cc.attrs.managedBean.tceTermoAditivo.dataAssinatura}" pattern="dd/MM/yyyy"
+						id="dataAssinatura" style="float:left" mask="true" locale="pt" required="true" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</div>
+	</p:fieldset>
+</composite:implementation>
+
+</html>

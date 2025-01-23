@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+<style>
+    .minha-tabela {
+    	text-align: left;	
+    }
+    .direitinha {
+    	text-align: right;	
+    }
+    .minha-tabela th .direitinha {
+    	text-align: right;	
+    }
+    .minha-tabela th:nth-of-type(2n+2) {
+    	text-align: center;	
+    }
+    .minha-tabela th:nth-of-type(3) {
+    	text-align: right;	
+	}
+    .minha-tabela td:nth-of-type(2n+2) {
+    	text-align: center;	
+    }
+    .minha-tabela td:nth-of-type(3) {
+    	text-align: right;	
+	}
+    
+</style>
+	<h:form id="aditamentoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+
+			<section>
+			<h:dataTable id="repeat1" var="varObjeto" value="#{cc.attrs.managedBean.objetosAEmpenharList}" style="width:100%" binding="#{status}" >
+				<h:column>
+				<div style="border: 1px solid; border-radius: 10px; padding: 10px; margin-bottom: 20px;">
+					<section style="display: flex; align-items: center; gap: 10px;">
+					    <p:outputLabel value="Objeto: #{varObjeto.descricao}" styleClass="label" />
+					</section>
+					<h:outputLabel value="Itens de Requisição deste Objeto" style="font-size: 14px;color: #000;text-decoration: underline;" />
+					<h:dataTable id="repeat2" 
+						value="#{varObjeto.itemRequisicaoCompraAsList}" 
+						var="itemRequisicao" 
+						style="width:100%" 
+						binding="#{itemStatus}">
+						
+					    <f:facet name="header">
+					        <div class="row">
+					            <section class="col col-1">Item</section>
+					            <section class="col col-2">Reservar NESTE exercício *</section>
+					            <section class="col col-2">Valor Restante</section>
+					            <section class="col col-2">Dotação</section>
+					            <section class="col col-2">Item</section>
+					            <section class="col col-1">Subitem</section>
+					            <section class="col col-1">Saldo Disp.</section>
+					            <section class="col col-1">Ação</section>
+					        </div>
+					    </f:facet>
+    						
+						<h:column>
+						<div class="row">
+							<section class="col col-1">
+								<label class="input"> 
+									<p:inputText value="#{itemRequisicao.requisicaoCompra.numero}/#{itemRequisicao.requisicaoCompra.ano}" readonly="true" />
+								</label>
+							</section>
+							
+							<section class="col col-2">
+								<mcl:money 	id="valorAReservar" 
+											value="#{itemRequisicao.valorDesejado}"
+											maxValue="#{itemRequisicao.valorDesejadoTemporario}" 
+											decimalPlaces="4" 
+											process="@this"  
+											ajax="true" 
+											global="false" 
+											listener="#{cc.attrs.managedBean.ajaxMetodoPadrao()}" />
+							</section>
+							<section class="col col-2">
+								<mcl:money 	id="valorAReservarRestante" 
+											readonly="true" 
+											value="#{itemRequisicao.valorDesejadoTemporario}"
+											decimalPlaces="4" 
+											process="@this"  
+											ajax="true" 
+											global="false" 
+											listener="#{cc.attrs.managedBean.ajaxMetodoPadrao()}" />
+							</section>
+							
+							<section class="col col-2">
+								<mcl:inputLupaDotacao 
+									widgetVar="wv#{status.rowIndex}#{itemStatus.rowIndex}"
+									id="dotacao#{status.rowIndex}#{itemStatus.rowIndex}"
+									label="" 
+									requisicao="#{itemRequisicao.requisicaoCompra}"
+									nomePopup="dotacao#{status.rowIndex}#{itemStatus.rowIndex}"
+									controller="#{dotacaoColumnsView}"
+									descricao="#{itemRequisicao.dotacao.codigoReduzido.toString()
+									.concat(' - ').concat(itemRequisicao.dotacao.codigoOrgao)
+									.concat(' - ').concat(itemRequisicao.dotacao.cndCodigo)
+									.concat(' - ').concat(itemRequisicao.dotacao.cnd.descricao) }"
+									value="#{itemRequisicao.dotacao}" 
+									lazy="false"
+									cabecalho="Consulta de Dotação"
+									listener="#{cc.attrs.managedBean.inputLupaDotacaolistener(itemRequisicao)}"
+									update="aditamentoReservaDados:aditamentoForm:repeat1:#{status.rowIndex}:repeat2:#{itemStatus.rowIndex}:itemDotacao aditamentoReservaDados:aditamentoForm:repeat1:#{status.rowIndex}:repeat2:#{itemStatus.rowIndex}:saldoDisponivel:saldoDisponivel" />
+							</section>
+							<section class="col col-2">
+									<p:selectOneMenu id="itemDotacao" value="#{itemRequisicao.itemDTO}" styleClass="select" filter="true" filterMatchMode="contains">
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{itemRequisicao.dotacao.cnd.itens}" var="item" 
+							            		itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}" itemValue="#{item}"/>
+							            <p:ajax event="change" update="aditamentoReservaDados:aditamentoForm:repeat1:#{status.rowIndex}:repeat2:#{itemStatus.rowIndex}:subItemDotacao"
+							            		process="@this" global="false" 
+							            		listener="#{cc.attrs.managedBean.itemDotacaoOnBlur(itemRequisicao, itemRequisicao.itemDTO)}" />
+							      	</p:selectOneMenu>
+							</section>
+							<section class="col col-1">
+								<label class="input">
+									<p:selectOneMenu id="subItemDotacao" value="#{cc.attrs.managedBean.subitemSelecionado}" styleClass="select" filter="true" filterMatchMode="contains">
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{cc.attrs.managedBean.itemSelecionado.subItens}" var="item" 
+							            		itemLabel="#{item.codigo.toString().concat(' - ').concat(item.descricao)}" itemValue="#{item}"/>
+						            	<p:ajax event="change" process="@this" global="false" 
+						            			update="@this"
+						            			listener="#{cc.attrs.managedBean.subitemDotacaoOnChange(itemRequisicao)}" />
+							      	</p:selectOneMenu>
+						      	</label>
+							</section>
+							<section class="col col-1">
+								<mcl:money id="saldoDisponivel"
+									value="#{itemRequisicao.dotacao.saldoDotacao}" 
+									readonly="true" />
+							</section>
+							
+							<section class="col col-1">
+								<!-- The faces doesnt update just the datatables  -->
+								<p:commandLink action="#{cc.attrs.managedBean.adicionarDotacao(itemRequisicao)}" 
+										update="@form" 
+										styleClass="btn btn-primary btn-sm" immediate="true">
+									<i class="fa fa-plus"></i>
+								</p:commandLink>
+							</section>
+						</div>
+						</h:column>
+					</h:dataTable>
+				</div>
+				</h:column>
+			</h:dataTable>
+			</section>
+			
+			<section>
+				<p:dataTable id="dtDotacao" var="item" value="#{cc.attrs.managedBean.reservasAdicionadasList}" reflow="true"
+					emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+					<p:column headerText="Item Requisição Compra">
+						<h:outputText value="#{item.itemRequisicaoCompra.requisicaoCompra.numero}/#{item.itemRequisicaoCompra.requisicaoCompra.ano}" />
+					</p:column>
+					<p:column headerText="Item"  style="width: 40px">
+						<h:outputText value="#{item.itemRequisicaoCompra.item}" />
+					</p:column>
+					<p:column headerText="Item Pedido">
+						<h:outputText value="#{item.itemRequisicaoCompra.itemPedido.item} - #{item.itemRequisicaoCompra.itemPedido.objetoDescricao}" />
+					</p:column>
+					<p:column headerText="Valor Reservado">
+						<mcl:money value="#{item.valorIndicadoSolicitarEmpenho}" decimalPlaces="4" readonly="true" />
+					</p:column>
+					<p:column headerText="Dotação">
+						<h:outputText value="#{item.dotacaoNumero} - #{item.dotacaoCnd} - #{item.dotacaoItemDescricao}" />
+					</p:column>
+					<p:column headerText="Item">
+						<h:outputText value="#{item.dotacaoItem} - #{item.dotacaoItemDescricao}" />
+					</p:column>
+					<p:column headerText="Subitem">
+						<h:outputText value="#{item.dotacaoSubitem} - #{item.dotacaoSubitemDescricao}" />
+					</p:column>
+					<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.removerDotacao(item)}"
+							update="aditamentoReservaDados:aditamentoForm, aditamentoReservaDados:botoesForm"  
+							immediate="true" styleClass="btn btn-primary btn-sm">
+							<i class="fa fa-trash-o"></i>
+						</h:commandLink>
+					</p:column>
+				</p:dataTable>
+			</section>
+		</fieldset>
+	</h:form>
+	<h:form id="botoesForm" class="smart-form">
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.voltarReserva()}" styleClass="btn btn-primary btn-lg pull-left" immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvarReserva()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}" 
+				onclick="$('.btn-success').attr('disabled', true);">
+				<i class="fa fa-save"></i>
+				<h:outputText value="  Continuar" />
+			</h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>

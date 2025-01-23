@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="parametroForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<p:dataTable id="dtParametro" var="item" value="#{cc.attrs.managedBean.parametroList}" reflow="true" paginator="false" 
+						emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+				<p:column headerText="Nome" styleClass="column4" style="vertical-align: middle;">
+		           	<h:outputText value="#{item.descricao}" />
+		        </p:column>
+		        <p:column headerText="Valor" styleClass="column5">
+		        	<h:panelGroup rendered="#{item.tipo eq 'BOOLEAN'}">
+		        		<p:selectOneMenu label="#{item.descricao}" value="#{item.valorPadrao}" styleClass="select">
+							<f:selectItem itemLabel="Não" itemValue="nao" />
+							<f:selectItem itemLabel="Sim" itemValue="sim" />
+						</p:selectOneMenu>
+		        	</h:panelGroup>
+		        	<h:panelGroup rendered="#{item.tipo eq 'TEXT'}">
+		        		<label class="input">
+							<p:inputText label="#{item.descricao}" value="#{item.valorPadrao}" required="true" disabled="#{cc.attrs.readonly}" />
+						</label>
+		        	</h:panelGroup>
+		        	<h:panelGroup rendered="#{item.tipo eq 'PASSWORD'}">
+		        		<label class="input">
+							<p:password label="#{item.descricao}" redisplay="true" value="#{item.valorPadrao}" required="true" disabled="#{cc.attrs.readonly}" />
+						</label>
+		        	</h:panelGroup>
+		        	<h:panelGroup rendered="#{item.tipo eq 'MONEY'}">
+		        		<mcl:money value="#{item.valorPadrao}" decimalPlaces="4" />
+		        	</h:panelGroup>
+		        	<h:panelGroup rendered="#{item.tipo eq 'NUMBER'}">
+		        		<mcl:number value="#{item.valorPadrao}" />
+		        	</h:panelGroup>
+		        </p:column>
+			</p:dataTable>
+		</fieldset>
+	
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

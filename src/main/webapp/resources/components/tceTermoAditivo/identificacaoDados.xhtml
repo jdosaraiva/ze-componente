@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 50px" class="row"></div>
+	<p:fieldset id="panelAditivo" legend="Identificação do Termo Aditivo" class="fieldset-borda">
+	
+		<section jsf:rendered="#{cc.attrs.managedBean.tceTermoAditivo.id == null}">
+			<mcl:inputLupa 
+				id="aditivo" 
+				label="Aditivo" 
+				controller="#{aditivoColumnsView}"
+				descricao="#{cc.attrs.managedBean.tceTermoAditivo.aditivo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.ano.toString() )
+					.concat(' Processo : ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.processo.numero).concat(' / ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.processo.ano)
+					.concat(' Contrato : ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.contrato.numero).concat(' / ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.contrato.ano)
+					.concat(' Fornecedor : ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.fornecedorRazaoSocial).concat(' - ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.fornecedorNumeroDocumento)
+				}" 
+				value="#{cc.attrs.managedBean.tceTermoAditivo.aditivo}" 
+				required="true" 
+				leitura="#{cc.attrs.readonly}"	
+				listener="#{cc.attrs.managedBean.popularAditivo()}" 
+				cabecalho= "Consulta de Aditivos" 
+				update="tceTermoAditivoDados:tceTermoAditivoForm:tabTceTermoAditivo:identificacaoDados:panelDados 
+						tceTermoAditivoDados:tceTermoAditivoForm:tabTceTermoAditivo:identificacaoDados:justificativa
+						tceTermoAditivoDados:tceTermoAditivoForm:tabTceTermoAditivo:vigenciaDados
+						" />
+		</section>
+		<section jsf:rendered="#{cc.attrs.managedBean.tceTermoAditivo.id != null}">
+			<p:outputLabel value="Aditivo" styleClass="label" />
+			<label class="input">
+				<p:inputText value="#{cc.attrs.managedBean.tceTermoAditivo.aditivo.numero.toString().concat(' / ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.ano.toString() )
+					.concat(' Processo : ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.processo.numero).concat(' / ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.processo.ano)
+					.concat(' Contrato : ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.contrato.numero).concat(' / ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.contrato.ano)
+					.concat(' Fornecedor : ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.fornecedorRazaoSocial).concat(' - ').concat(cc.attrs.managedBean.tceTermoAditivo.aditivo.fornecedorNumeroDocumento)
+				}" readonly="true" />
+			</label>
+		</section>
+		
+		<p:panel id="panelDados">
+	
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="codigo" value="Código do termo aditivo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="codigo" maxlength="13" value="#{cc.attrs.managedBean.tceTermoAditivo.codigo}" required="true" disabled="#{cc.attrs.readonly}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Nº do termo aditivo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" maxlength="8" value="#{cc.attrs.managedBean.tceTermoAditivo.numero}" required="true" disabled="#{cc.attrs.readonly}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="ano" value="Ano do termo aditivo" styleClass="label" />
+					<label class="input">
+						<p:inputText id="ano" maxlength="4" value="#{cc.attrs.managedBean.tceTermoAditivo.ano}" required="true" disabled="#{cc.attrs.readonly}">
+							<p:ajax process="@this" global="false" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="valor" value="Valor do termo aditivo" styleClass="label" />
+					<label class="input">
+						<p:inputNumber value="#{cc.attrs.managedBean.tceTermoAditivo.valor}" required="true" disabled="#{cc.attrs.readonly}"
+							id="valor" decimalSeparator="," decimalPlaces="2" thousandSeparator="." style="text-align:right">
+							<p:ajax process="@this" global="false" />
+						</p:inputNumber>
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="objeto" value="Objeto do termo aditivo" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="objeto" maxlength="1000" value="#{cc.attrs.managedBean.tceTermoAditivo.objeto}" required="true" disabled="#{cc.attrs.readonly}">
+						<p:ajax process="@this" global="false" />
+					</p:inputTextarea>
+				</label>
+			</section>
+			<section>
+				<p:pickList id="tipo" showTargetFilter="true" filterMatchMode="contains" converter="pickListTipoAditivoConverter" disabled="#{cc.attrs.readonly}"
+					showSourceFilter="true" value="#{cc.attrs.managedBean.tipoAditivoList}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}">
+					<f:facet name="sourceCaption">Disponíveis</f:facet>
+			 		<f:facet name="targetCaption">Selecionados</f:facet>
+			 		<p:ajax event="transfer" update="panelOutros" listener="#{cc.attrs.managedBean.onTransfer}" global="false" />
+				</p:pickList>
+			</section>
+			<h:panelGroup id="panelOutros">
+				<!-- section jsfrendered="{cc.attrs.managedBean.habilitaOutros}"-->
+				<section jsf:rendered="false">
+					<p:outputLabel for="outros" value="Outros - Descreva" styleClass="label" />
+					<label class="input">
+						<p:inputTextarea id="outros" maxlength="100" value="#{cc.attrs.managedBean.tceTermoAditivo.objeto}" required="true" disabled="#{cc.attrs.readonly}">
+							<p:ajax process="@this" global="false" />
+						</p:inputTextarea>
+					</label>
+				</section>
+			</h:panelGroup>
+		
+	</p:panel>
+		
+	</p:fieldset>
+	<br />
+	<p:fieldset legend="Justificativa" class="fieldset-borda">
+		<section>
+			<p:outputLabel for="justificativa" value="Justificativa apresentada" styleClass="label" />
+			<label class="input">
+				<p:inputTextarea id="justificativa" maxlength="100" value="#{cc.attrs.managedBean.tceTermoAditivo.justificativa}" disabled="#{cc.attrs.readonly}">
+					<p:ajax process="@this" global="false" />
+				</p:inputTextarea>
+			</label>
+		</section>
+	</p:fieldset>
+	
+	
+		
+	
+	
+	
+</composite:implementation>
+
+</html>

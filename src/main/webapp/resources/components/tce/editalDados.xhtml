@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl"
+	xmlns:licitacao="http://java.sun.com/jsf/composite/components/licitacao">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<div style="margin-top: 100px" class="row"></div>
+	<h:panelGroup id="pnlEdital">
+		<div class="row">
+			<section class="col col-3">
+				<p:outputLabel for="editalNumero" value="Número" styleClass="label"/>
+				<label class="input">
+					<p:inputText id="editalNumero" value="#{cc.attrs.managedBean.tce.processo.editalNumero}" readonly="true" />
+				</label>
+			</section>
+			<section class="col col-3">
+				<p:outputLabel for="processsoEditalDataPublicacao" value="Data do Edital" styleClass="label"/>
+				<label class="input">
+					<p:calendar id="processsoEditalDataPublicacao" value="#{cc.attrs.managedBean.tce.editalDataPublicacao}" pattern="dd/MM/yyyy" 
+						required="true" style="float:left" mask="true" locale="pt"/>
+				</label>
+			</section>
+		</div>
+		<p:fieldset legend="Publicação do edital em veículos de comunicação" class="fieldset-borda">
+			<p:fieldset id="frmVeiculos" legend="Veículos de comunicação" class="fieldset-borda processVeiculoComunicacao">
+				<h:panelGroup id="processVeiculoComunicacao">
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="editalVeiculo" value="Veículo" styleClass="label"/>
+							<label class="input">
+								<p:selectOneMenu id="editalVeiculo" value="#{cc.attrs.managedBean.publicacao.veiculoPublicacao}" styleClass="select"
+									required="#{param['tceDados:tceForm:btnSalvar']==null}">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.publicacaoVeiculo}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-5">
+							<p:outputLabel for="editalDataPublicacao" value="Data da publicação" styleClass="label"/>
+							<label class="input">
+								<p:calendar id="editalDataPublicacao" value="#{cc.attrs.managedBean.publicacao.publicacaoData}" pattern="dd/MM/yyyy" 
+									required="#{param['tceDados:tceForm:btnSalvar']==null}" style="float:left" mask="true" locale="pt"/>
+							</label>
+						</section>
+					</div>
+					<div class="row">
+						<section class="col col-6">
+							<p:outputLabel for="editalDescricaoVeiculo" value="Descrição" styleClass="label"/>
+							<label class="input">
+								<p:inputText id="editalDescricaoVeiculo" value="#{cc.attrs.managedBean.publicacao.descricao}" maxlength="100" />
+							</label>
+						</section>
+						<section class="col col-5">
+							<p:outputLabel for="editalVeiculoOficialPublicacao" value="Veículo de divulgação de atos oficiais?" styleClass="label"/>
+							<label class="input">
+								<p:selectOneMenu id="editalVeiculoOficialPublicacao" value="#{cc.attrs.managedBean.publicacao.oficial}" styleClass="select">
+									<f:selectItem itemLabel=".: Selecione :." noSelectionOption="true" />
+									<f:selectItems value="#{typesController.condicao}" />
+								</p:selectOneMenu>
+							</label>
+						</section>
+						<section class="col col-1">
+							<p:spacer width="0px" height="80px"/>
+							<p:commandLink id="btnAddVeiculo2" actionListener="#{cc.attrs.managedBean.adicionarPublicacao()}" process="@(.processVeiculoComunicacao)" 
+								update="processVeiculoComunicacao,dtVeiculos2" styleClass="btn btn-primary btn-sm">
+								<i class="fa fa-plus"></i>
+							</p:commandLink>
+						</section>
+					</div>
+				</h:panelGroup>
+				<div class="row">
+					<section class="col col-12">
+						<p:dataTable reflow="true" id="dtVeiculos2" var="item" value="#{cc.attrs.managedBean.tce.processo.publicacaoList}"
+							emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+							<p:column headerText="Veículo" colspan="2">
+								<h:outputText value="#{item.veiculoPublicacao.descricao}" />
+							</p:column>
+							<p:column headerText="Data da publicação">
+								<h:outputText value="#{item.publicacaoData}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Descrição" colspan="2">
+								<h:outputText value="#{item.descricao}" />
+							</p:column>
+							<p:column headerText="Atos oficiais">
+								<h:outputText value="#{item.oficial == null ? '' : item.oficial ? 'Sim' : 'Não'}" />
+							</p:column>
+							<p:column headerText="Ação" style="text-align:center;width:80px" rendered="#{!cc.attrs.readonly}">
+								<h:commandLink actionListener="#{cc.attrs.managedBean.removerPublicacao(item)}" immediate="true" styleClass="btn btn-primary btn-sm">
+									<i class="fa fa-trash-o"></i>
+								</h:commandLink>
+							</p:column>
+						</p:dataTable>
+					</section>
+				</div>
+			</p:fieldset>
+		</p:fieldset>
+		<br />
+		<p:fieldset id="garantiaParticipacao" legend="Garantia para participação da licitação" class="fieldset-borda">
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel for="itemEdital" value="Item do edital" styleClass="label" />
+					<label class="input">
+						<p:inputText id="itemEdital" value="#{cc.attrs.managedBean.tce.garantiaEditalItem}" disabled="#{cc.attrs.readonly}"> 
+							<p:ajax event="change" listener="#{cc.attrs.managedBean.onChangeGarantiaEditalItem()}" update="garantiaParticipacao" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="valor" value="Valor do edital" styleClass="label" />
+					<label class="input">
+						<p:inputNumber value="#{cc.attrs.managedBean.tce.garantiaEditalValor}" disabled="#{cc.attrs.readonly || empty cc.attrs.managedBean.tce.garantiaEditalItem}"
+							id="valor" decimalSeparator="," decimalPlaces="2" thousandSeparator="." style="text-align:right" 
+							required="#{not empty cc.attrs.managedBean.tce.garantiaEditalItem}">
+							<p:ajax event="change" listener="#{cc.attrs.managedBean.onChangeGarantiaEditalValor()}" update="garantiaParticipacao" />
+						</p:inputNumber>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="percentual" value="Percentual do valor" styleClass="label" />
+					<label class="input">
+						<p:inputNumber value="#{cc.attrs.managedBean.tce.garantiaEditalPercente}" disabled="#{cc.attrs.readonly || cc.attrs.managedBean.tce.garantiaEditalValor==null}"
+							id="percentual" decimalSeparator="," decimalPlaces="2" thousandSeparator="." style="text-align:right" 
+							required="#{cc.attrs.managedBean.tce.garantiaEditalValor!=null}">
+						</p:inputNumber>
+					</label>
+				</section>
+			</div>
+		</p:fieldset>
+	</h:panelGroup>
+</composite:implementation>
+
+</html>

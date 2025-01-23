@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="autorizacaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">	
+				<section class="col col-3">
+					<p:outputLabel for="numero" value="Número" styleClass="label" />
+					<label class="input">
+						<h:outputText id="numero" value="#{cc.attrs.managedBean.requisicao.numero}" />
+					</label>
+				</section>
+				<section class="col col-3"> 
+					<p:outputLabel for="ano" value="Data" styleClass="label" />
+					<label class="input">
+						<h:outputText id="ano" value="#{cc.attrs.managedBean.requisicao.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+		   				</h:outputText>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="destino" value="Destino" styleClass="label" />
+					<label class="input">
+						<h:outputText id="destino" value="#{cc.attrs.managedBean.requisicao.destino.nome}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="servidor" value="Requisitante" styleClass="label" />
+					<label class="input">
+						<h:outputText id="servidor" value="#{cc.attrs.managedBean.requisicao.nomeRequisitante}" />
+					</label>
+				</section>
+			</div>
+			<div class="row">	
+				<section class="col col-6">
+					<p:outputLabel for="orgao" value="Órgão" styleClass="label" />
+					<label class="input">
+						<h:outputText id="orgao" value="#{cc.attrs.managedBean.requisicao.orgaoSigla} - #{cc.attrs.managedBean.requisicao.orgaoDescricao}" />
+					</label>
+				</section>
+				<section class="col col-6">
+					<p:outputLabel for="almoxarifado" value="Almoxarifado" styleClass="label" />
+					<label class="input">
+						<h:outputText id="almoxarifado" value="#{cc.attrs.managedBean.requisicao.almoxarifado.nome}" />
+					</label>
+				</section>
+			</div>
+			<header>
+				Itens da Requisição de Retirada
+			</header>
+			<fieldset>
+				<section>
+					<p:dataTable id="dtItemRequisicao" var="item" value="#{cc.attrs.managedBean.requisicao.itemRequisicaoList}" reflow="true"
+						emptyMessage="Não constam registros." tableStyleClass="table table-striped" styleClass="table-reflow-desktop">
+						<p:column style="width: 16px">
+							<p:rowToggler rendered="#{not empty item.estoque.estoqueLoteList}" />
+						</p:column>
+						<p:column headerText="Item" style="width: 70px;text-align: center">
+						   	<h:outputText value="#{item.item}" />
+						</p:column>
+						<p:column headerText="Material" style="text-align:left">
+							<h:outputText value="#{item.estoque.material.descricao}" title="#{item.estoque.material.descricao}" rendered="#{item.estoque.material != null}" />
+						</p:column>
+						<p:column headerText="Código" style="text-align:right;width: 70px">
+							<h:outputText value="#{item.estoque.material.codigo}" title="#{item.estoque.material.codigo}" rendered="#{item.estoque.material != null}" />
+						</p:column>
+						<p:column headerText="Unidade" style="width: 90px">
+							<h:outputText value="#{item.estoque.material != null ? item.estoque.material.unidade.nome : ''}" />
+						</p:column>
+						<p:column headerText="Saldo Disp." style="width: 100px">
+							<mcl:money value="#{item.estoque.saldoDisponivel}" modoConsulta="true" />
+						</p:column>
+						<p:column headerText="Status" style="width: 90px;text-align: center">
+						   	<h:outputText value="#{item.status.descricao}" />
+						</p:column>
+						<p:column headerText="Quant. Solicitada" style="width: 120px">
+							<mcl:money value="#{item.quantidadeSolicitada}" modoConsulta="true" />
+						</p:column>
+						<p:column headerText="Quant. Aprovada" style="width: 120px">
+							<mcl:money value="#{item.quantidadeAprovada}" disabled="#{not empty item.estoque.estoqueLoteList || item.status == 'CANCELADO'}" />
+						</p:column>
+						<p:column headerText="Cancelar" style="vertical-align:middle;text-align:center;width:80px;">
+							<p:commandLink title="Cancela este Item da Requisição" action="#{cc.attrs.managedBean.cancelar(item)}" styleClass="btn btn-info btn-sm" rendered="#{item.status == 'SOLICITADO'}">
+								<p:confirm header="Aviso" message="Confirma o cancelamento deste Item da Requisição negando a aprovação?" />
+								<i class="fa fa-remove"></i>
+							</p:commandLink>
+						</p:column>
+						<p:rowExpansion>
+							<p:dataTable var="subitem" value="#{item.estoque.estoqueLoteList}" styleClass="table-reflow-desktop" reflow="true" emptyMessage="Não constam registros." tableStyleClass="table table-striped">
+								<f:facet name="header">Lotes</f:facet>
+								<p:column headerText="Número" style="text-align:center; width: 100px">
+									<h:outputText value="#{subitem.numero}" />
+								</p:column>
+								<p:column headerText="Marca">
+									<h:outputText value="#{subitem.marca.nome}" rendered="#{subitem.marca != null}" />
+								</p:column>
+								<p:column headerText="Corredor" sortBy="#{subitem.corredor}" style="width: 100px">
+								   	<h:outputText value="#{subitem.corredor}" />
+								</p:column>
+								<p:column headerText="Prateleira" sortBy="#{subitem.prateleira}" style="width: 100px">
+								   	<h:outputText value="#{subitem.prateleira}" />
+								</p:column>
+								<p:column headerText="Box" sortBy="#{subitem.box}" style="width: 100px">
+								   	<h:outputText value="#{subitem.box}" />
+								</p:column>
+								<p:column headerText="Data Validade" sortBy="#{subitem.dataValidade}" style="width: 100px;text-align: center">
+								   	<h:outputText value="#{subitem.dataValidade}">
+								   		<f:convertDateTime pattern="dd/MM/yyyy" />
+								   	</h:outputText>
+								</p:column>
+								<p:column headerText="Quantidade" style="width: 100px">
+									<mcl:money value="#{subitem.quantidade}" modoConsulta="true" />
+								</p:column>
+								<p:column headerText="Qtde Aprovada" style="width: 100px">
+									<mcl:money value="#{subitem.quantidadeMovimentar}" ajax="true" global="false" listener="#{cc.attrs.managedBean.ajaxMetodoPadrao()}" disabled="#{item.status != 'SOLICITADO'}"/>
+								</p:column>
+							</p:dataTable>
+						</p:rowExpansion>
+					</p:dataTable>	
+				</section>
+			</fieldset>
+		</fieldset>
+		<p:confirmDialog styleClass="confirmDialogBox" appendToBody="true" global="true" showEffect="fade" hideEffect="fade" closable="false">
+			<p:commandLink value="Sim" title="Sim"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-yes" style="width: 70px">
+			</p:commandLink>
+			&#160;&#160;&#160;
+			<p:commandLink value="Não" title="Não"
+				styleClass="btn btn-info btn-sm ui-confirmdialog-no" style="width: 70px">
+			</p:commandLink>
+		</p:confirmDialog>
+		<footer>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+				immediate="true">
+				<i class="fa fa-arrow-left"></i>
+				<h:outputText value="  Voltar" />
+			</h:commandLink>
+			<h:commandLink value="" title="Grava Aprovação dos Itens da Requisição com Quantidade maior do que zero"
+				action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg" rendered="#{not cc.attrs.readonly}">
+				<i class="fa fa-save"></i>
+				<h:outputText value=" Autorizar Itens da Requisição" />
+			</h:commandLink>
+		</footer>
+	</h:form>
+</composite:implementation>
+
+</html>	

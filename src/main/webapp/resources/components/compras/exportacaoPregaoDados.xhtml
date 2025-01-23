@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="exportacaoPregaoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-2">
+					<p:outputLabel for="numero" value="Número / Ano" styleClass="label" />
+					<label class="input">
+						<p:inputText id="numero" value="#{cc.attrs.managedBean.processo.numero} / #{cc.attrs.managedBean.processo.ano}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:outputLabel for="modalidade" value="Modalidade" styleClass="label" />
+					<label class="input">
+						<p:inputText id="modalidade" value="#{cc.attrs.managedBean.processo.modalidade.descricao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:outputLabel for="numeroAnoLicitacao" value="Número/Ano Licitação " styleClass="label" />
+					<label class="input">
+						<p:inputText id="numeroAnoLicitacao" value="#{cc.attrs.managedBean.processo.numeroAnoLicitacao}" readonly="true" />
+					</label>
+				</section>
+				<section class="col col-2">
+					<p:outputLabel for="processoData" value="Data" styleClass="label" />
+					<label class="input">
+						<p:inputText id="processoData" value="#{cc.attrs.managedBean.processo.data}" format="dd/MM/yyyy" readonly="true" >
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:inputText>
+					</label>
+				</section>
+				<section class="col col-4">
+					<p:outputLabel for="objeto" value="Objeto" styleClass="label" />
+					<label class="input">
+						<p:inputText id="objeto" value="#{cc.attrs.managedBean.processo.descricaoObjeto}" readonly="true" />
+					</label>
+				</section>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<div>
+				<h:panelGroup rendered="#{managedBean.processo.modalidade eq 'PREGAO_PRESENCIAL'}">
+				<section>
+					<p:outputPanel id="divPregao">
+					<p:panel header="Dados do Pregão"> 
+						<div class="row">
+							<section class="col col-6">
+								<p:outputLabel for="pregoeiro" value="Pregoeiro" styleClass="label" />
+								<label class="input">
+									<p:inputText id="pregoeiro" required="true" value="#{cc.attrs.managedBean.processo.pregao.pregoeiro.nome}" readonly="#{cc.attrs.readonly}" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="interessado" value="Interessado" styleClass="label" />
+								<label class="input">
+									<p:inputText id="interessado" required="true" value="#{cc.attrs.managedBean.processo.pregao.interessado}" readonly="!#{cc.attrs.readonly}" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="interessadoGenero" value="Interessado Gênero" required="true" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="interessadoGenero" value="#{cc.attrs.managedBean.processo.pregao.interessadoGenero}" required="true" disabled="!#{cc.attrs.readonly}" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.genero}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="data" value="Data" styleClass="label" />
+								<label class="input">
+									<p:calendar id="data" style="float:left"
+												value="#{cc.attrs.managedBean.processo.pregao.data}" 
+												pattern="dd/MM/yyyy"
+												disabled="!#{cc.attrs.readonly}"
+												mask="true"
+												required="true"
+												locale="pt" />
+								</label>
+							</section>
+							<section class="col col-6">
+								<p:outputLabel for="local" value="Local" styleClass="label" />
+								<label class="input">
+									<p:inputText id="local" required="true" value="#{cc.attrs.managedBean.processo.pregao.local}" readonly="!#{cc.attrs.readonly}" />
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="localGenero" value="Local Gênero" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="localGenero" value="#{cc.attrs.managedBean.processo.pregao.localGenero}" required="true" disabled="!#{cc.attrs.readonly}" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.genero}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="criterioClassificacao" value="Critério Classificação" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="criterioClassificacao" value="#{cc.attrs.managedBean.processo.pregao.criterioClassificacao}" required="true" disabled="!#{cc.attrs.readonly}" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.criterioClassificacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="diferencaLancesTipo" value="Diferença Lances Tipo" styleClass="label" />
+								<label class="input">
+							        <p:selectOneMenu id="diferencaLancesTipo" value="#{cc.attrs.managedBean.processo.pregao.diferencaLancesTipo}" required="true" disabled="!#{cc.attrs.readonly}" styleClass="select" >
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.diferencaLancesTipo}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</label>
+							</section>
+							<section class="col col-3">
+								<mcl:money id="diferencaLancesValor" label="Diferença Lances Valor" value="#{cc.attrs.managedBean.processo.pregao.diferencaLancesValor}" required="true" disabled="!#{cc.attrs.readonly}" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="diferencaLancesValidar" value="Diferença Lances Validar?" styleClass="label" />
+								<p:inputSwitch id="diferencaLancesValidar" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.pregao.diferencaLancesValidar}" disabled="!#{cc.attrs.readonly}" />
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<mcl:number id="licitantesTempo" label="Licitantes Tempo" disabled="!#{cc.attrs.readonly}"  required="true" value="#{cc.attrs.managedBean.processo.pregao.licitantesTempo}" />
+							</section>
+							<section class="col col-3">
+								<mcl:number id="minimoClassificados" label="Mínimo Classificados" disabled="!#{cc.attrs.readonly}" required="true" value="#{cc.attrs.managedBean.processo.pregao.minimoClassificados}" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="considerarMargemMicroempresa" value="Considerar Margem Microempresa?" styleClass="label" />
+								<p:inputSwitch id="considerarMargemMicroempresa" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.pregao.considerarMargemMicroempresa}" disabled="!#{cc.attrs.readonly}" />
+							</section>
+							<section class="col col-3">
+								<p:outputLabel for="ordemLancesAutomatica" value="Ordem Lances Automática?" styleClass="label" />
+								<p:inputSwitch id="ordemLancesAutomatica" onLabel="Sim" offLabel="Não" value="#{cc.attrs.managedBean.processo.pregao.ordemLancesAutomatica}" disabled="!#{cc.attrs.readonly}" />
+							</section>
+						</div>
+					</p:panel>
+					</p:outputPanel>
+					
+				</section>
+				</h:panelGroup>
+			</div>
+		</fieldset>
+		<fieldset>
+			<div>
+				<h:panelGroup id="panelExportado" rendered="#{managedBean.processo.modalidade eq 'PREGAO_PRESENCIAL'}">
+					<p:panel header="Exportação">
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="exportado" value="Exportado?" styleClass="label" />
+								<p:inputSwitch id="exportado" onLabel="Sim" offLabel="Não" 
+									value="#{cc.attrs.managedBean.processo.pregao.exportado}" disabled="true" />
+							</section>
+						</div> 
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="exportadoData" value="Data de Exportação" styleClass="label" />
+								<label class="input">
+									<p:calendar id="exportadoData" style="float:left"
+												value="#{cc.attrs.managedBean.processo.pregao.exportadoData}" 
+												pattern="dd/MM/yyyy"
+												disabled="true"
+												mask="true"
+												required="true"
+												locale="pt" />
+								</label>
+							</section>
+							<section class="col col-6">
+								<p:outputLabel for="exportadoPor" value="Exportado Por" styleClass="label" />
+								<label class="input">
+									<p:inputText id="exportadoPor" value="#{cc.attrs.managedBean.processo.pregao.exportadoPor.nome}" readonly="true" />
+								</label>
+							</section>
+						</div>
+						<div class="row">
+							<section class="col col-3">
+								<p:outputLabel for="exportadoDataExclusao" value="Data da Exclusão da Exportação?" styleClass="label" />
+									<p:calendar id="exportadoDataExclusao" style="float:left"
+												value="#{cc.attrs.managedBean.processo.pregao.exportadoDataExclusao}" 
+												pattern="dd/MM/yyyy"
+												disabled="true"
+												mask="true"
+												required="true"
+												locale="pt" />
+							</section>
+							<section class="col col-6">
+								<p:outputLabel for="excluidoPor" value="Exportação Excluída Por" styleClass="label" />
+								<label class="input">
+									<p:inputText id="excluidoPor" value="#{cc.attrs.managedBean.processo.pregao.excluidoPor.nome}" readonly="true" />
+								</label>
+							</section>
+						</div>
+					</p:panel>
+				</h:panelGroup>
+			</div>
+		</fieldset>
+
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+            
+		    <p:commandLink title="Exportar para o MPP" action="#{managedBean.exportarPregao()}" 
+		                   styleClass="btn btn-info btn-sm" ajax="false"
+		                   onclick="setTimeout(redirectAfterDownload, 2000);">
+		        <i class="fa fa-download"></i>
+		    </p:commandLink>
+		    
+		</footer>
+		
+	</h:form>
+	
+	<script type="text/javascript">
+	    function redirectAfterDownload() {
+	        window.location.href = "#{facesContext.externalContext.requestContextPath}/pages/compras/exportacao_pregao/exportacao_pregao_listar.xhtml";
+	    }
+	</script>
+		
+</composite:implementation>
+
+</html>	

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Listar Domínios</title>
+    <h:outputStylesheet name="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .table-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #e3f2fd; /* Azul claro */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #81c784; /* Verde claro */
+            color: white;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="container">
+        <div class="table-container">
+            <h2 class="text-center">Listar Domínios</h2>
+            <h:form>
+                <p:dataTable value="#{dominioController.dominios}" var="dominio" 
+                             styleClass="table table-striped" paginator="true" rows="10">
+                    <p:column headerText="DOMINIO">
+                        <h:outputText value="#{dominio.dominio}" />
+                    </p:column>
+                    <p:column headerText="CÓDIGO">
+                        <h:outputText value="#{dominio.codigo}" />
+                    </p:column>
+                    <p:column headerText="SIGLA">
+                        <h:outputText value="#{dominio.sigla}" />
+                    </p:column>
+                    <p:column headerText="DESCRICAO">
+                        <h:outputText value="#{dominio.descricao}" />
+                    </p:column>
+                </p:dataTable>
+                <div class="text-center mt-3">
+                    <h:commandButton value="Adicionar Domínio" action="dominio.xhtml" class="btn btn-custom" />
+                </div>
+            </h:form>
+        </div>
+    </div>
+    <h:outputScript name="https://code.jquery.com/jquery-3.5.1.slim.min.js" />
+    <h:outputScript name="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" />
+    <h:outputScript name="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" />
+</h:body>
+</html>

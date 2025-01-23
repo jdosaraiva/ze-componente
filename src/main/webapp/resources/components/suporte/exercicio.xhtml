@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="exercicioForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-3">
+					<p:outputLabel value="Exercício Atual" styleClass="label" />
+					<h:outputText value="#{cc.attrs.managedBean.exercicio.ano}" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel value="Situação" styleClass="label" />
+					<h:outputText value="#{cc.attrs.managedBean.exercicio.situacao.descricao}" />
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{cc.attrs.managedBean.exercicio.situacao eq 'ABERTO'}">
+				<section class="col col-3">
+					<p:outputLabel value="Fechar Exercício #{cc.attrs.managedBean.exercicio.ano}" styleClass="label" />
+					<p:commandLink title="Fechar" value="Fechar" actionListener="#{cc.attrs.managedBean.fechar}"
+						styleClass="btn btn-primary btn-sm" update="@form">
+		            </p:commandLink>
+				</section>
+			</div>
+			<div class="row" jsf:rendered="#{cc.attrs.managedBean.exercicio.situacao eq 'FECHADO' and cc.attrs.managedBean.abreExercicio}">
+				<section class="col col-3">
+					<p:outputLabel value="Abrir Exercício #{cc.attrs.managedBean.exercicio.ano + 1}" styleClass="label" />
+					<p:commandLink title="Abrir" value="Abrir" actionListener="#{cc.attrs.managedBean.abrir}"
+						styleClass="btn btn-primary btn-sm" update="@form @parent">
+		            </p:commandLink>
+				</section>
+			</div>
+		</fieldset>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	

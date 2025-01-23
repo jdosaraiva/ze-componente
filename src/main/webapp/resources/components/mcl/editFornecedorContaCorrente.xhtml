@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="update" required="true" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+
+	<!-- Modal -->
+	<div class="modal fade" id="popupEditFornecedorContaCorrente" style="z-index:900" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<h:form id="formPopupEditFornecedorContaCorrente" acceptcharset="ISO-8859-1">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							x
+						</button>
+						<h4 class="modal-title" id="myModalLabel"><strong>Manutenção de Conta Corrente</strong></h4>
+					</div>
+					<div class="modal-body">
+						<!-- Exibe a mensagem de erro -->
+						<p:messages severity="error" showDetail="false" autoUpdate="true" closable="true" />
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<mcl:inputSelectBanco id="banco" label="Banco" value="#{cc.attrs.managedBean.fornecedorContaCorrente.banco}" 
+										managedBean="#{bancoAutocomplete}" itemLabel="#{item.nomeAbreviado}" required="true" disabled="#{cc.attrs.readonly}" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="nome" value="Nome Conta" />
+									<p:inputText id="nome" value="#{cc.attrs.managedBean.fornecedorContaCorrente.nome}" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="agencia" value="Agência" />
+									<p:inputText id="agencia" value="#{cc.attrs.managedBean.fornecedorContaCorrente.agencia}" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="agenciaDigito" value="Dígito da Agência" />
+									<p:inputText id="agenciaDigito" value="#{cc.attrs.managedBean.fornecedorContaCorrente.agenciaDigito}" required="true" />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="numero" value="Número da Conta Corrente" />
+									<p:inputText id="numero" value="#{cc.attrs.managedBean.fornecedorContaCorrente.numero}" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="numeroDigito" value="Dígito da Conta Corrente" />
+									<p:inputText id="numeroDigito" value="#{cc.attrs.managedBean.fornecedorContaCorrente.numeroDigito}" required="true" />
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="form-group">
+									<p:outputLabel for="situacao" value="Situação" />
+									<p:selectOneMenu id="situacao" value="#{cc.attrs.managedBean.fornecedorContaCorrente.situacao}" styleClass="select-popup" required="true">
+							            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+							            <f:selectItems value="#{typesController.situacao}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+							        </p:selectOneMenu>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							Cancelar
+						</button>
+						<h:commandLink value="" actionListener="#{cc.attrs.managedBean.adicionarContaCorrente}" styleClass="btn btn-primary btn-sm">
+			            	<p:ajax process="@form" update="#{cc.attrs.update}" oncomplete="if (!args.validationFailed) $('#popupEditFornecedorContaCorrente').modal('hide')" />
+			            	<h:outputText value="  Salvar" />
+			            </h:commandLink>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</div>
+</composite:implementation>
+
+</html>	

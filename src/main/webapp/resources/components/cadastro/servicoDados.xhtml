@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:mcl="http://java.sun.com/jsf/composite/components/mcl">
+
+<!-- INTERFACE -->
+<composite:interface>
+	<composite:attribute name="managedBean" required="true" />
+	<composite:attribute name="readonly" type="java.lang.Boolean" />
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+	<h:form id="servicoForm" class="smart-form" acceptcharset="ISO-8859-1">
+		<fieldset>
+			<div class="row">
+				<section class="col col-9">
+					<p:outputLabel for="descricao" value="Descrição" styleClass="label" />
+					<label class="input">
+						<p:focus for="descricao" />
+						<p:inputText id="descricao" value="#{cc.attrs.managedBean.servico.descricao}" required="true" disabled="#{cc.attrs.readonly}" />
+					</label>
+				</section>
+				<section class="col col-3">
+					<mcl:number id="codigo" label="Código" value="#{cc.attrs.managedBean.servico.codigo}" required="true" disabled="true" />
+				</section>
+			</div>
+			<div class="row">
+				<section class="col col-3">
+					<mcl:inputLupa 
+						id="unidade" 
+						label="Unidade"  
+						controller="#{unidadeColumnsView}"
+						descricao="#{cc.attrs.managedBean.servico.unidade.sigla.toString().concat(' - ').concat(cc.attrs.managedBean.servico.unidade.nome)}"
+						value="#{cc.attrs.managedBean.servico.unidade}"
+						cabecalho= "Consulta de Plano Conta Contábil"
+						required="true" 
+						leitura="#{cc.attrs.readonly}" />
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="engenharia" value="engenharia ?" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="engenharia" value="#{cc.attrs.managedBean.servico.engenharia}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+				            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+				            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+			        <p:outputLabel for="status" value="Status" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="status" value="#{cc.attrs.managedBean.servico.status}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select" >
+				            <f:selectItem itemLabel=".: Selecione :." itemValue="" />
+				            <f:selectItems value="#{typesController.status}" var="item" itemLabel="#{item.descricao}" itemValue="#{item}"/>
+				        </p:selectOneMenu>
+					</label>
+				</section>
+				<section class="col col-3">
+					<p:outputLabel for="pncpIncentivoProdutivoBasico" value="PPB Incentivo Produtivo Básico ?" styleClass="label" />
+					<label class="input">
+				        <p:selectOneMenu id="pncpIncentivoProdutivoBasico" value="#{cc.attrs.managedBean.servico.pncpIncentivoProdutivoBasico}" required="true" disabled="#{cc.attrs.readonly}" styleClass="select">
+				            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+				            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+				        </p:selectOneMenu>
+					</label>
+				</section>
+			</div>
+			<section>
+				<p:outputLabel for="detalhes" value="Detalhes" styleClass="label" />
+				<label class="input">
+					<p:inputTextarea id="detalhes" value="#{cc.attrs.managedBean.servico.detalhes}" disabled="#{cc.attrs.readonly}" />
+				</label>
+			</section>
+		</fieldset>
+	
+		<footer>
+            <h:commandLink value="" action="#{cc.attrs.managedBean.voltar()}" styleClass="btn btn-primary btn-lg pull-left"
+            	immediate="true">
+            	<i class="fa fa-arrow-left"></i>
+            	<h:outputText value="  Voltar" />
+            </h:commandLink>
+			<h:commandLink value="" action="#{cc.attrs.managedBean.salvar()}" styleClass="btn btn-success btn-lg"
+				rendered="#{not cc.attrs.readonly}" onclick="$('.btn-success').attr('disabled', true);">
+            	<i class="fa fa-save"></i>
+            	<h:outputText value="  Salvar" />
+            </h:commandLink>
+		</footer>
+	</h:form>
+	
+</composite:implementation>
+
+</html>	
