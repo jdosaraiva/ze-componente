@@ -28,7 +28,7 @@ public class DominioController {
 
     public String save() {
         dominioService.save(dominio);
-        return "listarDominios.xhtml?faces-redirect=true"; // Navegação para a página de listagem
+        return "listar.xhtml?faces-redirect=true"; // Navegação para a página de listagem
     }
 
     public List<Dominio> getDominios() {
